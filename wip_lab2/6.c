@@ -1,6 +1,4 @@
 //Jakub Ogrodowczyk 27.10.2021
-//todo:
-//szukanie czy liczba ma pare zaprzyjazniona
 
 #include <stdio.h>
 #include <stdlib.h>
