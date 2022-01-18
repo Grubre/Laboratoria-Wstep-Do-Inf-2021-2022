@@ -68,7 +68,7 @@ void guess(int* kombinacje, bool* bitmask, int* prev_guess, int red, int white)
         return; 
     for(int i = 0; i < 4 * 6 * 6 * 6 * 6; i += 4) // sprawdzamy wszystkie permutacje
     {
-        if(bitmask[i] == false) continue;
+        if(bitmask[i / 4] == false) continue;
         int amount_red = 0; // ilosc kolorow ktore sie zgadzaja
         int amount_white = 0; // ilosc kolorow na pozycji ktore sie zgadzaja
 
@@ -116,7 +116,7 @@ bool guess_and_print(int* kombinacje, bool* bitmask, int* prev_guess, int red, i
     // wypisujemy pierwsza mozliwa permutajce
     for(int i = 0; i < 4 * 6 * 6 * 6 * 6; i += 4)
     {
-        if(bitmask[i] == true)
+        if(bitmask[i / 4] == true)
         {
             printf("[%d] [%d] [%d] [%d]\n",
             kombinacje[i + 0], kombinacje[i + 1], kombinacje[i + 2], kombinacje[i + 3]);
