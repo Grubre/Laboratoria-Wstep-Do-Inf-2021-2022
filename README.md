@@ -4,4 +4,4 @@ Zadania na laboratoria ze wstępu do informatyki i programowania w roku akademic
 [x] wip_lab_1  
 [x] wip_lab_2  
 [x] wip_lab_3  
-[ ] wip_lab_4  
+[x] wip_lab_4  
