@@ -43,6 +43,8 @@ void guess(int* kombinacje, bool* bitmask, int* prev_guess, int red, int white)
         int amount_red = 0; // ilosc kolorow ktore sie zgadzaja
         int amount_white = 0; // ilosc kolorow na pozycji ktore sie zgadzaja
 
+        bool taken[4] = {0,0,0,0};
+
         for(int j = 0; j < 4; j++)
         {
             if(prev_guess[j] == kombinacje[i + j]) // sprawdzamy ilosc czerwonych
@@ -52,13 +54,14 @@ void guess(int* kombinacje, bool* bitmask, int* prev_guess, int red, int white)
             else
             for(int y = 0; y < 4; y++)
             {
-                if(y != j && prev_guess[j] == kombinacje[i + y] && prev_guess[j] != prev_guess[y])
+                if(y != j && prev_guess[j] == kombinacje[i + y] && prev_guess[j] != prev_guess[y] && !taken[y])
                 {
                     amount_white++;
+                    taken[y] = true;
                     break;
                 }
             }
-        }        
+        }
 
         bitmask[i / 4] = (amount_white == white && amount_red == red);
     }
