@@ -58,7 +58,7 @@ bool match(char* wzorzec, char* lancuch)
 
 int main()
 {
-    char a[100],b[100],wynik[100];;
+    char a[100],b[100],wynik[100];
     scanf("%s %s",a,b);
     strcpy(wynik,(match(a,b) ? (char*)"true" : (char*)"false"));
     printf("match('%s' , '%s') = %s\n",a,b,wynik);

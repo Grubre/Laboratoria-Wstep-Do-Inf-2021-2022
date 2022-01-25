@@ -3,10 +3,8 @@
 #include <stdbool.h>
 
 
-#define MAX_ROUNDS 100
-
-
 int rounds_num;
+
 
 void guesses_init(int* values, bool* bitmask)
 {
@@ -43,21 +41,22 @@ void guess(int* kombinacje, bool* bitmask, int* prev_guess, int red, int white)
         int amount_red = 0; // ilosc kolorow ktore sie zgadzaja
         int amount_white = 0; // ilosc kolorow na pozycji ktore sie zgadzaja
 
-        bool taken[4] = {0,0,0,0};
+        bool taken_slot[4] = {0,0,0,0};
 
         for(int j = 0; j < 4; j++)
         {
             if(prev_guess[j] == kombinacje[i + j]) // sprawdzamy ilosc czerwonych
             {
                 amount_red++;
+                taken_slot[j] = true;
             }
             else
             for(int y = 0; y < 4; y++)
             {
-                if(y != j && prev_guess[j] == kombinacje[i + y] && prev_guess[j] != prev_guess[y] && !taken[y])
+                if(y != j && prev_guess[j] == kombinacje[i + y] && prev_guess[j] != prev_guess[y] && !taken_slot[y])
                 {
                     amount_white++;
-                    taken[y] = true;
+                    taken_slot[y] = true;
                     break;
                 }
             }
@@ -70,7 +69,6 @@ void guess(int* kombinacje, bool* bitmask, int* prev_guess, int red, int white)
 
 bool guess_and_print(int* kombinacje, bool* bitmask, int* prev_guess, int red, int white)
 {
-    // to do
     guess(kombinacje, bitmask, prev_guess, red, white);
 
     // wypisujemy pierwsza mozliwa permutajce
@@ -85,21 +83,20 @@ bool guess_and_print(int* kombinacje, bool* bitmask, int* prev_guess, int red, i
             prev_guess[2] = kombinacje[i + 2];
             prev_guess[3] = kombinacje[i + 3];
             
-            return false; // they didn't cheat
+            return false;
         }
     }
-    
-    return true; // they cheated!
+    return true;
 }
 
 
 int main()
 {
-    int* kombinacje = (int*)malloc(4 * sizeof(int) * 6 * 6 * 6 * 6);
-    bool* bitmask = (bool*)malloc(sizeof(bool) * 6 * 6 * 6 * 6);
+    int kombinacje[4 * 6 * 6 * 6 * 6];
+    bool bitmask[6 * 6 * 6 * 6];
 
-    int* prev_guess = (int*)malloc(4 * sizeof(int));
-    prev_guess[0] = 0; // wskazuje na to ze jest to pierwsza iteracja
+    int prev_guess[4];
+    prev_guess[0] = 0;
 
     rounds_num = 1;
     int red = 0, white = 0;
@@ -108,7 +105,7 @@ int main()
 
     guesses_init(kombinacje, bitmask);
 
-    while(rounds_num < MAX_ROUNDS)
+    while(true)
     {
         cheated = guess_and_print(kombinacje, bitmask, prev_guess, red, white);
         if(cheated)
@@ -121,14 +118,11 @@ int main()
 
         if(red == 4)
         {
-            printf("Wygralem po %d zgadnieciach!", rounds_num);
+            printf("Wygralem po %d zgadnieciach!\n", rounds_num);
             break;
         }
         rounds_num++;
     }
 
-    free(kombinacje);
-    free(bitmask);
-    free(prev_guess);
     return 0;
 }
