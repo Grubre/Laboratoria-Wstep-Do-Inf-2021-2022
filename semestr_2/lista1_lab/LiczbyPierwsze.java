@@ -1,5 +1,3 @@
-package LiczbyPierwsze;
-
 public class LiczbyPierwsze {
     int[] pierwsze;
     int ilosc_pierwszych;
