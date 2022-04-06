@@ -1,0 +1,1 @@
+g++ Test.cpp Szesciokat.cpp Romb.cpp Prostokat.cpp Pieciokat.cpp Kwadrat.cpp Kolo.cpp Czworokat.cpp -o test.exe
