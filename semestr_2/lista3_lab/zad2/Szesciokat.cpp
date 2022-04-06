@@ -2,7 +2,7 @@
 
 double Szesciokat::obliczPole()
 {
-    return 3 * bok * bok * std::sqrt(3) / 4;
+    return 3 * bok * bok * std::sqrt(3) / 2;
 }
 double Szesciokat::obliczObwod()
 {

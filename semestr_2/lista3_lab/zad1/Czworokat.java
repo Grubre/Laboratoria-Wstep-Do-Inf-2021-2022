@@ -1,5 +1,3 @@
-import java.lang.Math;  
-
 abstract class Czworokat implements Figura {
     public abstract double obliczObwod();
     public abstract double obliczPole();

@@ -139,7 +139,7 @@ int main(int argc, char *argv[])
             std::cout << "Pole = " << figury[i]->obliczPole() << std::endl;
         }
         catch(std::exception e){
-            std::cerr << "Blad wczytywania figury nr " << i << std::endl;
+            std::cerr << "Blad wczytywania figury" << std::endl;
             return 1;
         };
     }

@@ -7,7 +7,7 @@ public class Szesciokat implements Figura {
     }
     public double obliczPole()
     {
-        return 3 * bok * bok * Math.sqrt(3) / 4;
+        return 3 * bok * bok * Math.sqrt(3) / 2;
     }
 
     public Szesciokat(double _bok)
