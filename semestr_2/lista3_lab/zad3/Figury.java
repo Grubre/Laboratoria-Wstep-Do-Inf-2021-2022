@@ -1,17 +1,6 @@
 import java.lang.Math;
 import java.lang.reflect.Parameter;
 
-interface SingleParameterFigure{
-    public double obliczObwod(double parameter);
-    public double obliczPole(double parameter);
-}
-
-interface TwoParameterFigure{
-    public double obliczObwod(double parameter1, double parameter2);
-    public double obliczPole(double parameter1, double parameter2);
-}
-
-
 public class Figury
 {
     public enum SingleParameter implements SingleParameterFigure{
