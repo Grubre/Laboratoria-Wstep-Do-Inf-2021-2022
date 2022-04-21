@@ -62,5 +62,9 @@
         "thread": "cpp",
         "cinttypes": "cpp",
         "typeinfo": "cpp"
-    }
+    },
+    "java.project.sourcePaths": [
+        "semestr_2/lista4_lab/TrojkatPascala/src",
+        "semestr_2/lista4_lab/TrojkatPascala/lib"
+    ]
 }
