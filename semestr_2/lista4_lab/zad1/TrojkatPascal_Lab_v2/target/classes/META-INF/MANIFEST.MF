@@ -1,0 +1,3 @@
+Manifest-Version: 1.0
+Main-Class: com.example.trojkatpascal_lab_v2.Main
+
