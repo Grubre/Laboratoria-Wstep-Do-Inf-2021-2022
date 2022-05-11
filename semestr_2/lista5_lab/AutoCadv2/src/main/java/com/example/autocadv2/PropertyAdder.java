@@ -30,6 +30,8 @@ public class PropertyAdder {
      */
     private void createHandlers() {
         setAnchor = event -> {
+            if(MainScene.getState() != MainScene.State.MODIFY)
+                return;
             if (event.isPrimaryButtonDown()) {
                 cycleStatus = 1;
                 initialX = event.getSceneX();
@@ -38,12 +40,15 @@ public class PropertyAdder {
             if (event.isMiddleButtonDown()) {
                 cycleStatus = 0;
                 anchorRotate = target.getRotate();
+
             }
             rotationX = event.getSceneX();
             if(event.isSecondaryButtonDown())
                 cycleStatus = 0;
         };
         updatePositionOnDrag = event -> {
+            if(MainScene.getState() != MainScene.State.MODIFY)
+                return;
             if (cycleStatus != 0) {
                 target.setTranslateX(target.getTranslateX() + event.getSceneX() - initialX);
                 target.setTranslateY(target.getTranslateY() + event.getSceneY() - initialY);

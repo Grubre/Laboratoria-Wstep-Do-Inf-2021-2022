@@ -27,18 +27,12 @@ public class MainScene {
     public enum State {
         RECTANGLE, CIRCLE, TRIANGLE, MODIFY
     }
-
     private static State state = State.MODIFY;
 
     /**
      * Size of the sidebar containing all the buttons (in pixels)
      */
     public static int sidebarSize = 150;
-
-    private static Button addCircleButton;
-    private static Button addRectangleButton;
-    private static Button addTriangleButton;
-    private static Button modifyButton;
 
     private static Pane canvasPane;
     /**
@@ -164,7 +158,7 @@ public class MainScene {
         AnchorPane.setTopAnchor(sidebarVbox, 40.0);
         sidebarVbox.setPrefWidth(sidebarSize);
         sidebarVbox.setAlignment(Pos.CENTER);
-        addCircleButton = new Button();
+        Button addCircleButton = new Button();
         addCircleButton.setText("Kolko");
         addCircleButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -174,7 +168,7 @@ public class MainScene {
                 shapeCreator.reset(canvasPane);
             }
         });
-        addRectangleButton = new Button();
+        Button addRectangleButton = new Button();
         addRectangleButton.setText("Prostokat");
         addRectangleButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -184,7 +178,7 @@ public class MainScene {
                 shapeCreator.reset(canvasPane);
             }
         });
-        addTriangleButton = new Button();
+        Button addTriangleButton = new Button();
         addTriangleButton.setText("Trojkat");
         addTriangleButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -194,7 +188,7 @@ public class MainScene {
                 shapeCreator.reset(canvasPane);
             }
         });
-        modifyButton = new Button();
+        Button modifyButton = new Button();
         modifyButton.setText("Modyfikuj");
         modifyButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -270,7 +264,7 @@ public class MainScene {
             selectedShape.setStrokeWidth(0);
             selectedShape = null;
         }
-}
+    }
     /**
      * Method that adds a mouse event that makes the object selectable.
      * The selected object is stored in the selectedShape variable.
@@ -292,5 +286,9 @@ public class MainScene {
                         isShapeBeingSelected = true;
                     }
                 });
+    }
+    public static State getState()
+    {
+        return state;
     }
 }
