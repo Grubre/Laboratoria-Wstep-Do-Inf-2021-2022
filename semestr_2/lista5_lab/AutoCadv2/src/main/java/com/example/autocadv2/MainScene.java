@@ -3,9 +3,7 @@ package com.example.autocadv2;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
-import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
-import javafx.scene.Cursor;
 import javafx.scene.control.*;
 import javafx.scene.input.*;
 import javafx.scene.layout.AnchorPane;
@@ -16,11 +14,6 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
-import javafx.scene.transform.Scale;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * Class responsible for creating and adding functionality
@@ -31,9 +24,10 @@ public class MainScene {
      * Enum holding the program state, on button press when (state == RECTANGLE/CIRCLE/TRIANGLE)
      * you create a new shape and when (state == MODIFY) you modify existing shapes
      */
-    public enum State{
+    public enum State {
         RECTANGLE, CIRCLE, TRIANGLE, MODIFY
     }
+
     private static State state = State.MODIFY;
 
     /**
@@ -57,19 +51,18 @@ public class MainScene {
     private static final ShapeCreator shapeCreator = new ShapeCreator();
 
     private static ColorPicker colorPicker = new ColorPicker();
+
     /**
      * Method that calls addComponents() to construct the GUI.
      * It is also responsible for creating and setting the properties of all the shapes.
      */
-    public static void ConstructScene(AnchorPane root)
-    {
+    public static void ConstructScene(AnchorPane root) {
         addComponents(root);
         canvasPane.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
                 // COLOR PICKER
-                if(selectedShape != null && event.getButton().equals(MouseButton.SECONDARY))
-                {
+                if (selectedShape != null && event.getButton().equals(MouseButton.SECONDARY)) {
                     canvasPane.getChildren().remove(colorPicker);
                     colorPicker = new ColorPicker((Color) selectedShape.getFill());
                     colorPicker.setTranslateX(event.getSceneX() - MainScene.sidebarSize);
@@ -81,15 +74,13 @@ public class MainScene {
                         }
                     });
                 }
-                if(event.getButton().equals(MouseButton.PRIMARY))
-                {
+                if (event.getButton().equals(MouseButton.PRIMARY)) {
                     canvasPane.getChildren().remove(colorPicker);
                     int m_x = (int) (event.getSceneX() - sidebarSize);
                     int m_y = (int) (event.getSceneY());
-                    if(state == State.TRIANGLE)
-                    {
+                    if (state == State.TRIANGLE) {
                         shapeCreator.add(canvasPane, m_x, m_y);
-                        if(shapeCreator.getPointsPlaced() < 3)
+                        if (shapeCreator.getPointsPlaced() < 3)
                             return;
                         Polygon triangle = shapeCreator.getTriangle();
                         canvasPane.getChildren().add(triangle);
@@ -98,7 +89,7 @@ public class MainScene {
                         triangle.setOnScroll(new EventHandler<ScrollEvent>() {
                             @Override
                             public void handle(ScrollEvent scrollEvent) {
-                                if(triangle != selectedShape)
+                                if (triangle != selectedShape)
                                     return;
                                 double resizeValue = Math.signum(scrollEvent.getDeltaY());
                                 triangle.setScaleX(triangle.getScaleX() + 0.1 * resizeValue);
@@ -106,11 +97,9 @@ public class MainScene {
                                 triangle.setScaleZ(triangle.getScaleZ() + 0.1 * resizeValue);
                             }
                         });
-                    }
-                    else if(state == State.CIRCLE)
-                    {
+                    } else if (state == State.CIRCLE) {
                         shapeCreator.add(canvasPane, m_x, m_y);
-                        if(shapeCreator.getPointsPlaced() < 2)
+                        if (shapeCreator.getPointsPlaced() < 2)
                             return;
                         Circle circle = shapeCreator.getCircle();
                         canvasPane.getChildren().add(circle);
@@ -119,18 +108,15 @@ public class MainScene {
                         circle.setOnScroll(new EventHandler<ScrollEvent>() {
                             @Override
                             public void handle(ScrollEvent scrollEvent) {
-                                if(circle != selectedShape)
+                                if (circle != selectedShape)
                                     return;
                                 double resizeValue = Math.signum(scrollEvent.getDeltaY());
-                                circle.setRadius(circle.getRadius()+ 10 * resizeValue);
+                                circle.setRadius(circle.getRadius() + 10 * resizeValue);
                             }
                         });
-                    }
-                    else if(state == State.RECTANGLE)
-                    {
+                    } else if (state == State.RECTANGLE) {
                         shapeCreator.add(canvasPane, m_x, m_y);
-                        if(shapeCreator.getPointsPlaced() < 2)
-                        {
+                        if (shapeCreator.getPointsPlaced() < 2) {
                             return;
                         }
                         Rectangle rectangle = shapeCreator.getRectangle();
@@ -140,18 +126,15 @@ public class MainScene {
                         rectangle.setOnScroll(new EventHandler<ScrollEvent>() {
                             @Override
                             public void handle(ScrollEvent scrollEvent) {
-                                if(rectangle != selectedShape)
+                                if (rectangle != selectedShape)
                                     return;
                                 double resizeValue = Math.signum(scrollEvent.getDeltaY());
                                 rectangle.setWidth(rectangle.getWidth() + 10 * resizeValue);
                                 rectangle.setHeight(rectangle.getHeight() + 10 * resizeValue);
                             }
                         });
-                    }
-                    else if(state == State.MODIFY)
-                    {
-                        if(!isShapeBeingSelected && selectedShape != null)
-                        {
+                    } else if (state == State.MODIFY) {
+                        if (!isShapeBeingSelected && selectedShape != null) {
                             selectedShape.setStrokeWidth(0);
                             selectedShape = null;
                         }
@@ -162,11 +145,11 @@ public class MainScene {
             }
         });
     }
+
     /**
      * Method that adds GUI components to the scene and configures them.
      */
-    public static void addComponents(AnchorPane root)
-    {
+    public static void addComponents(AnchorPane root) {
         // ADDING THE SIDEBAR
         AnchorPane sidebar = new AnchorPane();
         sidebar.setStyle("-fx-background-color: gray");
@@ -184,32 +167,40 @@ public class MainScene {
         addCircleButton = new Button();
         addCircleButton.setText("Kolko");
         addCircleButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override public void handle(ActionEvent e) {
+            @Override
+            public void handle(ActionEvent e) {
                 state = State.CIRCLE;
+                deselect();
                 shapeCreator.reset(canvasPane);
             }
         });
         addRectangleButton = new Button();
         addRectangleButton.setText("Prostokat");
         addRectangleButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override public void handle(ActionEvent e) {
+            @Override
+            public void handle(ActionEvent e) {
                 state = State.RECTANGLE;
+                deselect();
                 shapeCreator.reset(canvasPane);
             }
         });
         addTriangleButton = new Button();
         addTriangleButton.setText("Trojkat");
         addTriangleButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override public void handle(ActionEvent e) {
+            @Override
+            public void handle(ActionEvent e) {
                 state = State.TRIANGLE;
+                deselect();
                 shapeCreator.reset(canvasPane);
             }
         });
         modifyButton = new Button();
         modifyButton.setText("Modyfikuj");
         modifyButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override public void handle(ActionEvent e) {
+            @Override
+            public void handle(ActionEvent e) {
                 state = State.MODIFY;
+                deselect();
                 shapeCreator.reset(canvasPane);
             }
         });
@@ -222,7 +213,7 @@ public class MainScene {
         // ADDING THE CANVAS
         canvasPane = new Pane();
         AnchorPane.setTopAnchor(canvasPane, 0.0);
-        AnchorPane.setLeftAnchor(canvasPane, (double)sidebarSize);
+        AnchorPane.setLeftAnchor(canvasPane, (double) sidebarSize);
         AnchorPane.setBottomAnchor(canvasPane, 0.0);
         AnchorPane.setRightAnchor(canvasPane, 0.0);
         root.getChildren().add(canvasPane);
@@ -233,7 +224,7 @@ public class MainScene {
         toolBar.setStyle("-fx-alignment: center");
         root.getChildren().add(toolBar);
         toolBar.setPrefWidth(MainScene.sidebarSize);
-        AnchorPane.setLeftAnchor(toolBar, (double)0.0);
+        AnchorPane.setLeftAnchor(toolBar, (double) 0.0);
         AnchorPane.setTopAnchor(toolBar, 0.0);
         Button infoButton = new Button();
         infoButton.setText("Info");
@@ -262,7 +253,7 @@ public class MainScene {
                         " a nastepnie wybierz jeden z istniejacych juz ksztaltow." +
                         " Aby:\n- Przemiescic ksztalt - zlap go myszka i przesun,\n- Zmienic rozmiar ksztaltu" +
                         " - uzyj scrolla\n- Zmienic kolor - nacisnij prawy przycisk myszy" +
-                        " i wybierz kolor z menu");
+                        " i wybierz kolor z menu\n- Obrocic - przytrzymaj scroll i przesuwaj myszka w prawo lub lewo");
 
                 alert.showAndWait();
             }
@@ -272,6 +263,14 @@ public class MainScene {
         toolBar.getItems().add(helpButton);
 
     }
+
+    private static void deselect() {
+        if(selectedShape !=null)
+        {
+            selectedShape.setStrokeWidth(0);
+            selectedShape = null;
+        }
+}
     /**
      * Method that adds a mouse event that makes the object selectable.
      * The selected object is stored in the selectedShape variable.
