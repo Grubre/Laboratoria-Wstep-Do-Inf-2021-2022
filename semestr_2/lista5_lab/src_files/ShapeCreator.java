@@ -13,8 +13,17 @@ import java.util.List;
  * Class that creates shapes from a list of points
  */
 public class ShapeCreator {
+    /**
+     * Amount of currently placed points
+     */
     private int pointsPlaced;
+    /**
+     * List holding current points
+     */
     private List<Point2D> shapePoints;
+    /**
+     * List holding the circles that are displayed on the Pane
+     */
     private List<Circle> renderedPoints;
     ShapeCreator()
     {
@@ -23,12 +32,14 @@ public class ShapeCreator {
         renderedPoints = new ArrayList<>();
     }
     /**
-     * Adds a point at (m_x,m_y)
+     * Adds a Point2D to the shapePoints list and a circle to the renderedPoints list,
+     * it then adds the circle to canvasPane children so that they are displayed.
+     * @param canvasPane Pane that the circles will be displayed on
+     * @param m_x,m_y the coordinates of the point that is being added
      */
     void add(Pane canvasPane, int m_x, int m_y)
     {
-        Point2D point = new Point2D(m_x,m_y);
-
+        // The circle is only for visualisation purposes
         Circle circle = new Circle();
         circle.setRadius(5);
         circle.setFill(Color.BLACK);
@@ -37,22 +48,25 @@ public class ShapeCreator {
         circle.setCenterX(m_x);
         circle.setCenterY(m_y);
         circle.toFront();
-
         canvasPane.getChildren().add(circle);
 
+        // Here we create the actual point
+        Point2D point = new Point2D(m_x,m_y);
         pointsPlaced++;
         shapePoints.add(point);
         renderedPoints.add(circle);
     }
     /**
      * pointsPlaced getter
+     * @return amount of currently placed points
      */
     int getPointsPlaced()
     {
         return pointsPlaced;
     }
     /**
-     * Constructs a circle from two points
+     * Creates a circle and adds the dragging and rotation property.
+     * @return circle constructed from the two points specified in shapePoints
      */
     Circle getCircle()
     {
@@ -67,15 +81,13 @@ public class ShapeCreator {
         return circle;
     }
     /**
-     * Constructs a triangle from three points
+     * Creates a triangle and adds the dragging and rotation property.
+     * @return triangle constructed from the three points specified in shapePoints
      */
     Polygon getTriangle()
     {
         if(pointsPlaced != 3)
             return null;
-        System.out.println(shapePoints.get(0).getX() + " " + shapePoints.get(0).getY());
-        System.out.println(shapePoints.get(1).getX() + " " + shapePoints.get(1).getY());
-        System.out.println(shapePoints.get(2).getX() + " " + shapePoints.get(2).getY());
         Polygon triangle = new Polygon(
                 shapePoints.get(0).getX(), shapePoints.get(0).getY(),
                 shapePoints.get(1).getX(), shapePoints.get(1).getY(),
@@ -86,7 +98,8 @@ public class ShapeCreator {
         return triangle;
     }
     /**
-     * Constructs a triangle from two points
+     * Creates a rectangle and adds the dragging and rotation property.
+     * @return rectangle constructed from the two points specified in shapePoints
      */
     Rectangle getRectangle()
     {
@@ -103,6 +116,7 @@ public class ShapeCreator {
     }
     /**
      * Resets the points list and removes the visible points from the root
+     * @param canvasPane Pane from which the circles are to be removed
      */
     void reset(Pane canvasPane)
     {

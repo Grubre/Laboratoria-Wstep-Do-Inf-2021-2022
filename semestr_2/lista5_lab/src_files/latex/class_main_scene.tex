@@ -1,0 +1,56 @@
+\hypertarget{class_main_scene}{}\doxysection{Main\+Scene Class Reference}
+\label{class_main_scene}\index{MainScene@{MainScene}}
+\doxysubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+enum \mbox{\hyperlink{enum_main_scene_1_1_state}{State}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static void \mbox{\hyperlink{class_main_scene_a4097de9e7c46af99bd9c12a6063a4949}{Construct\+Scene}} (Anchor\+Pane root)
+\item 
+static void \mbox{\hyperlink{class_main_scene_a3e2e37b81177fb6589fadd267d8f1341}{add\+Components}} (Anchor\+Pane root)
+\item 
+static void \mbox{\hyperlink{class_main_scene_a78885ac236ab8750542e7ce2a37172af}{add\+Selection\+Property}} (Shape target)
+\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_main_scene_a7c01d73f680c8bfba758c33f1a513800}\label{class_main_scene_a7c01d73f680c8bfba758c33f1a513800}} 
+static int {\bfseries sidebar\+Size} = 150
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Class responsible for creating and adding functionality to all of the objects. 
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{class_main_scene_a3e2e37b81177fb6589fadd267d8f1341}\label{class_main_scene_a3e2e37b81177fb6589fadd267d8f1341}} 
+\index{MainScene@{MainScene}!addComponents@{addComponents}}
+\index{addComponents@{addComponents}!MainScene@{MainScene}}
+\doxysubsubsection{\texorpdfstring{addComponents()}{addComponents()}}
+{\footnotesize\ttfamily static void Main\+Scene.\+add\+Components (\begin{DoxyParamCaption}\item[{Anchor\+Pane}]{root }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+Method that adds GUI components to the scene and configures them. \mbox{\Hypertarget{class_main_scene_a78885ac236ab8750542e7ce2a37172af}\label{class_main_scene_a78885ac236ab8750542e7ce2a37172af}} 
+\index{MainScene@{MainScene}!addSelectionProperty@{addSelectionProperty}}
+\index{addSelectionProperty@{addSelectionProperty}!MainScene@{MainScene}}
+\doxysubsubsection{\texorpdfstring{addSelectionProperty()}{addSelectionProperty()}}
+{\footnotesize\ttfamily static void Main\+Scene.\+add\+Selection\+Property (\begin{DoxyParamCaption}\item[{Shape}]{target }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+Method that adds a mouse event that makes the object selectable. The selected object is stored in the selected\+Shape variable. 
+\begin{DoxyParams}{Parameters}
+{\em target} & Shape that is meant to have the drag and rotate properties added. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{class_main_scene_a4097de9e7c46af99bd9c12a6063a4949}\label{class_main_scene_a4097de9e7c46af99bd9c12a6063a4949}} 
+\index{MainScene@{MainScene}!ConstructScene@{ConstructScene}}
+\index{ConstructScene@{ConstructScene}!MainScene@{MainScene}}
+\doxysubsubsection{\texorpdfstring{ConstructScene()}{ConstructScene()}}
+{\footnotesize\ttfamily static void Main\+Scene.\+Construct\+Scene (\begin{DoxyParamCaption}\item[{Anchor\+Pane}]{root }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+Method that calls \mbox{\hyperlink{class_main_scene_a3e2e37b81177fb6589fadd267d8f1341}{add\+Components()}} to construct the GUI. It is also responsible for creating and setting the properties of all the shapes. 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+Main\+Scene.\+java\end{DoxyCompactItemize}

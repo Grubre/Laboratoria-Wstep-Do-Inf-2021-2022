@@ -7,10 +7,13 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
+/**
+ * Main class
+ */
 public class Main extends Application {
     public static int AppWidth  = 800;
     public static int AppHeight = 500;
-    public static Stage mStage;
+    private Stage mStage;
 
     @Override
     public void start(Stage stage) throws IOException {

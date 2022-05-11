@@ -2,7 +2,7 @@ import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
 /**
- * Class that adds the dragging and rotation properties to an object
+ * Class that adds the dragging and rotation properties to an object.
  */
 public class PropertyAdder {
     private final Node target;
@@ -13,7 +13,7 @@ public class PropertyAdder {
     private EventHandler<MouseEvent> updatePositionOnDrag;
     private int cycleStatus = 0;
     /**
-     * Constructor in which we specify the target, create the handlers and add event filters
+     * Constructor that takes the target, creates the handlers and adds event filters
      */
     public PropertyAdder(Node target) {
         this.target = target;
