@@ -2,20 +2,22 @@ package com.example.autocadv2;
 
 import javafx.event.EventHandler;
 import javafx.scene.Node;
+import javafx.scene.SubScene;
 import javafx.scene.input.MouseEvent;
 /**
- * Class that adds the dragging and rotation properties to an object
+ * Class that adds the dragging and rotation properties to an object.
  */
 public class PropertyAdder {
     private final Node target;
     private double anchorRotate;
     private double initialX;
     private double initialY;
+    private double rotationX;
     private EventHandler<MouseEvent> setAnchor;
     private EventHandler<MouseEvent> updatePositionOnDrag;
     private int cycleStatus = 0;
     /**
-     * Constructor in which we specify the target, create the handlers and add event filters
+     * Constructor that takes the target, creates the handlers and adds event filters
      */
     public PropertyAdder(Node target) {
         this.target = target;
@@ -37,6 +39,7 @@ public class PropertyAdder {
                 cycleStatus = 0;
                 anchorRotate = target.getRotate();
             }
+            rotationX = event.getSceneX();
             if(event.isSecondaryButtonDown())
                 cycleStatus = 0;
         };
@@ -48,7 +51,10 @@ public class PropertyAdder {
                 initialY = event.getSceneY();
             }
             if(event.isMiddleButtonDown())
-                target.setRotate(event.getSceneX() - initialX + anchorRotate);
+            {
+                target.setRotate(event.getSceneX() - rotationX + anchorRotate);
+            }
+
         };
     }
 

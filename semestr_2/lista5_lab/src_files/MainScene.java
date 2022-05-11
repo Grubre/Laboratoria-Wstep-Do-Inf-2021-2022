@@ -68,6 +68,7 @@ public class MainScene {
                 // COLOR PICKER
                 if(selectedShape != null && event.getButton().equals(MouseButton.SECONDARY))
                 {
+                    canvasPane.getChildren().remove(colorPicker);
                     colorPicker = new ColorPicker((Color) selectedShape.getFill());
                     colorPicker.setTranslateX(event.getSceneX() - MainScene.sidebarSize);
                     colorPicker.setTranslateY(event.getSceneY());

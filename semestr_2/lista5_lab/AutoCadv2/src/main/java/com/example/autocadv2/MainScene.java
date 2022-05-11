@@ -22,16 +22,23 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Class responsible for creating and adding functionality
+ * to all of the objects.
+ */
 public class MainScene {
     /**
-     * Enum holding the program state, when state == rectangle or circle or triangle
-     * you create a new shape on button press and when state == modify you can modify shapes
+     * Enum holding the program state, on button press when (state == RECTANGLE/CIRCLE/TRIANGLE)
+     * you create a new shape and when (state == MODIFY) you modify existing shapes
      */
     public enum State{
         RECTANGLE, CIRCLE, TRIANGLE, MODIFY
     }
     private static State state = State.MODIFY;
 
+    /**
+     * Size of the sidebar containing all the buttons (in pixels)
+     */
     public static int sidebarSize = 150;
 
     private static Button addCircleButton;
@@ -51,20 +58,19 @@ public class MainScene {
 
     private static ColorPicker colorPicker = new ColorPicker();
     /**
-     * Method that constructs the whole scene and sets all properties of all the objects
+     * Method that calls addComponents() to construct the GUI.
+     * It is also responsible for creating and setting the properties of all the shapes.
      */
     public static void ConstructScene(AnchorPane root)
     {
         addComponents(root);
-        /**
-         * Setting the program functionality
-         */
         canvasPane.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                /// COLOR PICKER
+                // COLOR PICKER
                 if(selectedShape != null && event.getButton().equals(MouseButton.SECONDARY))
                 {
+                    canvasPane.getChildren().remove(colorPicker);
                     colorPicker = new ColorPicker((Color) selectedShape.getFill());
                     colorPicker.setTranslateX(event.getSceneX() - MainScene.sidebarSize);
                     colorPicker.setTranslateY(event.getSceneY());
@@ -155,14 +161,13 @@ public class MainScene {
 
             }
         });
-        /// DRAWING SHAPES ON THE CANVAS
     }
     /**
-     * Method that adds GUI components
+     * Method that adds GUI components to the scene and configures them.
      */
     public static void addComponents(AnchorPane root)
     {
-        /// ADDING THE SIDEBAR
+        // ADDING THE SIDEBAR
         AnchorPane sidebar = new AnchorPane();
         sidebar.setStyle("-fx-background-color: gray");
         AnchorPane.setTopAnchor(sidebar, 0.0);
@@ -171,7 +176,7 @@ public class MainScene {
         sidebar.setPrefWidth(sidebarSize);
         root.getChildren().add(sidebar);
 
-        /// ADDING VBOX AND BUTTONS TO THE SIDEBAR
+        // ADDING VBOX AND BUTTONS TO THE SIDEBAR
         VBox sidebarVbox = new VBox();
         AnchorPane.setTopAnchor(sidebarVbox, 40.0);
         sidebarVbox.setPrefWidth(sidebarSize);
@@ -214,7 +219,7 @@ public class MainScene {
         sidebarVbox.getChildren().add(modifyButton);
         sidebar.getChildren().add(sidebarVbox);
 
-        /// ADDING THE CANVAS
+        // ADDING THE CANVAS
         canvasPane = new Pane();
         AnchorPane.setTopAnchor(canvasPane, 0.0);
         AnchorPane.setLeftAnchor(canvasPane, (double)sidebarSize);
@@ -223,7 +228,7 @@ public class MainScene {
         root.getChildren().add(canvasPane);
         sidebar.toFront();
 
-        /// ADDING THE TOOLBAR
+        // ADDING THE TOOLBAR
         ToolBar toolBar = new ToolBar();
         toolBar.setStyle("-fx-alignment: center");
         root.getChildren().add(toolBar);
@@ -268,7 +273,9 @@ public class MainScene {
 
     }
     /**
-     * Method that makes an object selectable
+     * Method that adds a mouse event that makes the object selectable.
+     * The selected object is stored in the selectedShape variable.
+     * @param target Shape that is meant to have the drag and rotate properties added.
      */
     public static void addSelectionProperty(Shape target)
     {

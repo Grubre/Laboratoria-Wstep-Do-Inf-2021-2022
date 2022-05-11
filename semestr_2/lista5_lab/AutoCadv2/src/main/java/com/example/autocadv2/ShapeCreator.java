@@ -15,8 +15,17 @@ import java.util.List;
  * Class that creates shapes from a list of points
  */
 public class ShapeCreator {
+    /**
+     * Amount of currently placed points
+     */
     private int pointsPlaced;
+    /**
+     * List holding current points
+     */
     private List<Point2D> shapePoints;
+    /**
+     * List holding the circles that are displayed on the Pane
+     */
     private List<Circle> renderedPoints;
     ShapeCreator()
     {
@@ -25,7 +34,10 @@ public class ShapeCreator {
         renderedPoints = new ArrayList<>();
     }
     /**
-     * Adds a point at (m_x,m_y)
+     * Adds a Point2D to the shapePoints list and a circle to the renderedPoints list,
+     * it then adds the circle to canvasPane children so that they are displayed.
+     * @param canvasPane Pane that the circles will be displayed on
+     * @param m_x,m_y the coordinates of the point that is being added
      */
     void add(Pane canvasPane, int m_x, int m_y)
     {
@@ -48,13 +60,15 @@ public class ShapeCreator {
     }
     /**
      * pointsPlaced getter
+     * @return amount of currently placed points
      */
     int getPointsPlaced()
     {
         return pointsPlaced;
     }
     /**
-     * Constructs a circle from two points
+     * Creates a circle and adds the dragging and rotation property.
+     * @return circle constructed from the two points specified in shapePoints
      */
     Circle getCircle()
     {
@@ -69,7 +83,8 @@ public class ShapeCreator {
         return circle;
     }
     /**
-     * Constructs a triangle from three points
+     * Creates a triangle and adds the dragging and rotation property.
+     * @return triangle constructed from the three points specified in shapePoints
      */
     Polygon getTriangle()
     {
@@ -85,7 +100,8 @@ public class ShapeCreator {
         return triangle;
     }
     /**
-     * Constructs a triangle from two points
+     * Creates a rectangle and adds the dragging and rotation property.
+     * @return rectangle constructed from the two points specified in shapePoints
      */
     Rectangle getRectangle()
     {
@@ -102,6 +118,7 @@ public class ShapeCreator {
     }
     /**
      * Resets the points list and removes the visible points from the root
+     * @param canvasPane Pane from which the circles are to be removed
      */
     void reset(Pane canvasPane)
     {
