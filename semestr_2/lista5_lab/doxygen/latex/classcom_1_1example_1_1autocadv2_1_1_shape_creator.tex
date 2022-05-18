@@ -1,0 +1,88 @@
+\hypertarget{classcom_1_1example_1_1autocadv2_1_1_shape_creator}{}\doxysection{com.\+example.\+autocadv2.\+Shape\+Creator Class Reference}
+\label{classcom_1_1example_1_1autocadv2_1_1_shape_creator}\index{com.example.autocadv2.ShapeCreator@{com.example.autocadv2.ShapeCreator}}
+\doxysubsection*{Package Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{classcom_1_1example_1_1autocadv2_1_1_shape_creator_a2520e67dc5a478f2eeb347ffae2b5669}{add}} (Pane canvas\+Pane, int m\+\_\+x, int m\+\_\+y)
+\item 
+int \mbox{\hyperlink{classcom_1_1example_1_1autocadv2_1_1_shape_creator_ac728e3cff29e03d8f4be7ee1d7d4fb64}{get\+Points\+Placed}} ()
+\item 
+Circle \mbox{\hyperlink{classcom_1_1example_1_1autocadv2_1_1_shape_creator_ab5d95ff318057e7dfdb870cb3735d9e9}{get\+Circle}} ()
+\item 
+Polygon \mbox{\hyperlink{classcom_1_1example_1_1autocadv2_1_1_shape_creator_adac7a5d77e3f9c14dc4ec04c9aa4e5b6}{get\+Triangle}} ()
+\item 
+Rectangle \mbox{\hyperlink{classcom_1_1example_1_1autocadv2_1_1_shape_creator_a1191ee2c4173f5de5a21f2bc81028176}{get\+Rectangle}} ()
+\item 
+void \mbox{\hyperlink{classcom_1_1example_1_1autocadv2_1_1_shape_creator_a8a14f61dc93c81e7f31d9552319fe69f}{reset}} (Pane canvas\+Pane)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Class that creates shapes from a list of points 
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classcom_1_1example_1_1autocadv2_1_1_shape_creator_a2520e67dc5a478f2eeb347ffae2b5669}\label{classcom_1_1example_1_1autocadv2_1_1_shape_creator_a2520e67dc5a478f2eeb347ffae2b5669}} 
+\index{com.example.autocadv2.ShapeCreator@{com.example.autocadv2.ShapeCreator}!add@{add}}
+\index{add@{add}!com.example.autocadv2.ShapeCreator@{com.example.autocadv2.ShapeCreator}}
+\doxysubsubsection{\texorpdfstring{add()}{add()}}
+{\footnotesize\ttfamily void com.\+example.\+autocadv2.\+Shape\+Creator.\+add (\begin{DoxyParamCaption}\item[{Pane}]{canvas\+Pane,  }\item[{int}]{m\+\_\+x,  }\item[{int}]{m\+\_\+y }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [package]}}
+
+Adds a Point2D to the shape\+Points list and a circle to the rendered\+Points list, it then adds the circle to canvas\+Pane children so that they are displayed. 
+\begin{DoxyParams}{Parameters}
+{\em canvas\+Pane} & Pane that the circles will be displayed on \\
+\hline
+{\em m\+\_\+x,m\+\_\+y} & the coordinates of the point that is being added \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classcom_1_1example_1_1autocadv2_1_1_shape_creator_ab5d95ff318057e7dfdb870cb3735d9e9}\label{classcom_1_1example_1_1autocadv2_1_1_shape_creator_ab5d95ff318057e7dfdb870cb3735d9e9}} 
+\index{com.example.autocadv2.ShapeCreator@{com.example.autocadv2.ShapeCreator}!getCircle@{getCircle}}
+\index{getCircle@{getCircle}!com.example.autocadv2.ShapeCreator@{com.example.autocadv2.ShapeCreator}}
+\doxysubsubsection{\texorpdfstring{getCircle()}{getCircle()}}
+{\footnotesize\ttfamily Circle com.\+example.\+autocadv2.\+Shape\+Creator.\+get\+Circle (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [package]}}
+
+Creates a circle and adds the dragging and rotation property. \begin{DoxyReturn}{Returns}
+circle constructed from the two points specified in shape\+Points 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classcom_1_1example_1_1autocadv2_1_1_shape_creator_ac728e3cff29e03d8f4be7ee1d7d4fb64}\label{classcom_1_1example_1_1autocadv2_1_1_shape_creator_ac728e3cff29e03d8f4be7ee1d7d4fb64}} 
+\index{com.example.autocadv2.ShapeCreator@{com.example.autocadv2.ShapeCreator}!getPointsPlaced@{getPointsPlaced}}
+\index{getPointsPlaced@{getPointsPlaced}!com.example.autocadv2.ShapeCreator@{com.example.autocadv2.ShapeCreator}}
+\doxysubsubsection{\texorpdfstring{getPointsPlaced()}{getPointsPlaced()}}
+{\footnotesize\ttfamily int com.\+example.\+autocadv2.\+Shape\+Creator.\+get\+Points\+Placed (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [package]}}
+
+points\+Placed getter \begin{DoxyReturn}{Returns}
+amount of currently placed points 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classcom_1_1example_1_1autocadv2_1_1_shape_creator_a1191ee2c4173f5de5a21f2bc81028176}\label{classcom_1_1example_1_1autocadv2_1_1_shape_creator_a1191ee2c4173f5de5a21f2bc81028176}} 
+\index{com.example.autocadv2.ShapeCreator@{com.example.autocadv2.ShapeCreator}!getRectangle@{getRectangle}}
+\index{getRectangle@{getRectangle}!com.example.autocadv2.ShapeCreator@{com.example.autocadv2.ShapeCreator}}
+\doxysubsubsection{\texorpdfstring{getRectangle()}{getRectangle()}}
+{\footnotesize\ttfamily Rectangle com.\+example.\+autocadv2.\+Shape\+Creator.\+get\+Rectangle (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [package]}}
+
+Creates a rectangle and adds the dragging and rotation property. \begin{DoxyReturn}{Returns}
+rectangle constructed from the two points specified in shape\+Points 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classcom_1_1example_1_1autocadv2_1_1_shape_creator_adac7a5d77e3f9c14dc4ec04c9aa4e5b6}\label{classcom_1_1example_1_1autocadv2_1_1_shape_creator_adac7a5d77e3f9c14dc4ec04c9aa4e5b6}} 
+\index{com.example.autocadv2.ShapeCreator@{com.example.autocadv2.ShapeCreator}!getTriangle@{getTriangle}}
+\index{getTriangle@{getTriangle}!com.example.autocadv2.ShapeCreator@{com.example.autocadv2.ShapeCreator}}
+\doxysubsubsection{\texorpdfstring{getTriangle()}{getTriangle()}}
+{\footnotesize\ttfamily Polygon com.\+example.\+autocadv2.\+Shape\+Creator.\+get\+Triangle (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [package]}}
+
+Creates a triangle and adds the dragging and rotation property. \begin{DoxyReturn}{Returns}
+triangle constructed from the three points specified in shape\+Points 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classcom_1_1example_1_1autocadv2_1_1_shape_creator_a8a14f61dc93c81e7f31d9552319fe69f}\label{classcom_1_1example_1_1autocadv2_1_1_shape_creator_a8a14f61dc93c81e7f31d9552319fe69f}} 
+\index{com.example.autocadv2.ShapeCreator@{com.example.autocadv2.ShapeCreator}!reset@{reset}}
+\index{reset@{reset}!com.example.autocadv2.ShapeCreator@{com.example.autocadv2.ShapeCreator}}
+\doxysubsubsection{\texorpdfstring{reset()}{reset()}}
+{\footnotesize\ttfamily void com.\+example.\+autocadv2.\+Shape\+Creator.\+reset (\begin{DoxyParamCaption}\item[{Pane}]{canvas\+Pane }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [package]}}
+
+Resets the points list and removes the visible points from the root 
+\begin{DoxyParams}{Parameters}
+{\em canvas\+Pane} & Pane from which the circles are to be removed \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+Shape\+Creator.\+java\end{DoxyCompactItemize}
