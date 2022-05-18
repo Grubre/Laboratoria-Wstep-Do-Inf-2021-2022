@@ -4,6 +4,11 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.scene.layout.AnchorPane;
 
+
+/**
+ * Class responsible for constructing the gui of the main scene
+ * and adding functionality to its components.
+ */
 public class MainScene {
     private final AnchorPane root;
     private GetParametersMenu getParametersMenu;
@@ -22,18 +27,30 @@ public class MainScene {
         });
     }
 
+    /**
+     * Method that is run by GetParametersMenu when the parameters have been given
+     * and the Construct Grid button has been clicked.
+     */
     public static void RunBoardScene()
     {
         runBoardScene.set(true);
     }
 
+    /**
+     * Method responsible for constructing the main scene
+     */
     public void mainScene()
     {
         getParametersMenu = new GetParametersMenu(root);
         getParametersMenu.constructMenu();
-        System.out.println("menu size = " + getParametersMenu.getWidth() + ", " + getParametersMenu.getHeight());
     }
 
+    /**
+     * Method responsible for constructing the board scene
+     * and setting the functionality of all it's components,
+     * most importantly it constructs the grid and starts
+     * the simulation.
+     */
     public void boardScene() throws InterruptedException {
         root.getChildren().clear();
         int boardWidth = getParametersMenu.getWidth();

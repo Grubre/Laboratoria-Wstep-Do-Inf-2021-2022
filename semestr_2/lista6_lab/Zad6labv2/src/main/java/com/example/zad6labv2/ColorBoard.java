@@ -9,12 +9,20 @@ import javafx.scene.paint.Color;
 
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
+/**
+ * A container which extends GridPane with added support for multithreaded Cells.
+ */
 public class ColorBoard extends GridPane {
     private final int gridWidth;
     private final int gridHeight;
     private final double probability;
     private final int changeSpeed;
 
+    /**
+     * A variable holding information about current color values
+     * in the grid. It is constantly accessed by all the cells
+     * and therefore atomic.
+     */
     public AtomicReferenceArray<Color> colorsArray;
 
     ColorBoard(int gridWidth, int gridHeight, double probability, int changeSpeed)
@@ -46,6 +54,12 @@ public class ColorBoard extends GridPane {
         }
 
     }
+    /**
+     * A method which returns average color of the four
+     * neighbours of a cell on the grid.
+     * @param gridX x position of the cell in the grid
+     * @param gridY y position of the cell in the grid
+     */
     public Color getNeighbourColors(int gridX, int gridY)
     {
         //System.out.println("Cell at: " + gridX + ", " + gridY + ": ");
@@ -96,6 +110,18 @@ public class ColorBoard extends GridPane {
         b /= neighborsCounted;
         return Color.rgb(r,g,b);
     }
+
+    /**
+     * A helper method which sets the layout of ColorBoard in the anchor pane.
+     * @param Top Boolean which decides whether the ColorBoard should be clipped
+     *            to the top in an anchor pane layout.
+     * @param Left Boolean which decides whether the ColorBoard should be clipped
+     *      *            to the left in an anchor pane layout.
+     * @param Bottom Boolean which decides whether the ColorBoard should be clipped
+     *      *            to the bottom in an anchor pane layout.
+     * @param Right Boolean which decides whether the ColorBoard should be clipped
+     *      *            to the right in an anchor pane layout.
+     */
     public void SetAnchorPaneLayout(Boolean Top, Boolean Left, Boolean Bottom, Boolean Right)
     {
         if(Top)    AnchorPane.setTopAnchor(this, 0.0);
@@ -103,6 +129,11 @@ public class ColorBoard extends GridPane {
         if(Bottom) AnchorPane.setBottomAnchor(this, 0.0);
         if(Right)  AnchorPane.setRightAnchor(this, 0.0);
     }
+
+    /**
+     * A method which adds gridWidth amount of columns
+     * and gridHeight amount of rows.
+     */
     private void addRowsAndColumns()
     {
         for (int i = 0; i < gridWidth; i++) {
@@ -118,25 +149,49 @@ public class ColorBoard extends GridPane {
             getRowConstraints().add(rowConst);
         }
     }
-    public Node get (final int x, final int y) {
+
+    /**
+     * @param x x position of the Cell in the grid.
+     * @param y y position of the Cell in the grid.
+     * @return Cell at position (x,y)
+     */
+    public Cell get (final int x, final int y) {
         for (Node node : this.getChildren()) {
             if (GridPane.getColumnIndex(node) == x && GridPane.getRowIndex(node) == y) {
-                return node;
+                return (Cell)node;
             }
         }
         return null;
     }
+
+    /**
+     * @return the probability with which the Cells change their color
+     *         value to the average of their four neighbours.
+     */
     public double getProbability()
     {
         return probability;
     }
+    /**
+     * @return the speed with which the Cells change their color
+     *         in milliseconds, that value is then randomly multiplied
+     *         by a value from interval [0.5,1.5].
+     */
     public int getChangeSpeed()
     {
         return changeSpeed;
     }
+    /**
+     * @return the width of the grid.
+     */
     public int getGridWidth(){return gridWidth;}
+    /**
+     * @return the height of the grid.
+     */
     public int getGridHeight(){return gridHeight;}
-
+    /**
+     * @return random Color
+     */
     public static Color getRandomColor()
     {
         int r = MainApplication.randomizer.nextInt(256);

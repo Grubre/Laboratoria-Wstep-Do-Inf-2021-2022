@@ -8,7 +8,13 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.util.Random;
 
+/**
+ * Javafx thread main class
+ */
 public class MainApplication extends Application {
+    /**
+     * Global static Random class instance
+     */
     public static Random randomizer = new Random();
     private static Stage mStage;
     @Override
@@ -27,6 +33,9 @@ public class MainApplication extends Application {
         mStage.show();
     }
 
+    /**
+     * @return the main stage, needed for calculating size of gui components
+     */
     public static Stage getStage()
     {
         return mStage;

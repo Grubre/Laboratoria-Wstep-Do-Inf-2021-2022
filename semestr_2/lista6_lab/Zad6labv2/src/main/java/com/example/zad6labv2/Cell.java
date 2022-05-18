@@ -4,6 +4,12 @@ import javafx.application.Platform;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
+/**
+ * Class responsible for handling the simulation of a single Cell,
+ * it overrides the run method which is run as a separate thread
+ * as well as holds all the functionality needed to change it's color
+ * and deactivate itself with accordance to the simulation specification.
+ */
 public class Cell extends Rectangle implements Runnable {
     private final int gridX;
     private final int gridY;
@@ -33,6 +39,10 @@ public class Cell extends Rectangle implements Runnable {
         });
     }
 
+    /**
+     * Function that is run as a separate thread.
+     * Changes the Color of the Cell, waits for [0.5 * changeSpeed, 1.5 * changeSpeed] milliseconds.
+     */
     @Override
     public void run() {
         while(run)
@@ -66,12 +76,36 @@ public class Cell extends Rectangle implements Runnable {
         }
     }
 
+    /**
+     * @return Color value of the Cell
+     */
     public Color getColor(){return color;}
+    /**
+     * @return x position in the grid
+     */
     public int getGridX(){return gridX;}
+    /**
+     * @return y position in the grid
+     */
     public int getGridY(){return gridY;}
 
+    /**
+     * @param _color new Color value of the Cell
+     */
     public void setColor(Color _color){color = _color; setFill(color);}
+
+    /**
+     * @param active changes the state of the Cell
+     */
     public void setActive(boolean active){this.active=active;}
+
+    /**
+     * @return whether the cell is active
+     */
     public Boolean isActive(){return active;}
+
+    /**
+     * Turns off the Thread component of the Cell.
+     */
     public void off(){this.run=false;}
 }

@@ -1,0 +1,1 @@
+moduleSearchIndex = [{"l":"com.example.zad6labv2"}];updateSearchResults();

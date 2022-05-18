@@ -11,6 +11,10 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 
+/**
+ * A class responsible for constructing the menu and extracting
+ * parameters needed for the simulation.
+ */
 public class GetParametersMenu {
     private int width;
     private int height;
@@ -28,6 +32,9 @@ public class GetParametersMenu {
         menu = new VBox();
     }
 
+    /**
+     * Constructs all the gui components of the menu.
+     */
     public void constructMenu()
     {
         menu.setAlignment(Pos.CENTER);
@@ -42,6 +49,10 @@ public class GetParametersMenu {
         Button getInputButton = ConstructGetInputButton();
         menu.getChildren().addAll(text, numInput, getInputButton);
     }
+
+    /**
+     * Constructs the getInputButton component.
+     */
     private Button ConstructGetInputButton()
     {
         Button getInputButton = new Button();
@@ -79,6 +90,10 @@ public class GetParametersMenu {
         getInputButton.setText("Construct grid");
         return getInputButton;
     }
+
+    /**
+     * Constructs the numInput component.
+     */
     private TextField ConstructNumInput()
     {
         TextField numInput = new TextField();
@@ -89,6 +104,9 @@ public class GetParametersMenu {
         return numInput;
     }
 
+    /**
+     * Sets the layout in an anchor pane.
+     */
     private void makeMenuResponsive()
     {
         AnchorPane.setTopAnchor(menu, 0.0);
@@ -96,18 +114,31 @@ public class GetParametersMenu {
         AnchorPane.setBottomAnchor(menu, 0.0);
         AnchorPane.setRightAnchor(menu, 100.0);
     }
+
+    /**
+     * @return the simulation grid width
+     */
     public int getWidth()
     {
         return width;
     }
+    /**
+     * @return the simulation grid height
+     */
     public int getHeight()
     {
         return height;
     }
+    /**
+     * @return the simulation color change speed
+     */
     public int getChangeSpeed()
     {
         return speed;
     }
+    /**
+     * @return the simulation get average neighbor color probability
+     */
     public double getProbability()
     {
         return probability;
