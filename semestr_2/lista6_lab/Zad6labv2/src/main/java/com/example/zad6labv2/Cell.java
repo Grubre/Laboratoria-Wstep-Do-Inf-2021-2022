@@ -65,6 +65,12 @@ public class Cell extends Rectangle implements Runnable {
                     color = ColorBoard.getRandomColor();
                 }
                 parent.colorsArray.set(gridX + gridY * parent.getGridWidth(), color);
+                boolean atomicallySet = false;
+                while(!atomicallySet)
+                {
+                    atomicallySet = parent.colorsArray.compareAndSet(gridX + gridY * parent.getGridWidth(), parent.colorsArray.get(gridX + gridY * parent.getGridWidth()), color);
+                }
+
                 Platform.runLater(new Runnable() {
                     @Override
                     public void run() {

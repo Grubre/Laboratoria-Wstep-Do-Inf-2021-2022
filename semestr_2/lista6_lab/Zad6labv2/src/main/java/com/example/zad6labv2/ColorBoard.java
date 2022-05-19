@@ -92,7 +92,11 @@ public class ColorBoard extends GridPane {
                 Cell neighborCell = (Cell) get(neighbors[i][0], neighbors[i][1]);
                 if(!neighborCell.isActive())
                     continue;
-                Color color = colorsArray.get(neighbors[i][0] + neighbors[i][1] * gridWidth);
+                Color color;
+                synchronized (this)
+                {
+                    color = colorsArray.get(neighbors[i][0] + neighbors[i][1] * gridWidth);
+                }
                 r += (int)( 255 * color.getRed());
                 g += (int)( 255 * color.getGreen());
                 b += (int)( 255 * color.getBlue());
@@ -114,7 +118,7 @@ public class ColorBoard extends GridPane {
     /**
      * A helper method which sets the layout of ColorBoard in the anchor pane.
      * @param Top Boolean which decides whether the ColorBoard should be clipped
-     *            to the top in an anchor pane layout.
+     *      *            to the top in an anchor pane layout.
      * @param Left Boolean which decides whether the ColorBoard should be clipped
      *      *            to the left in an anchor pane layout.
      * @param Bottom Boolean which decides whether the ColorBoard should be clipped
