@@ -1,4 +1,5 @@
 import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
@@ -202,8 +203,8 @@ public class MainScene {
             }
             catch(IllegalArgumentException e)
             {
-                System.out.println("Wrong type - use String, Double or Int!");
-                treeDisplayer.displayString("Wrong type, use String, Double or Int!");
+                System.out.println("Wrong tree type - use String, Double or Int!");
+                treeDisplayer.displayString("Wrong tree type, use String, Double or Int!");
             }
             catch(Exception e)
             {
@@ -212,7 +213,27 @@ public class MainScene {
             }
         });
 
-        topBar.getChildren().addAll(textInput,sendButton);
+        Button helpButton = new Button("Help");
+        helpButton.setOnAction(actionEvent -> {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Help");
+            alert.setHeaderText("Commands:");
+            alert.setContentText(
+                    "- Insert <Tree Type> <Value>\n" +
+                    "- Delete <Tree Type> <Value>\n" +
+                    "- Draw <Tree Type>\n" +
+                    "- Search <Tree Type> <Value>\n" +
+                            "examples:\n" +
+                            "\"Insert String ABC\"\n" +
+                            "\"Draw String\"\n" +
+                            "\"Delete Int 15\"\n" +
+                            "\"Search Double 14.23\"\n" +
+                            "etc.");
+
+            alert.showAndWait();
+        });
+
+        topBar.getChildren().addAll(helpButton,textInput,sendButton);
         root.getChildren().add(screen);
     }
 

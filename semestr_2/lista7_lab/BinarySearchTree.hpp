@@ -2,7 +2,7 @@
 #include <stack>
 
 template <class T>
-class BinaryTree{
+class BinarySearchTree{
 public:
     class Node{
     public:
@@ -13,7 +13,7 @@ public:
         Node* right = nullptr;
     };
 
-    BinaryTree()
+    BinarySearchTree()
     {
         root = nullptr;
     }
@@ -65,6 +65,8 @@ public:
         }
     }
 
+
+
     Node* search(T k)
     {
         Node* x = root;
@@ -104,6 +106,7 @@ public:
             y->parent->right = x;
         if(y != z)
             z->data = y->data;
+        delete y;
     }
 
     void draw(Node* node)
@@ -114,11 +117,35 @@ public:
         if(node->right!=nullptr)
             draw(node->right);
     }
+    void print()
+    {
+        _print(root);
+    }
+    void _print(Node* leaf)
+    {
+        if (leaf == nullptr)
+            return;
+    
+        std::cout << leaf->data;
+    
+        if (!leaf->left && !leaf->right)
+            return;
+    
+        std::cout << '(';
+        _print(leaf->left);
+        std::cout << ')';
+    
+        if (leaf->right) {
+            std::cout << '(';
+            _print(leaf->right);
+            std::cout << ')';
+        }
+    }
 private:
     Node* nastepnik(Node* x)
     {
         if(x->right != nullptr)
-            return nastepnik(x->right);
+            return minimum(x->right);
         Node* y = x->parent;
         while(y != nullptr && x->right == y->right)
         {
@@ -126,6 +153,14 @@ private:
             y = y->parent;
         }
         return y;
+    }
+    Node* minimum(Node* x)
+    {
+        while(x->left != nullptr)
+        {
+            x = x->left;
+        }
+        return x;
     }
 
 private:

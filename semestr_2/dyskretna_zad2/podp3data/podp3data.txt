@@ -1,0 +1,8 @@
+k = 10000:
+mt:   ~3.5s
+nmt: ~21.6s
+avg_blad: 
+k = 100000:
+mt: ~33s
+nmt: ??
+avg_blad: 
