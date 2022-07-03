@@ -1,1 +1,0 @@
-moduleSearchIndex = [{"l":"com.example.autocadv2"}];updateSearchResults();

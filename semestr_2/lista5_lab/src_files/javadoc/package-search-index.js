@@ -1,1 +1,0 @@
-packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"m":"com.example.autocadv2","l":"com.example.autocadv2"}];updateSearchResults();
