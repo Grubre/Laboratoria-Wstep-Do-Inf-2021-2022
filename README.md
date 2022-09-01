@@ -1,3 +1,7 @@
 # Studia-WPPT
-Zadania z programowania na semestrach 1-7.
-Kierunek informatyka algorytmiczna PWR.
+
+## First semester
+- Intro to programming classes `langs:` `C`
+## Second semester
+- Programming classes `langs`: `Java`
+- Discrete math
