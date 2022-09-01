@@ -4,4 +4,4 @@
 - Intro to programming classes `langs:` `C`
 ## Second semester
 - Programming classes `langs`: `Java`
-- Discrete math
+- Discrete math `langs`: `C++, Python`
