@@ -1,0 +1,87 @@
+Input
+Store DivA
+Input
+Store DivB
+JnS Divide
+Load DivWynik
+Output
+Load DivMod
+Output
+Halt
+
+
+DivA,				HEX		0 // dzielna
+DivB,				HEX		0 // dzielnik
+DivWynik,			HEX		0 // wynik dzielenia
+DivMod,				HEX		0 // reszta z dzielenia
+Divide,				HEX		0 // wskaznik na funkcje
+					// Najpierw zliczamy ile mamy liczb ujemnych
+                    Load DivA
+                    JnS Div_count_neg
+                    Load DivB
+                    JnS Div_count_neg
+                    
+                    // Zamieniamy liczby na ich modul
+                    Load DivA
+                    JnS Abs
+                    Store DivA
+                    Load DivB
+                    JnS Abs
+                    Store DivB
+                    
+While_Div,			Load DivA
+					Subt DivB
+                    Skipcond 000
+                    Jump Do_Div
+                    
+                    // Zapisujemy reszte z dzielenia
+                    Add DivB
+                    Store DivMod
+                    
+                    // Robimy poprawke na nasz znak
+                    Load Div_neg_amount
+                    Subt ONE
+                    Skipcond 400
+                    JumpI Divide
+                    JnS Div_adjust_sign
+                    JumpI Divide
+                    
+Do_Div,				Store DivA
+					Load DivWynik
+                    Add ONE
+                    Store DivWynik
+                    Jump While_Div
+                    
+Div_neg_amount,		HEX		0	// Zmienna przechowujaca ilosc ujemnych liczb w dzieleniu
+Div_count_neg,		HEX		0	// Funkcja zliczajaca liczby ujemne
+					Skipcond 000
+                    JumpI Div_count_neg
+                    Load Div_neg_amount
+                    Add ONE
+                    Store Div_neg_amount
+                    JumpI Div_count_neg
+Div_adjust_sign,	HEX		0		// Zmienia znak na przeciwny
+					Load DivWynik
+                    Subt DivWynik
+					Subt DivWynik
+                    Store DivWynik
+                    Load DivMod
+                    Subt DivMod
+                    Subt DivMod
+                    Store DivMod
+                    JumpI Div_adjust_sign
+
+Abs_temp,			HEX		0
+Abs,				HEX 	0		// Oblicza modul z liczby
+					Skipcond 000
+                    JumpI Abs
+                    Store Abs_temp
+                    Subt Abs_temp
+                    Subt Abs_temp
+                    JumpI Abs
+
+
+ONE,				DEC		1
+
+
+

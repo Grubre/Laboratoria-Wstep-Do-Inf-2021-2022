@@ -1,0 +1,131 @@
+// ========================================================
+// ========================================================
+// WERSJA UNICODE
+// ========================================================
+// ========================================================
+
+// main
+					Input
+                    Store number
+					Load number
+                    Jns         tohex
+                    JnS 		wynik_print
+                    Halt
+
+// Wejsciowa wartosc
+number,             DEC         0
+
+wynik_iter,			HEX			009
+wynik,				HEX			009
+wynik_ptr,			HEX			0
+					HEX			0
+                    HEX			0
+                    HEX			0
+                                        
+// Constants
+ONE,				DEC			1
+SIXTEEN,			DEC			16
+FORTYEIGHT,			DEC			48
+FIFTYFIVE,			DEC			55
+NINE,				DEC			9
+
+
+//	Robimy A=A-B dopoki A jest wieksza lub rowna 0
+ModA,				DEC		0
+ModB,				DEC		16
+MODULOAB,		DEC		0
+WHILEMOD,		Load ModA
+				Subt ModB
+				Skipcond 000
+                Jump DOMOD
+                Load ModA
+                JumpI MODULOAB
+DOMOD,			Store ModA
+				Jump WHILEMOD
+                
+                
+                
+//	Robimy A=A-B dopoki A jest wieksza lub rowna 0
+//	Dzielimy DivA przez DivB
+//	Wynik jest zapisany w DivAC    
+DivA,				DEC		0
+DivB,				DEC		16
+DivAC,				DEC		0
+DIVIDEAB,		DEC		0
+				Clear
+                Store DivAC
+WHILEDIV,		Load DivA
+				Subt DivB
+                Skipcond 000
+                Jump DODIV
+                Skipcond 400
+                Load DivAC
+                JumpI DIVIDEAB
+DODIV,			Store DivA
+				Load DivAC
+				Add ONE
+                Store DivAC
+				Jump WHILEDIV
+
+length,				HEX			0
+tohex,              HEX			0
+					Load number
+                    Store DivA
+WHILEHEX,			Load number
+					Skipcond 400
+                    Jump DOHEX
+                    JumpI tohex                    
+DOHEX,				Store ModA
+					JnS	MODULOAB
+					JnS wynik_push
+                    Load number
+                    Store DivA
+                    JnS	DIVIDEAB
+                    Store number
+					Jump WHILEHEX
+
+
+// Funkcje zwiazane z tablica przechowujaca wynik,
+// tablica ta dziala troche jak stos,
+// wynik_push wrzuca nowa wartosc na stos,
+// a wynik_print wypisuje wszystkie dodane wartosci,
+// w kolejnosci od ostatniej do pierwszej
+
+wynik_push,		HEX		0
+                StoreI  wynik_iter
+                
+                Load 	wynik_iter
+                Add 	ONE
+                Store 	wynik_iter
+                
+                JumpI	wynik_push
+
+wynik_print,	HEX		0
+while_print,	Load wynik_iter
+				Subt wynik
+				Skipcond 400
+                Jump do_print
+                JumpI wynik_print
+                
+do_print,		Load wynik_iter
+				Subt ONE
+                Store wynik_iter
+				LoadI wynik_iter
+                JnS if_print_letter
+                Jump while_print
+                
+if_print_letter,		DEC	0
+				Subt NINE
+				Skipcond 800
+                jump else_print_number
+                Add NINE
+                Add FIFTYFIVE
+                Output
+                JumpI if_print_letter
+
+else_print_number,	Add FORTYEIGHT
+					Add NINE
+					Output
+                	JumpI if_print_letter
+
+
