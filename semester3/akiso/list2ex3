@@ -1,3 +1,4 @@
+
 Input
 Store DivA
 Input
@@ -15,6 +16,11 @@ DivB,				HEX		0 // dzielnik
 DivWynik,			HEX		0 // wynik dzielenia
 DivMod,				HEX		0 // reszta z dzielenia
 Divide,				HEX		0 // wskaznik na funkcje
+					// Zerujemy wynik, reszte i ilosc ujemnych liczb
+                    Clear
+					Store DivWynik
+					Store DivMod
+                    Store Div_neg_amount
 					// Najpierw zliczamy ile mamy liczb ujemnych
                     Load DivA
                     JnS Div_count_neg

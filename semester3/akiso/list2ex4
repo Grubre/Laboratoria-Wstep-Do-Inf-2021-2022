@@ -1,6 +1,7 @@
 // main
 					Input
                     Store 		number
+                    JnS			wynik_clear
 					Load 		number
                     JnS			negative_input
                     JnS			wynik_print
@@ -24,8 +25,8 @@ positive_input,		JnS 		tohex
 // Wejsciowa wartosc
 number,             DEC         0
 
-wynik_iter,			HEX			013
-wynik,				HEX			013
+wynik_iter,			HEX			014
+wynik,				HEX			014
 wynik_ptr,			HEX			0
 					HEX			0
                     HEX			0
@@ -92,7 +93,6 @@ do_tohex,			Load 		number
                     Load 		DivMod
                     JnS			wynik_push
                     Load 		DivWynik
-                    Output
                     Store 		number
 					Jump 		while_tohex
 
@@ -145,6 +145,33 @@ else_print_number,	Add 		FORTYEIGHT
 					Add 		NINE
 					Output
                 	JumpI 		if_print_letter
+                    
+// Zeruje wszystkie wartosci w tablicy
+clear_iter,			HEX			0
+wynik_clear,		HEX			0
+					Load 		wynik
+                    Add 		FOUR
+                    Store 		clear_iter
+while_clear,		Load 		clear_iter
+                    Subt 		wynik
+                    
+                    Skipcond 	400
+                    Jump 		do_clear
+                    
+                    JumpI 		wynik_clear
+                
+do_clear,			Load 		clear_iter // i--;
+                    Subt 		ONE
+                    Store 		clear_iter
+                    
+                    LoadI 		clear_iter
+                    
+                    // wynik[i] = 0;
+                    Clear
+                    StoreI		clear_iter
+                    
+                    Jump 		while_clear
+
                     
 // Oblicza modul z liczby
 Abs_temp,			HEX		0
