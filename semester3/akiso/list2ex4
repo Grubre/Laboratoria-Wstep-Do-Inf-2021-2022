@@ -12,6 +12,7 @@ negative_input,		HEX			0
                     Skipcond	000
 					Jump 		positive_input
                     
+                    Add 		ONE
                     JnS			Abs
                     Store 		number
 					JnS 		tohex
@@ -25,8 +26,8 @@ positive_input,		JnS 		tohex
 // Wejsciowa wartosc
 number,             DEC         0
 
-wynik_iter,			HEX			014
-wynik,				HEX			014
+wynik_iter,			HEX			015
+wynik,				HEX			015
 wynik_ptr,			HEX			0
 					HEX			0
                     HEX			0
@@ -185,9 +186,9 @@ Abs,				HEX 	0
 
 // Funkcja ktora przechodzi przez wszystkie cyfry naszego
 // wyniku a nastepnie je przeksztalca jak: x = 15 - x
-// co jest rownowazne z negowaniem bitow, a na koniec dodaje 1
-// Jest to oczywiscie sposob zamiany liczby na wartosc przeciwna
-// w kodzie U2
+// Na samym poczatku programu dodalismy 1 do naszej liczby
+// ujemnej. W U2 przy zamianie na liczbe przeciwna, nie ma
+// znaczenia czy najpierw odwrocimy bity czy dodamy 1
 makeneg_temp,		HEX		0
 makeneg_iter,		HEX		0
 makeneg,			HEX		0
@@ -204,12 +205,6 @@ while_makeneg,		Load 		makeneg_iter
                     
                     Skipcond 	400
                     Jump 		do_makeneg
-                    
-                    // Na koniec dodajemy jeden
-                    // wynik[0] += 1;
-                    Load		wynik_ptr
-                    Add			ONE
-                    Store 		wynik_ptr
                     
                     JumpI 		makeneg
                 
