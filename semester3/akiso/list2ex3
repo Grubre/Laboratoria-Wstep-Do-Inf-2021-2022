@@ -1,4 +1,3 @@
-
 Input
 Store DivA
 Input
@@ -11,6 +10,8 @@ Output
 Halt
 
 
+DivANegFlag,		HEX		0 // Flaga znaku dzielnej
+DivBNegFlag,		HEX		0 // Flaga znaku dzielnika
 DivA,				HEX		0 // dzielna
 DivB,				HEX		0 // dzielnik
 DivWynik,			HEX		0 // wynik dzielenia
@@ -20,15 +21,31 @@ Divide,				HEX		0 // wskaznik na funkcje
                     Clear
 					Store DivWynik
 					Store DivMod
-                    Store Div_neg_amount
-					// Najpierw zliczamy ile mamy liczb ujemnych
-                    Load DivA
-                    JnS Div_count_neg
-                    Load DivB
-                    JnS Div_count_neg
+                    Store wynik_neg_Temp
+					Store mod_neg_temp
+                    Store Abs_temp
+					Store DivANegFlag
+					Store DivBNegFlag
                     
-                    // Zamieniamy liczby na ich modul
+					// Najpierw wypelniamy flagi
                     Load DivA
+                    Skipcond 000
+                    Jump set_b_flag
+                    
+                    Load DivANegFlag
+                    Add ONE
+                    Store DivANegFlag
+                    
+set_b_flag,			Load DivB
+					Skipcond 000
+                    Jump Makepos
+                    
+                    Load DivBNegFlag
+                    Add ONE
+                    Store DivBNegFlag
+                    
+					// Zamieniamy liczby na ich modul
+Makepos,			Load DivA
                     JnS Abs
                     Store DivA
                     Load DivB
@@ -44,11 +61,7 @@ While_Div,			Load DivA
                     Add DivB
                     Store DivMod
                     
-                    // Robimy poprawke na nasz znak
-                    Load Div_neg_amount
-                    Subt ONE
-                    Skipcond 400
-                    JumpI Divide
+                    // Robimy poprawke na znak
                     JnS Div_adjust_sign
                     JumpI Divide
                     
@@ -57,25 +70,6 @@ Do_Div,				Store DivA
                     Add ONE
                     Store DivWynik
                     Jump While_Div
-                    
-Div_neg_amount,		HEX		0	// Zmienna przechowujaca ilosc ujemnych liczb w dzieleniu
-Div_count_neg,		HEX		0	// Funkcja zliczajaca liczby ujemne
-					Skipcond 000
-                    JumpI Div_count_neg
-                    Load Div_neg_amount
-                    Add ONE
-                    Store Div_neg_amount
-                    JumpI Div_count_neg
-Div_adjust_sign,	HEX		0		// Zmienia znak na przeciwny
-					Load DivWynik
-                    Subt DivWynik
-					Subt DivWynik
-                    Store DivWynik
-                    Load DivMod
-                    Subt DivMod
-                    Subt DivMod
-                    Store DivMod
-                    JumpI Div_adjust_sign
 
 Abs_temp,			HEX		0
 Abs,				HEX 	0		// Oblicza modul z liczby
@@ -86,7 +80,47 @@ Abs,				HEX 	0		// Oblicza modul z liczby
                     Subt Abs_temp
                     JumpI Abs
 
-
+Div_adjust_sign,	HEX		0		// Zmienia znak na przeciwny
+					Load DivANegFlag
+                    
+                    // znak reszty = znak dzielnej
+                    Skipcond 400
+                    JnS make_mod_neg
+                    
+                    // znak wyniku = - (znak dzielnej xor znak dzielnika)
+                    Load DivANegFlag
+                    Add DivBNegFlag
+                    Subt ONE
+                    
+                    JnS make_wynik_neg
+                    
+                    JumpI Div_adjust_sign
+                    
+wynik_neg_Temp,		DEC		0
+make_wynik_neg,		HEX		0
+					
+                    // jesli sgn(a) + sgn(b) - 1 = 0 to chcemy zmienic na minus
+                    Skipcond 400
+					JumpI make_wynik_neg
+                    
+                    Load DivWynik
+                    Store wynik_neg_Temp
+                    subt wynik_neg_Temp
+					subt wynik_neg_Temp
+					Store DivWynik
+                    
+                    JumpI make_wynik_neg
+                    
+mod_neg_temp,		DEC		0
+make_mod_neg,		HEX		0
+					Load DivMod
+                    Store mod_neg_temp
+                    Subt mod_neg_temp
+					Subt mod_neg_temp
+                    Store DivMod
+                    JumpI make_mod_neg
+                    
+                    
 ONE,				DEC		1
 
 
