@@ -1,15 +1,9 @@
 #!bin/bash
-for file in *
+OIFS="$IFS"
+IFS=$'\n'
+for file in $(find . -type f)
 do
-    lowercased=""
-    for (( i=0; i<${#file}; i++ ));
-    do
-        letter="${file:$i:1}"
-        if [[ "$letter" =~ [A-Z] ]]; then
-            letter=$(echo $letter | tr '[A-Z]' '[a-z]')
-        fi
-        lowercased="${lowercased}${letter}"
-    done
+    lowercased=$(echo $file | tr '[A-Z]' '[a-z]')
     if [[ $file != $lowercased ]]; then
         mv $file $lowercased
     fi
