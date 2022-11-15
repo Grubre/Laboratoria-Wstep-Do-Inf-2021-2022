@@ -68,7 +68,7 @@
         ('Model12', 22, 23),
         ('Model13', 23, 24),
         ('Model14', 24, 25),
-        ('Model15', 25, 24);
+        ('Model15', 25, 24),
         ('Model17', 75, 24);
     INSERT INTO Matryca(przekatna, rozdzielczosc, typ) VALUES
         (15.15, 23.1, "Typ1"),
@@ -107,4 +107,71 @@
         (NULL, NULL, NULL),
         (NULL, NULL, NULL);
 4:
+    CREATE PROCEDURE gen_aparat()
+        BEGIN
+        declare model varchar(30);
+        declare producent int unsigned;
+        declare matryca int unsigned;
+        declare obiektyw int unsigned;
+        declare typ enum('kompaktowy', 'lustrzanka', 'profesjonalny', 'inny' );
+
+        declare producent_cnt int unsigned;
+        declare matryca_cnt int unsigned;
+        declare obiektyw_cnt int unsigned;
+
+        declare i INT default 0;
+
+        declare rand_var INT default 0;
+
+        SET producent_cnt = (SELECT COUNT(*) FROM Producent);
+        SET matryca_cnt = (SELECT COUNT(*) FROM Matryca);
+        SET obiektyw_cnt = (SELECT COUNT(*) FROM Obiektyw);
+
+        SET i = 1;
+
+        WHILE i <= 100 DO
+            SET rand_var = (SELECT FLOOR(RAND()*(5000-1+250))+250);
+            SET model = concat("AparatModel",i,"x", rand_var);
+
+            SET producent = (SELECT ID FROM Producent ORDER BY Rand() LIMIT 1);
+            SET matryca = (SELECT ID FROM Matryca ORDER BY Rand() LIMIT 1);
+            SET obiektyw = (SELECT ID FROM Obiektyw ORDER BY Rand() LIMIT 1);
+
+            SET rand_var = (SELECT FLOOR(RAND()*(4-1+1))+1);
+
+            SET typ = (CASE
+                WHEN rand_var LIKE 1 THEN 'kompaktowy'
+                WHEN rand_var LIKE 2 THEN 'lustrzanka'
+                WHEN rand_var LIKE 3 THEN 'profesjonalny'
+                ELSE 'inny'
+            END);
+
+
+            INSERT INTO Aparat(model, producent, matryca, obiektyw, typ) VALUES
+                (model, producent, matryca, obiektyw, typ);
+            
+            SET i = i + 1;
+        END WHILE;
+    END;
+5:
+    CREATE PROCEDURE get_max_przekatna(IN In_ID int unsigned, OUT output varchar(30))
+    BEGIN
+        SELECT Model INTO output FROM Aparat, Matryca WHERE Aparat.matryca=Matryca.ID AND Producent=In_ID ORDER BY przekatna DESC LIMIT 1;
+    END;
+6:
+7:
+    CREATE FUNCTION get_amount_of_matryca(In_ID int unsigned)
+    RETURNS int unsigned DETERMINISTIC
+    RETURN (SELECT COUNT(*) FROM Aparat WHERE Matryca=In_ID);
+8:
+9:
+    CREATE VIEW view1 AS SELECT Aparat.model, Producent.nazwa, Matryca.przekatna, Matryca.rozdzielczosc,
+    Obiektyw.minPrzeslona, Obiektyw.maxPrzeslona FROM Aparat, Producent, Matryca, Obiektyw WHERE
+    Aparat.producent=Producent.ID AND Aparat.matryca=Matryca.ID AND Aparat.obiektyw=Obiektyw.ID
+    AND Producent.kraj NOT LIKE "Chiny";
+10:
+    CREATE VIEW view2 AS SELECT Producent.nazwa, Producent.kraj, Aparat.model FROM Aparat,Producent WHERE
+    Aparat.producent=Producent.ID;
+    DELETE FROM Aparat WHERE Aparat.producent IN (SELECT ID FROM Producent WHERE kraj = "Chiny");
+11:
     
