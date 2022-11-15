@@ -1,0 +1,23 @@
+tworzymy nasz proces, np:
+sleep 1000 &
+nastepnie podlaczamy sie do niego za pomoca gdb:
+    mozemy stworzyc nowy plik:
+        zamykamy nasz obecny out:
+        p (int) close(1)
+        oraz tworzymy nowy:
+        p (int) creat("/tmp/newout", 0600)
+        //0600 to jest tutaj nadanie nowemu plikowi permisji
+        //mozna tutaj dac 0 ale potem trzeba uzyc chmoda
+        //na stworzonym pliku
+    lub uzyc juz istniejacego:
+        p (int) dup2((int) open("/home/jabuk/output", 1089, 0777), 1)
+        // te jedynke na koncu mozemy zamienic na 0 lub 1 aby przekierowac
+        // kolejno stdin i stderr
+        // 1089 to znowu sa permisje dla pliku
+    wychodzimy z gdb:
+    q
+ls -l /proc/<pid>/fd
+
+zrodla:
+https://www.baeldung.com/linux/redirect-output-of-running-process
+https://etbe.coker.com.au/2008/02/27/redirecting-output-from-a-running-process/
