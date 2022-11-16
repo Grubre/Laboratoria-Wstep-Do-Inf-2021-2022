@@ -49,7 +49,8 @@
         ('Chonghinq_manufactur','Chiny'),
         ('Beijing_amazon','Chiny'),
         ('Shanghai_corporate','Chiny'),
-        ('Beijing_manufactur','Chiny'),
+        ('Beijing_manufactur','Chiny');
+    INSERT INTO Producent(nazwa, kraj) VALUES
         ('Amazon', 'Chinska Republika Ludowa'),
         ('Meta', 'Zuckerberg Commonwealth');
     INSERT INTO Obiektyw(model, minPrzeslona, maxPrzeslona) VALUES
@@ -67,7 +68,8 @@
         ('Model11', 21, 22),
         ('Model12', 22, 23),
         ('Model13', 23, 24),
-        ('Model14', 24, 25),
+        ('Model14', 24, 25);
+    INSERT INTO Obiektyw(model, minPrzeslona, maxPrzeslona) VALUES
         ('Model15', 25, 24),
         ('Model17', 75, 24);
     INSERT INTO Matryca(przekatna, rozdzielczosc, typ) VALUES
@@ -85,7 +87,8 @@
         (26.26, 34.1, "Typ12"),
         (27.27, 35.1, "Typ13"),
         (28.28, 36.1, "Typ14"),
-        (29.29, 37.1, "Typ15"),
+        (29.29, 37.1, "Typ15");
+    INSERT INTO Matryca(przekatna, rozdzielczosc, typ) VALUES
         (NULL, NULL, NULL),
         (NULL, NULL, NULL);
     INSERT INTO Aparat(model, producent, matryca, obiektyw, typ) VALUES
@@ -103,10 +106,12 @@
         ("Model11", 2, 110, 3, 'kompaktowy'),
         ("Model12", 3, 104, 3, 'profesjonalny'),
         ("Model13", 1, 103, 4, 'kompaktowy'),
-        ("Model14", 1, 102, 5, 'inny'),
+        ("Model14", 1, 102, 5, 'inny');
+    INSERT INTO Aparat(model, producent, matryca, obiektyw, typ) VALUES
         (NULL, NULL, NULL),
         (NULL, NULL, NULL);
 4:
+    DELIMITER //
     CREATE PROCEDURE gen_aparat()
         BEGIN
         declare model varchar(30);
@@ -146,24 +151,47 @@
                 ELSE 'inny'
             END);
 
-
             INSERT INTO Aparat(model, producent, matryca, obiektyw, typ) VALUES
                 (model, producent, matryca, obiektyw, typ);
             
             SET i = i + 1;
         END WHILE;
-    END;
+    END;//
+    DELIMITER ;
 5:
+    DELIMITER //
     CREATE PROCEDURE get_max_przekatna(IN In_ID int unsigned, OUT output varchar(30))
     BEGIN
         SELECT Model INTO output FROM Aparat, Matryca WHERE Aparat.matryca=Matryca.ID AND Producent=In_ID ORDER BY przekatna DESC LIMIT 1;
-    END;
+    END;//
+    DELIMITER ;
 6:
+    DELIMITER //
+    CREATE TRIGGER ins_aparat BEFORE INSERT ON Aparat FOR EACH ROW
+    BEGIN
+        IF NOT EXISTS (SELECT * FROM Producent WHERE Producent.ID=NEW.producent) THEN
+            INSERT INTO Producent(ID) VALUES
+                (NEW.producent);
+        END IF;
+    END//
+    DELIMITER ;
+    
 7:
+    DELIMITER //
     CREATE FUNCTION get_amount_of_matryca(In_ID int unsigned)
     RETURNS int unsigned DETERMINISTIC
     RETURN (SELECT COUNT(*) FROM Aparat WHERE Matryca=In_ID);
+    //
+    DELIMITER ;
 8:
+    DELIMITER //
+    CREATE TRIGGER rem_matryca AFTER DELETE ON Aparat FOR EACH ROW
+    BEGIN
+        IF (SELECT COUNT(*) FROM Aparat WHERE matryca=OLD.matryca)=0 THEN
+            DELETE FROM Matryca WHERE ID=OLD.matryca;
+        END IF;
+    END//
+    DELIMITER ;
 9:
     CREATE VIEW view1 AS SELECT Aparat.model, Producent.nazwa, Matryca.przekatna, Matryca.rozdzielczosc,
     Obiektyw.minPrzeslona, Obiektyw.maxPrzeslona FROM Aparat, Producent, Matryca, Obiektyw WHERE
@@ -174,4 +202,32 @@
     Aparat.producent=Producent.ID;
     DELETE FROM Aparat WHERE Aparat.producent IN (SELECT ID FROM Producent WHERE kraj = "Chiny");
 11:
-    
+    ALTER TABLE Producent
+    ADD COLUMN liczbaModeli int unsigned NOT NULL;
+    DELIMITER //
+    CREATE TRIGGER ins_liczba_modeli AFTER INSERT ON Aparat FOR EACH ROW
+    BEGIN
+        UPDATE Producent
+        SET liczbaModeli = (SELECT COUNT(*) FROM Aparat WHERE producent=Producent.ID)
+        WHERE Producent.ID=NEW.producent;
+    END//
+    DELIMITER ;
+    DELIMITER //
+    CREATE TRIGGER update_liczba_modeli AFTER UPDATE ON Aparat FOR EACH ROW
+    BEGIN
+        UPDATE Producent
+        SET liczbaModeli = (SELECT COUNT(*) FROM Aparat WHERE producent=Producent.ID)
+        WHERE Producent.ID=NEW.producent;
+    END//
+    DELIMITER ;
+    DELIMITER //
+    CREATE TRIGGER delete_liczba_modeli AFTER DELETE ON Aparat FOR EACH ROW
+    BEGIN
+        UPDATE Producent
+        SET liczbaModeli = (SELECT COUNT(*) FROM Aparat WHERE producent=Producent.ID)
+        WHERE Producent.ID=OLD.producent;
+    END//
+    DELIMITER ;
+
+
+
