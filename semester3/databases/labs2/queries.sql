@@ -1,7 +1,7 @@
 1:
     CREATE DATABASE `db-aparaty`;
     CREATE USER '268493'@'localhost' IDENTIFIED BY 'jakub493';
-    GRANT SELECT, INSERT, UPDATE on *.* TO '268493'@'localhost';
+    GRANT SELECT, INSERT, UPDATE on `db-aparaty`.* TO '268493'@'localhost';
 2:
     CREATE TABLE Matryca (
         ID int unsigned NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -120,18 +120,10 @@
         declare obiektyw int unsigned;
         declare typ enum('kompaktowy', 'lustrzanka', 'profesjonalny', 'inny' );
 
-        declare producent_cnt int unsigned;
-        declare matryca_cnt int unsigned;
-        declare obiektyw_cnt int unsigned;
-
         declare i INT default 0;
 
         declare rand_var INT default 0;
-
-        SET producent_cnt = (SELECT COUNT(*) FROM Producent);
-        SET matryca_cnt = (SELECT COUNT(*) FROM Matryca);
-        SET obiektyw_cnt = (SELECT COUNT(*) FROM Obiektyw);
-
+        
         SET i = 1;
 
         WHILE i <= 100 DO
@@ -187,7 +179,7 @@
     DELIMITER //
     CREATE TRIGGER rem_matryca AFTER DELETE ON Aparat FOR EACH ROW
     BEGIN
-        IF (SELECT COUNT(*) FROM Aparat WHERE matryca=OLD.matryca)=0 THEN
+        IF get_amount_of_matryca(OLD.matryca)=0 THEN
             DELETE FROM Matryca WHERE ID=OLD.matryca;
         END IF;
     END//
@@ -203,7 +195,11 @@
     DELETE FROM Aparat WHERE Aparat.producent IN (SELECT ID FROM Producent WHERE kraj = "Chiny");
 11:
     ALTER TABLE Producent
-    ADD COLUMN liczbaModeli int unsigned NOT NULL;
+    ADD COLUMN liczbaModeli int unsigned NOT NULL default 0;
+    
+    UPDATE Producent
+    SET liczbaModeli = (SELECT COUNT(*) FROM Aparat WHERE producent=Producent.ID);
+
     DELIMITER //
     CREATE TRIGGER ins_liczba_modeli AFTER INSERT ON Aparat FOR EACH ROW
     BEGIN
@@ -212,6 +208,7 @@
         WHERE Producent.ID=NEW.producent;
     END//
     DELIMITER ;
+    
     DELIMITER //
     CREATE TRIGGER update_liczba_modeli AFTER UPDATE ON Aparat FOR EACH ROW
     BEGIN
@@ -220,14 +217,15 @@
         WHERE Producent.ID=NEW.producent;
     END//
     DELIMITER ;
+    
     DELIMITER //
     CREATE TRIGGER delete_liczba_modeli AFTER DELETE ON Aparat FOR EACH ROW
     BEGIN
         UPDATE Producent
         SET liczbaModeli = (SELECT COUNT(*) FROM Aparat WHERE producent=Producent.ID)
         WHERE Producent.ID=OLD.producent;
+        IF (SELECT COUNT(*) FROM Aparat WHERE matryca=OLD.matryca)=0 THEN
+            DELETE FROM Matryca WHERE ID=OLD.matryca;
+        END IF;
     END//
     DELIMITER ;
-
-
-
