@@ -42,9 +42,13 @@ public class ConsoleInterface {
             }
             switch (wybor) {
                 case "1":
+                    System.out.println("Podaj dane towaru: ");
+                    System.out.print("Podaj ilosc: ");
+                    String val = reader.readLine();
+                    Integer ilosc = Integer.parseInt(val);
                     Towar towar = consoleReader.read_towar();
                     if(towar != null)
-                        faktura.addTowar(towar);
+                        faktura.addTowar(new Faktura.Wiersz(towar, ilosc));
                     break;
                 case "2":
                     printer.print_faktura_to_console(faktura);

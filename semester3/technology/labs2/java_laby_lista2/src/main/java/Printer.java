@@ -13,10 +13,13 @@ public class Printer {
         System.out.println("Nabywca:");
         System.out.println(faktura.getNabywca().getFieldsAsString());
         System.out.println("========================================");
-        for(Towar towar: faktura.getTowary())
+        Integer calaCena = 0;
+        for(Faktura.Wiersz towar: faktura.getTowary())
         {
-            System.out.println(towar.getIlosc() + " x " + towar.getNazwa() + " " + towar.getCena() * towar.getIlosc() + "zl");
+            System.out.println(towar.ilosc + " x " + towar.towar.getNazwa() + " " + towar.getFullCena() + " zl");
+            calaCena += towar.getFullCena();
         }
+        System.out.println("Cena calkowita: " + calaCena + " zl");
         System.out.println("========================================");
     }
 }

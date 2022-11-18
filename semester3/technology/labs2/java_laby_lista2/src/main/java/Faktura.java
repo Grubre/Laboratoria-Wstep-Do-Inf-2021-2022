@@ -1,26 +1,38 @@
 import java.util.List;
+import java.util.Vector;
 
 /**
  * Zasady GRASP:
  * Niskie sprzężenie -
  */
 public class Faktura {
+    public static class Wiersz {
+        public Towar towar;
+        public Integer ilosc;
+        Wiersz(Towar towar, Integer ilosc) {
+            this.towar = towar;
+            this.ilosc = ilosc;
+        }
+        Integer getFullCena() {
+            return towar.getCena() * ilosc;
+        }
+    }
     private String miejsce_wystawienia;
     private String data_wystawienia;
 
     private Osoba sprzedawca;
     private Osoba nabywca;
 
-    private List<Towar> towary;
+    private List<Wiersz> towary;
 
     public Faktura() {}
 
-    public Faktura(String miejsce_wystawienia, String data_wystawienia, Osoba sprzedawca, Osoba nabywca, List<Towar> towary) {
+    public Faktura(String miejsce_wystawienia, String data_wystawienia, Osoba sprzedawca, Osoba nabywca) {
         this.miejsce_wystawienia = miejsce_wystawienia;
         this.data_wystawienia = data_wystawienia;
         this.sprzedawca = sprzedawca;
         this.nabywca = nabywca;
-        this.towary = towary;
+        towary = new Vector<>();
     }
 
     public String getMiejsce_wystawienia() {
@@ -55,15 +67,15 @@ public class Faktura {
         this.nabywca = nabywca;
     }
 
-    public List<Towar> getTowary() {
+    public List<Wiersz> getTowary() {
         return towary;
     }
 
-    public void setTowary(List<Towar> towary) {
+    public void setTowary(List<Wiersz> towary) {
         this.towary = towary;
     }
 
-    public void addTowar(Towar towar) {
+    public void addTowar(Wiersz towar) {
         this.towary.add(towar);
     }
 }

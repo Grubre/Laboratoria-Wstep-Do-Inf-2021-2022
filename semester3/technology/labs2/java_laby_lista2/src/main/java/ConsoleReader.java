@@ -67,23 +67,18 @@ public class ConsoleReader {
     }
 
     public Towar read_towar() throws IOException {
-        System.out.println("Podaj dane towaru: ");
-
-        String ilosc;
         String nazwa;
         String cena;
 
         try {
-            System.out.print("Podaj ilosc: ");
-            ilosc = reader.readLine();
             System.out.print("Podaj nazwe: ");
             nazwa = reader.readLine();
             System.out.print("Podaj cene za sztuke: ");
             cena = reader.readLine();
 
-            return new Towar(Integer.parseInt(ilosc),nazwa,Integer.parseInt(cena));
+            return new Towar(nazwa,Integer.parseInt(cena));
         } catch(Exception e) {
-            System.out.println("[ERROR]: Ilosc oraz cena musza byc liczbami!");
+            System.out.println("[ERROR]: Cena musi byc liczba!");
         }
 
         return null;
@@ -124,7 +119,7 @@ public class ConsoleReader {
             else {
                 throw new IllegalArgumentException();
             }
-            return new Faktura(miejsce_wystawienia, data_wystawienia, sprzedawca, nabywca, new Vector<Towar>());
+            return new Faktura(miejsce_wystawienia, data_wystawienia, sprzedawca, nabywca);
         } catch(IllegalArgumentException e) {
             System.out.println("[ERROR]: Musisz wybrac miedzy y/n!");
         }

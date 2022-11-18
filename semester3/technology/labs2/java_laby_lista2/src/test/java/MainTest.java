@@ -7,6 +7,9 @@ import org.junit.jupiter.api.Test;
 class MainTest {
     @Test
     void demoTestMethod() {
-        assertTrue(true);
+        Towar towar = new Towar("abc", 2);
+        Integer ilosc = 2;
+        Faktura.Wiersz wiersz = new Faktura.Wiersz(towar, ilosc);
+        assertTrue(ilosc * towar.getCena() == wiersz.getFullCena());
     }
 }
