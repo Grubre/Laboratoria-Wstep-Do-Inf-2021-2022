@@ -10,7 +10,9 @@ height=$(jq '.[0].height' <<< $cat)
 w_terminal=$( expr $(tput cols) / 2 )
 h_terminal=$( expr $(tput lines) / 2 )
 
-curl $url  --silent  > newcat.jpg
+curl $url --silent > temp_img_123123
 
-img2txt newcat.jpg  -f utf8  
+img2txt temp_img_123123 -f utf8
 echo $chuck
+
+rm temp_img_123123

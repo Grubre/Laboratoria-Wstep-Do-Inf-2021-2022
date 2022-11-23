@@ -45,9 +45,5 @@ do
         final_string=$final_string"\n"$pid$delimiter$ppid$delimiter$comm$delimiter$state$delimiter$tty$delimiter$rss$delimiter$pgid$delimiter$sid
 
     fi
-
-
-    
-
-    done
+done
 echo -e $final_string | column -s '~' --table --table-columns PID,PPID,COMM,STATE,TTY,RSS,PGID,SID
