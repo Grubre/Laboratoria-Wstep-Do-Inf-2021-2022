@@ -1,49 +1,25 @@
-#!bin/bash
-final_string=""
-for proc in $(ls /proc | grep -E '^[0-9]+$')
+output=""
+for proc in $(find /proc -maxdepth 1 | grep "[0-9]")
 do
-    # WCZYTYWANIE folderu /proc/PID/stat
-    vals=$(cat /proc/$proc/stat 2>/dev/null)
-    IFS=')'
-    read -a valuesarr <<< "$vals"
-    IFS=' '
-    read -a valuesarr_pid_and_comm <<< "${valuesarr[0]}"
-    values_split_in_two=${valuesarr[1]}
-    rest_of_values=($values_split_in_two)
+    # codes
+    PID=${proc:6}
+    STATE_CODE=`expr 52 - 3`
+    PPID_CODE=`expr 52 - 4`
+    TTY_CODE=`expr 52 - 7`
+    RSS_CODE=`expr 52 - 24`
+    SID_CODE=`expr 52 - 6`
+    PGID_CODE=`expr 52 - 5`
+    CODES=($STATE_CODE $PPID_CODE $TTY_CODE $RSS_CODE $SID_CODE $PGID_CODE)
+    COMM=$(cat $proc/comm)
+    
+    output+=$PID$"\t"
+    output+=$COMM$"\t"
+    for code in ${CODES[@]}
+    do
+        output+=$(awk '{ print $(NF-'$code') } ' $proc/stat 2>/dev/null)$"\t"
+    done
 
-    # WCZYTYWANIE folderu /proc/PID/status
-    values=$(cat /proc/$proc/status 2>/dev/null)
-    # PID
-    pid=$(grep -w "Pid" <<< $values)
-    pid=${pid:5}
-    # PPID
-    ppid=$(grep -w "PPid" <<< $values)
-    ppid=${ppid:6}
-    # COMM
-    comm=$(grep -w "Name" <<< $values)
-    comm=${comm:6}
-    # STATE
-    state=$(grep -w "State" <<< $values)
-    state=${state:7}
-    # TTY
-    tty=$(readlink /proc/$proc/fd/0)
-    if [[ -z $tty ]]; then
-        tty="?"
-    fi
-    # RSS
-    rss=${rest_of_values[21]}
-    # PGID
-    pgid=$(grep -w "NSpgid" <<< $values)
-    pgid=${pgid:8}
-    # SID
-    sid=$(grep -w "NSsid" <<< $values)
-    sid=${sid:7}
-
-    delimiter="~"
-
-    if [[ ! -z $pid ]]; then
-        final_string=$final_string"\n"$pid$delimiter$ppid$delimiter$comm$delimiter$state$delimiter$tty$delimiter$rss$delimiter$pgid$delimiter$sid
-
-    fi
+    output+='\n'
 done
-echo -e $final_string | column -s '~' --table --table-columns PID,PPID,COMM,STATE,TTY,RSS,PGID,SID
+echo -e $output | column -s $'\t' --table --table-columns PID,COMM,STATE,PPID,TTY,RSS,SID,PGID 
+# echo -e $output 
