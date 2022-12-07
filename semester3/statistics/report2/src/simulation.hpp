@@ -1,9 +1,9 @@
 #pragma once
 
 #include "ballmachine.hpp"
-#include "randommachine.hpp"
 #include <algorithm>
 #include <iostream>
+#include <random>
 #include <vector>
 
 class Simulation
@@ -38,6 +38,10 @@ public:
 
     Result simulate()
     {
+        std::random_device rd;
+        std::mt19937 gen;
+        std::uniform_int_distribution<> distrib(0, n-1);
+
         Result result(n);
 
         unsigned int i;
@@ -46,7 +50,8 @@ public:
         // (B)
         for(i = 1; i <= n; i++)
         {
-            auto idx = rand.rand_int(0, n - 1);
+            auto idx = distrib(gen);
+            // auto idx = std::rand() % n;
             if(bins[idx] == 0)
                 nr_zeros--;
             bins[idx]++;
@@ -85,7 +90,12 @@ public:
             }
 
             // std::cout << nr_less_than_two << std::endl;
-            auto idx = rand.rand_int(0, n - 1);
+            auto idx = distrib(gen);
+            // auto idx = rand.rand_int(0, n - 1);
+            // auto idx = std::rand() % n;
+            if(bins[idx] == 2 && result.B == -1)
+                result.B = i;
+
             if(bins[idx] == 0)
             {
                 nr_less_than_one--;
@@ -117,6 +127,5 @@ public:
 
 private:
     std::vector<unsigned int> bins;
-    RandomMachine rand;
     unsigned int n;
 };
