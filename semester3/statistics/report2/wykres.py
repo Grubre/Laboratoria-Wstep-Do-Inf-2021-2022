@@ -64,35 +64,72 @@ bundles = [
                    [
                        Plot("u(n)/n", "red", Un / N),
                    ]),
-        PlotBundle("l(n)/ln n | l(n) / (ln n) / ln ln n | l(n) / ln ln n",
-                   "lnfunc",
+        PlotBundle("l(n)/ln n",
+                   "lnfunc1",
                    [
                        Plot("l(n)/ln n", "blue", Ln / np.log2(N)),
+                   ]),
+        PlotBundle("l(n) / (ln n) / ln ln n",
+                   "lnfunc2",
+                   [
                        Plot("l(n)/ln n/ln ln n", "red", Ln / (np.log2(N) / np.log2(np.log2(N)))),
+                   ]),
+        PlotBundle("l(n) / ln ln n",
+                   "lnfunc3",
+                   [
                        Plot("l(n)/ln ln n", "green", Ln / np.log2(np.log2(N))),
                    ]),
-        PlotBundle("c(n)/n | c(n)/nln n | c(n)/n^2",
-                   "cnfunc",
+        PlotBundle("c(n)/n",
+                   "cnfunc1",
                    [
                        Plot("c(n)/n", "red", Cn / N),
+                   ]),
+        PlotBundle("c(n)/nln n",
+                   "cnfunc2",
+                   [
                        Plot("c(n)/nln n", "blue", Cn / (N * np.log2(N))),
+                   ]),
+        PlotBundle("c(n)/n^2",
+                   "cnfunc3",
+                   [
                        Plot("c(n)/n^2", "green", Cn / (N * N)),
                    ]),
-        PlotBundle("d(n)/n | d(n)/nln n | d(n)/n^2",
-                   "dnfunc",
+
+        PlotBundle("d(n)/n",
+                   "dnfunc1",
                    [
                        Plot("d(n)/n", "red", Dn / N),
+                   ]),
+
+        PlotBundle("d(n)/nln n",
+                   "dnfunc2",
+                   [
                        Plot("d(n)/nln n", "blue", Dn / (N * np.log2(N))),
+                   ]),
+        PlotBundle("d(n)/n^2",
+                   "dnfunc3",
+                   [
                        Plot("d(n)/n^2", "green", Dn / (N * N)),
                    ]),
-        PlotBundle("(d(n)-c(n))/n | (d(n)-c(n))/nln n | (d(n)-c(n))/n ln ln n",
-                   "dn-cnfunc",
+
+        PlotBundle("(d(n)-c(n))/n",
+                   "dn-cnfunc1",
                    [
                        Plot("(d(n) - c(n))/n", "red", (Dn - Cn) / N),
+                   ]),
+        PlotBundle("(d(n)-c(n))/nln n",
+                   "dn-cnfunc2",
+                   [
                        Plot("(d(n) - c(n))/nln n", "blue", (Dn - Cn) / (N * np.log2(N))),
+                   ]),
+        PlotBundle("(d(n)-c(n))/n ln ln n",
+                   "dn-cnfunc3",
+                   [
                        Plot("(d(n) - c(n))/nln ln n", "green", (Dn - Cn) / (N * np.log2(np.log2(N)))),
                    ]),
+
         ]
+
 
 for bundle in bundles:
     plt.clf()
