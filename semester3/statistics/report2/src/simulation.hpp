@@ -1,16 +1,17 @@
 #pragma once
 
-#include "ballmachine.hpp"
 #include <algorithm>
 #include <iostream>
 #include <random>
 #include <vector>
+#include <fstream>
 
 class Simulation
 {
 public:
     struct Result
     {
+        Result() = default;
         Result(int n) {this->n = n;}
         int n;
         int B = -1;
@@ -19,14 +20,16 @@ public:
         int C = -1;
         int D = -1;
 
-        void print()
+        void print_to_stream(std::ofstream& output)
         {
-            std::cout << "B = " << B << std::endl;
-            std::cout << "U = " << U << std::endl;
-            std::cout << "L = " << L << std::endl;
-            std::cout << "C = " << C << std::endl;
-            std::cout << "D = " << D << std::endl;
-
+            output << n << ',';
+            output << B << ',';
+            output << U << ',';
+            output << L << ',';
+            output << C << ',';
+            output << D << ',';
+            output << D - C;
+            output << std::endl;
         }
     };
 
@@ -39,7 +42,7 @@ public:
     Result simulate()
     {
         std::random_device rd;
-        std::mt19937 gen;
+        std::mt19937 gen(rd());
         std::uniform_int_distribution<> distrib(0, n-1);
 
         Result result(n);
@@ -51,7 +54,6 @@ public:
         for(i = 1; i <= n; i++)
         {
             auto idx = distrib(gen);
-            // auto idx = std::rand() % n;
             if(bins[idx] == 0)
                 nr_zeros--;
             bins[idx]++;
@@ -60,9 +62,9 @@ public:
                 result.B = i;
         }
         // (U, L)
-        // result.U = std::count(bins.begin(), bins.end(), 0);
+        result.U = std::count(bins.begin(), bins.end(), 0);
         // result.L = *std::max_element(bins.begin(), bins.end());
-        result.U = nr_zeros;
+        // result.U = nr_zeros;
         result.L = max_val;
 
 
@@ -89,10 +91,7 @@ public:
                 break;
             }
 
-            // std::cout << nr_less_than_two << std::endl;
             auto idx = distrib(gen);
-            // auto idx = rand.rand_int(0, n - 1);
-            // auto idx = std::rand() % n;
             if(bins[idx] == 2 && result.B == -1)
                 result.B = i;
 
