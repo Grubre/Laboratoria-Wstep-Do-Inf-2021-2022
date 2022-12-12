@@ -29,10 +29,6 @@ class PlotBundle:
 
 df = pd.read_csv(r'data.csv')
 means = pd.read_csv(r'means.csv')
-# for i in ['B', 'U', 'L', 'C', 'D', 'D-C']:
-#     pl = gen_plot(df,means,'n',i)
-#     pl.figure.savefig("output"+i+".png")
-#
 vars = ["B", "U", "L", "C", "D", "D-C"]
 
 for bundle in vars:
@@ -53,12 +49,17 @@ Dn = means["D"]
 
 
 bundles = [
-        PlotBundle("b(n)/n | b(n)/sqrt(n)",
-                   "bnfunc",
+        PlotBundle("b(n)/n",
+                   "bnfunc1",
                    [
                        Plot("b(n)/n", "red", Bn / N),
-                       Plot("b(n)/sqrt(n)", "blue", Bn / N**1/2),
                    ]),
+        PlotBundle("b(n)/sqrt(n)",
+                   "bnfunc2",
+                   [
+                       Plot("b(n)/sqrt(n)", "blue", Bn / (N**(1/2))),
+                   ]),
+
         PlotBundle("u(n)/n",
                    "unfunc",
                    [
@@ -127,13 +128,36 @@ bundles = [
                    [
                        Plot("(d(n) - c(n))/nln ln n", "green", (Dn - Cn) / (N * np.log2(np.log2(N)))),
                    ]),
-
         ]
 
 
 for bundle in bundles:
     plt.clf()
     for plot in bundle.plots:
+        match bundle.filename:
+            case 'cnfunc2':
+                plt.ylim(0.0, 2.0)
+            case 'cnfunc3':
+                plt.ylim(0.0, 0.004)
+            case 'bnfunc2':
+                plt.ylim(0.2, 3.0)
+            case 'unfunc':
+                plt.ylim(0.2, 0.5)
+            case 'lnfunc1':
+                plt.ylim(0.2, 0.8)
+            case 'lnfunc2':
+                plt.ylim(1.0, 2.5)
+            case 'lnfunc3':
+                plt.ylim(1.0, 2.5)
+            case 'dnfunc2':
+                plt.ylim(0.6, 1.2)
+            case 'dn-cnfunc1':
+                plt.ylim(0.5, 5.0)
+            case 'dn-cnfunc2':
+                plt.ylim(0.0, 0.5)
+            case 'dn-cnfunc3':
+                plt.ylim(0.0, 1.5)
+
         plt.plot(means["n"], plot.values, color=plot.color, marker = '.', linestyle='none', markersize = 1.5, label = "Wartosci funkcji " + plot.name)
     plt.title(bundle.title)
     plt.xlabel("n")
