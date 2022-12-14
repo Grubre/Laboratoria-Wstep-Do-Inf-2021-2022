@@ -325,11 +325,21 @@
     - zawod_id,
     - pensja
 
+4:
+    -- Najpierw uzywamy PREPARE do stworzenia zapytania
+    PREPARE nr_of_women FROM 'SELECT COUNT(*) FROM Ludzie, Pracownicy, Zawody
+    WHERE Pracownicy.czlowiek_id LIKE Ludzie.czlowiek_id AND Pracownicy.zawod_id LIKE Zawody.zawod_id
+    AND Zawody.nazwa LIKE ? AND Ludzie.plec LIKE "K"';
+
+    -- Potem EXECUTE
+    EXECUTE nr_of_women USING "polityk";
+    EXECUTE nr_of_women USING "nauczyciel";
+
 5:
     -- Backup
     mysqldump -u root -p firma > firma_back.sql
     -- Usuniecie bazy
-    DROP DATABASE Firma;
+    DROP DATABASE firma;
     -- Przywrocenie bazy z backupu
     mysql -u root -p praca < firma_back.sql
 
