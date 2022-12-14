@@ -1,0 +1,7 @@
+[
+{
+  "directory": "/home/jabuk/Studia/semester3/akiso/list5/lsh/build/Release",
+  "command": "/usr/bin/cc  -I/home/jabuk/Studia/semester3/akiso/list5/lsh/src                     -Wall                    -Wextra                    -Wpedantic -O3 -DNDEBUG -o CMakeFiles/main.dir/src/main.c.o -c /home/jabuk/Studia/semester3/akiso/list5/lsh/src/main.c",
+  "file": "/home/jabuk/Studia/semester3/akiso/list5/lsh/src/main.c"
+}
+]
