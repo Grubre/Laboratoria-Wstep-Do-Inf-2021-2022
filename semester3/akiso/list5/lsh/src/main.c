@@ -1,3 +1,4 @@
+#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -6,6 +7,7 @@
 #include <unistd.h>
 #include "command.h"
 #include "pipechain.h"
+#include "lexer.h"
 #include <sys/wait.h>
 
 
@@ -17,27 +19,22 @@ int readinput(char* line, size_t* bufsize)
 }
 
 
-void split_by_pipe(int* arglist_size, char* line)
-{
-    bool isInQuotes = false;
-}
-
-
 int main()
 {
-    char* line = "echo \"abc\" | cat -et | cat ; echo a";
-    int pipechaincount = 0;
-    PipeChain* pipeChain = split_pipechains(&pipechaincount, line);
+    char* mystr = "echo    \"abc\" | cat -et | cat ; echo a && false";
+    char* line = (char*)malloc(sizeof(char) * strlen(mystr));
+    memcpy(line, mystr, strlen(mystr));
+    printf("%s\n",line);
+    line = trimwhitespace(line);
+    // getline(&line, &bufsize, stdin);
 
-    for(int i = 0; i < pipechaincount; i++)
+    size_t arrsize;
+    char** arr = tokenize(line, &arrsize);
+    for(size_t i = 0; i < arrsize; i++)
     {
-        printf("%s ", pipeChain[i].comm);
-        if(pipeChain[i].logic)
-            printf("%c", pipeChain[i].logic);
-        printf("\n");
+        printf("(%s)\n",arr[i]);
     }
 
-    
 
 
 

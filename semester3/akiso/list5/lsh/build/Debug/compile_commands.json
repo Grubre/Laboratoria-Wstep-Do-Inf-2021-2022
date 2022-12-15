@@ -1,7 +1,17 @@
 [
 {
   "directory": "/home/jabuk/Studia/semester3/akiso/list5/lsh/build/Debug",
+  "command": "/usr/bin/cc  -I/home/jabuk/Studia/semester3/akiso/list5/lsh/src                     -Wall                    -Wextra                    -Wpedantic -g -o CMakeFiles/main.dir/src/lexer.c.o -c /home/jabuk/Studia/semester3/akiso/list5/lsh/src/lexer.c",
+  "file": "/home/jabuk/Studia/semester3/akiso/list5/lsh/src/lexer.c"
+},
+{
+  "directory": "/home/jabuk/Studia/semester3/akiso/list5/lsh/build/Debug",
   "command": "/usr/bin/cc  -I/home/jabuk/Studia/semester3/akiso/list5/lsh/src                     -Wall                    -Wextra                    -Wpedantic -g -o CMakeFiles/main.dir/src/main.c.o -c /home/jabuk/Studia/semester3/akiso/list5/lsh/src/main.c",
   "file": "/home/jabuk/Studia/semester3/akiso/list5/lsh/src/main.c"
+},
+{
+  "directory": "/home/jabuk/Studia/semester3/akiso/list5/lsh/build/Debug",
+  "command": "/usr/bin/cc  -I/home/jabuk/Studia/semester3/akiso/list5/lsh/src                     -Wall                    -Wextra                    -Wpedantic -g -o CMakeFiles/main.dir/src/parser.c.o -c /home/jabuk/Studia/semester3/akiso/list5/lsh/src/parser.c",
+  "file": "/home/jabuk/Studia/semester3/akiso/list5/lsh/src/parser.c"
 }
 ]

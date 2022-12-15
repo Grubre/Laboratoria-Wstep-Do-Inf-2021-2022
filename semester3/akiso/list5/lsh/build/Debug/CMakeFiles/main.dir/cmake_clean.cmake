@@ -1,6 +1,10 @@
 file(REMOVE_RECURSE
+  "CMakeFiles/main.dir/src/lexer.c.o"
+  "CMakeFiles/main.dir/src/lexer.c.o.d"
   "CMakeFiles/main.dir/src/main.c.o"
   "CMakeFiles/main.dir/src/main.c.o.d"
+  "CMakeFiles/main.dir/src/parser.c.o"
+  "CMakeFiles/main.dir/src/parser.c.o.d"
   "main"
   "main.pdb"
 )
