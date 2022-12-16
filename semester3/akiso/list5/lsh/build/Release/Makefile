@@ -129,6 +129,54 @@ main/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/build
 .PHONY : main/fast
 
+src/command.o: src/command.c.o
+.PHONY : src/command.o
+
+# target to build an object file
+src/command.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/command.c.o
+.PHONY : src/command.c.o
+
+src/command.i: src/command.c.i
+.PHONY : src/command.i
+
+# target to preprocess a source file
+src/command.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/command.c.i
+.PHONY : src/command.c.i
+
+src/command.s: src/command.c.s
+.PHONY : src/command.s
+
+# target to generate assembly for a file
+src/command.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/command.c.s
+.PHONY : src/command.c.s
+
+src/lexer.o: src/lexer.c.o
+.PHONY : src/lexer.o
+
+# target to build an object file
+src/lexer.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/lexer.c.o
+.PHONY : src/lexer.c.o
+
+src/lexer.i: src/lexer.c.i
+.PHONY : src/lexer.i
+
+# target to preprocess a source file
+src/lexer.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/lexer.c.i
+.PHONY : src/lexer.c.i
+
+src/lexer.s: src/lexer.c.s
+.PHONY : src/lexer.s
+
+# target to generate assembly for a file
+src/lexer.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/lexer.c.s
+.PHONY : src/lexer.c.s
+
 src/main.o: src/main.c.o
 .PHONY : src/main.o
 
@@ -153,6 +201,30 @@ src/main.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/main.c.s
 .PHONY : src/main.c.s
 
+src/parser.o: src/parser.c.o
+.PHONY : src/parser.o
+
+# target to build an object file
+src/parser.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/parser.c.o
+.PHONY : src/parser.c.o
+
+src/parser.i: src/parser.c.i
+.PHONY : src/parser.i
+
+# target to preprocess a source file
+src/parser.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/parser.c.i
+.PHONY : src/parser.c.i
+
+src/parser.s: src/parser.c.s
+.PHONY : src/parser.s
+
+# target to generate assembly for a file
+src/parser.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/parser.c.s
+.PHONY : src/parser.c.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -162,9 +234,18 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... main"
+	@echo "... src/command.o"
+	@echo "... src/command.i"
+	@echo "... src/command.s"
+	@echo "... src/lexer.o"
+	@echo "... src/lexer.i"
+	@echo "... src/lexer.s"
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"
+	@echo "... src/parser.o"
+	@echo "... src/parser.i"
+	@echo "... src/parser.s"
 .PHONY : help
 
 

@@ -9,6 +9,7 @@
 #include "pipechain.h"
 #include "lexer.h"
 #include <sys/wait.h>
+#include "parser.h"
 
 
 int readinput(char* line, size_t* bufsize)
@@ -21,12 +22,15 @@ int readinput(char* line, size_t* bufsize)
 
 int main()
 {
-    char* mystr = "echo    \"abc\" | cat -et | cat ; echo a && false";
-    char* line = (char*)malloc(sizeof(char) * strlen(mystr));
-    memcpy(line, mystr, strlen(mystr));
-    printf("%s\n",line);
+    
+    // char* mystr = "echo    \"abc\" | cat -et | cat ; echo a && false";
+    // char* line = (char*)malloc(sizeof(char) * strlen(mystr));
+    // memcpy(line, mystr, strlen(mystr));
+    // printf("%s\n",line);
+    char* line;
+    size_t bufsize;
+    getline(&line, &bufsize, stdin);
     line = trimwhitespace(line);
-    // getline(&line, &bufsize, stdin);
 
     size_t arrsize;
     char** arr = tokenize(line, &arrsize);
@@ -34,6 +38,8 @@ int main()
     {
         printf("(%s)\n",arr[i]);
     }
+
+    parse(arr, arrsize);
 
 
 

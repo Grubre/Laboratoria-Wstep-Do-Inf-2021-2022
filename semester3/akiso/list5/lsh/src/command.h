@@ -10,13 +10,13 @@ struct Command
 };
 typedef struct Command Command;
 
-Command create_comm(char** args)
-{
-    Command comm;
-    comm.cmd = args[0];
-    comm.args = args + 1;
-
-    return comm;
-}
+Command create_comm(char** args);
+// {
+//     Command comm;
+//     comm.cmd = args[0];
+//     comm.args = args + 1;
+//
+//     return comm;
+// }
 
 #endif // !COMMAND_H

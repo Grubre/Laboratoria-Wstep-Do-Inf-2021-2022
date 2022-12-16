@@ -129,6 +129,30 @@ main/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/build
 .PHONY : main/fast
 
+src/command.o: src/command.c.o
+.PHONY : src/command.o
+
+# target to build an object file
+src/command.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/command.c.o
+.PHONY : src/command.c.o
+
+src/command.i: src/command.c.i
+.PHONY : src/command.i
+
+# target to preprocess a source file
+src/command.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/command.c.i
+.PHONY : src/command.c.i
+
+src/command.s: src/command.c.s
+.PHONY : src/command.s
+
+# target to generate assembly for a file
+src/command.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/command.c.s
+.PHONY : src/command.c.s
+
 src/lexer.o: src/lexer.c.o
 .PHONY : src/lexer.o
 
@@ -210,6 +234,9 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... main"
+	@echo "... src/command.o"
+	@echo "... src/command.i"
+	@echo "... src/command.s"
 	@echo "... src/lexer.o"
 	@echo "... src/lexer.i"
 	@echo "... src/lexer.s"

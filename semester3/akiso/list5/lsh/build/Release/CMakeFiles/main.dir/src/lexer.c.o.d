@@ -1,6 +1,8 @@
-CMakeFiles/main.dir/src/main.c.o: \
- /home/jabuk/Studia/semester3/akiso/list5/lsh/src/main.c \
- /usr/include/stdc-predef.h /usr/include/ctype.h /usr/include/features.h \
+CMakeFiles/main.dir/src/lexer.c.o: \
+ /home/jabuk/Studia/semester3/akiso/list5/lsh/src/lexer.c \
+ /usr/include/stdc-predef.h \
+ /home/jabuk/Studia/semester3/akiso/list5/lsh/src/lexer.h \
+ /usr/include/ctype.h /usr/include/features.h \
  /usr/include/features-time64.h /usr/include/bits/wordsize.h \
  /usr/include/bits/timesize.h /usr/include/sys/cdefs.h \
  /usr/include/bits/long-double.h /usr/include/gnu/stubs.h \
@@ -15,23 +17,23 @@ CMakeFiles/main.dir/src/main.c.o: \
  /usr/include/bits/types/__fpos64_t.h /usr/include/bits/types/__FILE.h \
  /usr/include/bits/types/FILE.h /usr/include/bits/types/struct_FILE.h \
  /usr/include/bits/stdio_lim.h /usr/include/bits/floatn.h \
- /usr/include/bits/floatn-common.h /usr/include/stdlib.h \
- /usr/include/bits/waitflags.h /usr/include/bits/waitstatus.h \
- /usr/include/sys/types.h /usr/include/bits/types/clock_t.h \
- /usr/include/bits/types/clockid_t.h /usr/include/bits/types/time_t.h \
- /usr/include/bits/types/timer_t.h /usr/include/bits/stdint-intn.h \
- /usr/include/endian.h /usr/include/bits/byteswap.h \
- /usr/include/bits/uintn-identity.h /usr/include/sys/select.h \
- /usr/include/bits/select.h /usr/include/bits/types/sigset_t.h \
- /usr/include/bits/types/__sigset_t.h \
+ /usr/include/bits/floatn-common.h /usr/include/bits/stdio.h \
+ /usr/include/stdlib.h /usr/include/bits/waitflags.h \
+ /usr/include/bits/waitstatus.h /usr/include/sys/types.h \
+ /usr/include/bits/types/clock_t.h /usr/include/bits/types/clockid_t.h \
+ /usr/include/bits/types/time_t.h /usr/include/bits/types/timer_t.h \
+ /usr/include/bits/stdint-intn.h /usr/include/endian.h \
+ /usr/include/bits/byteswap.h /usr/include/bits/uintn-identity.h \
+ /usr/include/sys/select.h /usr/include/bits/select.h \
+ /usr/include/bits/types/sigset_t.h /usr/include/bits/types/__sigset_t.h \
  /usr/include/bits/types/struct_timeval.h \
  /usr/include/bits/types/struct_timespec.h \
  /usr/include/bits/pthreadtypes.h /usr/include/bits/thread-shared-types.h \
  /usr/include/bits/pthreadtypes-arch.h \
  /usr/include/bits/atomic_wide_counter.h /usr/include/bits/struct_mutex.h \
  /usr/include/bits/struct_rwlock.h /usr/include/alloca.h \
- /usr/include/bits/stdlib-float.h /usr/include/string.h \
- /usr/include/strings.h /usr/include/signal.h \
+ /usr/include/bits/stdlib-bsearch.h /usr/include/bits/stdlib-float.h \
+ /usr/include/string.h /usr/include/strings.h /usr/include/signal.h \
  /usr/include/bits/signum-generic.h /usr/include/bits/signum-arch.h \
  /usr/include/bits/types/sig_atomic_t.h \
  /usr/include/bits/types/siginfo_t.h /usr/include/bits/types/__sigval_t.h \
@@ -47,9 +49,5 @@ CMakeFiles/main.dir/src/main.c.o: \
  /usr/include/unistd.h /usr/include/bits/posix_opt.h \
  /usr/include/bits/environments.h /usr/include/bits/confname.h \
  /usr/include/bits/getopt_posix.h /usr/include/bits/getopt_core.h \
- /usr/include/bits/unistd_ext.h \
- /home/jabuk/Studia/semester3/akiso/list5/lsh/src/command.h \
- /home/jabuk/Studia/semester3/akiso/list5/lsh/src/pipechain.h \
- /home/jabuk/Studia/semester3/akiso/list5/lsh/src/lexer.h \
- /usr/include/sys/wait.h /usr/include/bits/types/idtype_t.h \
- /home/jabuk/Studia/semester3/akiso/list5/lsh/src/parser.h
+ /usr/include/bits/unistd_ext.h /usr/include/sys/wait.h \
+ /usr/include/bits/types/idtype_t.h

@@ -62,7 +62,8 @@ char** tokenize(char* line, size_t* arr_size)
             token_begin = i + 1;
         }
     }
-    
+    if(line[len - 1] == '"')
+        return arr;
     (*arr_size)++;
     arr = (char**)realloc(arr, (*arr_size) * sizeof(char*));
     arr[(*arr_size) - 1] = (char*)malloc(sizeof(char) * (i - token_begin + 1));

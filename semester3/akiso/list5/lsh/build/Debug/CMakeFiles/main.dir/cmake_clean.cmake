@@ -1,4 +1,6 @@
 file(REMOVE_RECURSE
+  "CMakeFiles/main.dir/src/command.c.o"
+  "CMakeFiles/main.dir/src/command.c.o.d"
   "CMakeFiles/main.dir/src/lexer.c.o"
   "CMakeFiles/main.dir/src/lexer.c.o.d"
   "CMakeFiles/main.dir/src/main.c.o"
