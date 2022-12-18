@@ -1,4 +1,4 @@
-# Install script for directory: /home/jabuk/Studia/semester3/akiso/list5/lsh
+# Install script for directory: /home/jabuk/Studia-WPPT/semester3/akiso/list5/lsh
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -50,5 +50,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/jabuk/Studia/semester3/akiso/list5/lsh/build/Debug/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/jabuk/Studia-WPPT/semester3/akiso/list5/lsh/build/Debug/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

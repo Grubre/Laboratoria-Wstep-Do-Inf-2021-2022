@@ -1,7 +1,7 @@
 CMakeFiles/main.dir/src/lexer.c.o: \
- /home/jabuk/Studia/semester3/akiso/list5/lsh/src/lexer.c \
+ /home/jabuk/Studia-WPPT/semester3/akiso/list5/lsh/src/lexer.c \
  /usr/include/stdc-predef.h \
- /home/jabuk/Studia/semester3/akiso/list5/lsh/src/lexer.h \
+ /home/jabuk/Studia-WPPT/semester3/akiso/list5/lsh/src/lexer.h \
  /usr/include/ctype.h /usr/include/features.h \
  /usr/include/features-time64.h /usr/include/bits/wordsize.h \
  /usr/include/bits/timesize.h /usr/include/sys/cdefs.h \

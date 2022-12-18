@@ -4,7 +4,7 @@
 # compile C with /usr/bin/cc
 C_DEFINES = 
 
-C_INCLUDES = -I/home/jabuk/Studia/semester3/akiso/list5/lsh/src
+C_INCLUDES = -I/home/jabuk/Studia-WPPT/semester3/akiso/list5/lsh/src
 
 C_FLAGS =                     -Wall                    -Wextra                    -Wpedantic -g
 

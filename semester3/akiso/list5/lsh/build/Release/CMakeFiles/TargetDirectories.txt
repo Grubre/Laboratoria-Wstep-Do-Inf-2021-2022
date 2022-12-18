@@ -1,3 +1,0 @@
-/home/jabuk/Studia/semester3/akiso/list5/lsh/build/Release/CMakeFiles/main.dir
-/home/jabuk/Studia/semester3/akiso/list5/lsh/build/Release/CMakeFiles/edit_cache.dir
-/home/jabuk/Studia/semester3/akiso/list5/lsh/build/Release/CMakeFiles/rebuild_cache.dir

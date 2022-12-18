@@ -7,7 +7,7 @@ set(CMAKE_DEPENDS_GENERATOR "Unix Makefiles")
 # The top level Makefile was generated from the following files:
 set(CMAKE_MAKEFILE_DEPENDS
   "CMakeCache.txt"
-  "/home/jabuk/Studia/semester3/akiso/list5/lsh/CMakeLists.txt"
+  "/home/jabuk/Studia-WPPT/semester3/akiso/list5/lsh/CMakeLists.txt"
   "CMakeFiles/3.25.1/CMakeCCompiler.cmake"
   "CMakeFiles/3.25.1/CMakeSystem.cmake"
   "/usr/share/cmake/Modules/CMakeCInformation.cmake"

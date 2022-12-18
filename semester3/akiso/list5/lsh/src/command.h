@@ -2,21 +2,18 @@
 #define COMMAND_H
 
 #include <stdlib.h>
+#include <stdbool.h>
 struct Command
 {
     char* cmd;
     char** args;
-    int* fd;
+    int* fdin;
+    int* fdout;
+    bool close_fd[2];
 };
 typedef struct Command Command;
 
-Command create_comm(char** args);
-// {
-//     Command comm;
-//     comm.cmd = args[0];
-//     comm.args = args + 1;
-//
-//     return comm;
-// }
+Command create_comm(char** args, int* fdin, int* fdout, bool close_fdin, bool close_fdout);
+int execute_cmd(Command* comm);
 
 #endif // !COMMAND_H

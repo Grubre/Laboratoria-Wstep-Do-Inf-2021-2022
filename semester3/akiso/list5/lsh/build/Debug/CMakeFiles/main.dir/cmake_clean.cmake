@@ -7,6 +7,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/main.dir/src/main.c.o.d"
   "CMakeFiles/main.dir/src/parser.c.o"
   "CMakeFiles/main.dir/src/parser.c.o.d"
+  "CMakeFiles/main.dir/src/pipechain.c.o"
+  "CMakeFiles/main.dir/src/pipechain.c.o.d"
   "main"
   "main.pdb"
 )

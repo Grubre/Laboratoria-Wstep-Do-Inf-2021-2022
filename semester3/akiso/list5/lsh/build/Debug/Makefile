@@ -57,10 +57,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/jabuk/Studia/semester3/akiso/list5/lsh
+CMAKE_SOURCE_DIR = /home/jabuk/Studia-WPPT/semester3/akiso/list5/lsh
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/jabuk/Studia/semester3/akiso/list5/lsh/build/Debug
+CMAKE_BINARY_DIR = /home/jabuk/Studia-WPPT/semester3/akiso/list5/lsh/build/Debug
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -87,9 +87,9 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/jabuk/Studia/semester3/akiso/list5/lsh/build/Debug/CMakeFiles /home/jabuk/Studia/semester3/akiso/list5/lsh/build/Debug//CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/jabuk/Studia-WPPT/semester3/akiso/list5/lsh/build/Debug/CMakeFiles /home/jabuk/Studia-WPPT/semester3/akiso/list5/lsh/build/Debug//CMakeFiles/progress.marks
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/jabuk/Studia/semester3/akiso/list5/lsh/build/Debug/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/jabuk/Studia-WPPT/semester3/akiso/list5/lsh/build/Debug/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -225,6 +225,30 @@ src/parser.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/parser.c.s
 .PHONY : src/parser.c.s
 
+src/pipechain.o: src/pipechain.c.o
+.PHONY : src/pipechain.o
+
+# target to build an object file
+src/pipechain.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/pipechain.c.o
+.PHONY : src/pipechain.c.o
+
+src/pipechain.i: src/pipechain.c.i
+.PHONY : src/pipechain.i
+
+# target to preprocess a source file
+src/pipechain.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/pipechain.c.i
+.PHONY : src/pipechain.c.i
+
+src/pipechain.s: src/pipechain.c.s
+.PHONY : src/pipechain.s
+
+# target to generate assembly for a file
+src/pipechain.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/pipechain.c.s
+.PHONY : src/pipechain.c.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -246,6 +270,9 @@ help:
 	@echo "... src/parser.o"
 	@echo "... src/parser.i"
 	@echo "... src/parser.s"
+	@echo "... src/pipechain.o"
+	@echo "... src/pipechain.i"
+	@echo "... src/pipechain.s"
 .PHONY : help
 
 

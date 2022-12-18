@@ -34,10 +34,10 @@ int main()
 
     size_t arrsize;
     char** arr = tokenize(line, &arrsize);
-    for(size_t i = 0; i < arrsize; i++)
-    {
-        printf("(%s)\n",arr[i]);
-    }
+    // for(size_t i = 0; i < arrsize; i++)
+    // {
+    //     printf("(%s)\n",arr[i]);
+    // }
 
     parse(arr, arrsize);
 
