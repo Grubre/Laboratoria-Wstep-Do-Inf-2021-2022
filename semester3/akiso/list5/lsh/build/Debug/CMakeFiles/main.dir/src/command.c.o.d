@@ -1,7 +1,5 @@
-CMakeFiles/main.dir/src/command.c.o: \
- /home/jabuk/Studia-WPPT/semester3/akiso/list5/lsh/src/command.c \
- /usr/include/stdc-predef.h \
- /home/jabuk/Studia-WPPT/semester3/akiso/list5/lsh/src/command.h \
+CMakeFiles/main.dir/src/command.c.o: /home/jabuk/268493/lsh/src/command.c \
+ /usr/include/stdc-predef.h /home/jabuk/268493/lsh/src/command.h \
  /usr/include/stdlib.h /usr/include/bits/libc-header-start.h \
  /usr/include/features.h /usr/include/features-time64.h \
  /usr/include/bits/wordsize.h /usr/include/bits/timesize.h \

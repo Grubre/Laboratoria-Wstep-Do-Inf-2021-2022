@@ -57,10 +57,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/jabuk/Studia-WPPT/semester3/akiso/list5/lsh
+CMAKE_SOURCE_DIR = /home/jabuk/268493/lsh
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/jabuk/Studia-WPPT/semester3/akiso/list5/lsh/build/Debug
+CMAKE_BINARY_DIR = /home/jabuk/268493/lsh/build/Debug
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -87,9 +87,9 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/jabuk/Studia-WPPT/semester3/akiso/list5/lsh/build/Debug/CMakeFiles /home/jabuk/Studia-WPPT/semester3/akiso/list5/lsh/build/Debug//CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/jabuk/268493/lsh/build/Debug/CMakeFiles /home/jabuk/268493/lsh/build/Debug//CMakeFiles/progress.marks
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/jabuk/Studia-WPPT/semester3/akiso/list5/lsh/build/Debug/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/jabuk/268493/lsh/build/Debug/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -249,6 +249,30 @@ src/pipechain.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/pipechain.c.s
 .PHONY : src/pipechain.c.s
 
+src/wholeline.o: src/wholeline.c.o
+.PHONY : src/wholeline.o
+
+# target to build an object file
+src/wholeline.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/wholeline.c.o
+.PHONY : src/wholeline.c.o
+
+src/wholeline.i: src/wholeline.c.i
+.PHONY : src/wholeline.i
+
+# target to preprocess a source file
+src/wholeline.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/wholeline.c.i
+.PHONY : src/wholeline.c.i
+
+src/wholeline.s: src/wholeline.c.s
+.PHONY : src/wholeline.s
+
+# target to generate assembly for a file
+src/wholeline.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/wholeline.c.s
+.PHONY : src/wholeline.c.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -273,6 +297,9 @@ help:
 	@echo "... src/pipechain.o"
 	@echo "... src/pipechain.i"
 	@echo "... src/pipechain.s"
+	@echo "... src/wholeline.o"
+	@echo "... src/wholeline.i"
+	@echo "... src/wholeline.s"
 .PHONY : help
 
 

@@ -1,66 +1,105 @@
 #include "parser.h"
-#include "pipechain.h"
-#include <stdio.h>
-#include <sys/wait.h>
-#include <unistd.h>
+#include "wholeline.h"
 
-
-void push_str(char*** acc_tokens, size_t* arr_size, char* str)
+struct TokenArr
 {
-    (*arr_size)++;
-    (*acc_tokens) = (char**)realloc(*acc_tokens, (*arr_size) * sizeof(char*));
-    (*acc_tokens)[(*arr_size) - 1] = str;
+    char** comm_tokens;
+    size_t size;
+};
+typedef struct TokenArr TokenArr;
+
+
+TokenArr create_token_arr()
+{
+    TokenArr tokenArr;
+    tokenArr.comm_tokens = (char**)malloc(sizeof(char*));
+    return tokenArr;
 }
 
 
-int parse(char** tokens, const size_t token_cnt)
+void push_str(TokenArr* tokenArr, char* str)
 {
-    size_t comm_size = 0;
-    char** current_comm_tokens = (char**)malloc(sizeof(char*));
+    tokenArr->size++;
+    tokenArr->comm_tokens = (char**)realloc(tokenArr->comm_tokens, tokenArr->size * sizeof(char*));
+    tokenArr->comm_tokens[tokenArr->size - 1] = str;
+}
+
+
+void reset_tokens(TokenArr* tokenArr)
+{
+    for(size_t i = 0; i < tokenArr->size; i++)
+        free(tokenArr->comm_tokens[i]);
+    tokenArr->size = 0;
+}
+
+
+void add_new_pipechain(WholeLine* wholeLine, TokenArr* tokenArr, PipeChain *pipeChain)
+{
+    // We need to push NULL because execvp has to
+    // have its args array end with NULL
+    push_str(tokenArr, NULL);
+    push_comm(pipeChain, create_comm(tokenArr->comm_tokens));
+    reset_tokens(tokenArr);
+
+    push_pipechain(wholeLine, pipeChain);
+}
+
+
+WholeLine parse(char** tokens, const size_t token_cnt)
+{
+    WholeLine wholeLine = create_wholeline();
+    TokenArr tokenArr = create_token_arr();
     PipeChain pipeChain = create_pipechain();
+
     for(size_t i = 0; i < token_cnt; i++)
     {
         if(!strcmp(tokens[i], "&&"))
         {
-            push_str(&current_comm_tokens, &comm_size, NULL);
-            Command cmd = create_comm(current_comm_tokens, NULL, NULL, false, false);
-            if(fork())
-                execute_cmd(&cmd);
-            wait(NULL);
-            comm_size = 0;
+            add_new_pipechain(&wholeLine, &tokenArr, &pipeChain);
+            // reset the pipechain
+            pipeChain = create_pipechain();
         }
         else if(!strcmp(tokens[i], "||"))
         {
-            push_str(&current_comm_tokens, &comm_size, NULL);
-            comm_size = 0;
+            add_new_pipechain(&wholeLine, &tokenArr, &pipeChain);
+            // reset the pipechain
+            pipeChain = create_pipechain();
         }
         else if(!strcmp(tokens[i], ";"))
         {
-            push_str(&current_comm_tokens, &comm_size, NULL);
-            comm_size = 0;
+            add_new_pipechain(&wholeLine, &tokenArr, &pipeChain);
+            // reset the pipechain
+            pipeChain = create_pipechain();
+        }
+        if(!strcmp(tokens[i], "&"))
+        {
+            add_new_pipechain(&wholeLine, &tokenArr, &pipeChain);
+            // reset the pipechain
+            pipeChain = create_pipechain();
         }
         else if(!strcmp(tokens[i], "|"))
         {
-            push_str(&current_comm_tokens, &comm_size, NULL);
-            push_comm(&pipeChain, create_comm(current_comm_tokens, NULL, NULL, false, false));
+            // We need to push NULL because execvp has to
+            // have its args array end with NULL
+            push_str(&tokenArr, NULL);
 
-            // reset the pipechain
-            pipeChain = create_pipechain();
-            comm_size = 0;
+            push_comm(&pipeChain, create_comm(tokenArr.comm_tokens));
+            reset_tokens(&tokenArr);
         }
         else
         {
-            push_str(&current_comm_tokens, &comm_size, tokens[i]);
+            push_str(&tokenArr, tokens[i]);
         }
     }
-    if(comm_size > 0)
+    
+    if(tokenArr.size > 0)
     {
-        push_str(&current_comm_tokens, &comm_size, NULL);
-        Command cmd = create_comm(current_comm_tokens, NULL, NULL, false, false);
-        if(fork())
-            execute_cmd(&cmd);
+        push_str(&tokenArr, NULL);
+        push_comm(&pipeChain, create_comm(tokenArr.comm_tokens));
+        add_new_pipechain(&wholeLine, &tokenArr, &pipeChain);
     }
-    return 0;
+
+    return wholeLine;
 }
 
 

@@ -18,6 +18,8 @@ void push_comm(PipeChain *pipeChain, Command comm);
 
 PipeChain create_pipechain();
 
+void execute_pipechain(PipeChain* pipeChain);
+
 // This function takes a shell line and splits it into chains of pipes
 // pipechaincount is the size of returned array, ex.
 // echo a | cat && sleep 1 && false || echo b

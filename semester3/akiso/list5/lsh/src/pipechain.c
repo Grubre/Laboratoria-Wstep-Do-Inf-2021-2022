@@ -14,3 +14,11 @@ PipeChain create_pipechain()
     pipeChain.size = 0;
     return pipeChain;
 }
+
+void execute_pipechain(PipeChain* pipeChain)
+{
+    for(size_t i = 0; i < pipeChain->size; i++)
+    {
+        // execute_cmd(&pipeChain->commands[i]);
+    }
+}

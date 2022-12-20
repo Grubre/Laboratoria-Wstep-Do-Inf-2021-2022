@@ -1,5 +1,6 @@
-CMakeFiles/main.dir/src/pipechain.c.o: \
- /home/jabuk/268493/lsh/src/pipechain.c /usr/include/stdc-predef.h \
+CMakeFiles/main.dir/src/wholeline.c.o: \
+ /home/jabuk/268493/lsh/src/wholeline.c /usr/include/stdc-predef.h \
+ /home/jabuk/268493/lsh/src/wholeline.h \
  /home/jabuk/268493/lsh/src/pipechain.h \
  /home/jabuk/268493/lsh/src/command.h /usr/include/stdlib.h \
  /usr/include/bits/libc-header-start.h /usr/include/features.h \

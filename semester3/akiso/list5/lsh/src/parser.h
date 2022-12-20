@@ -3,7 +3,11 @@
 
 #include <stddef.h>
 #include <string.h>
+#include <stdio.h>
+#include <sys/wait.h>
+#include <unistd.h>
+#include "wholeline.h"
 
-int parse(char** tokens, const size_t token_cnt);
+WholeLine parse(char** tokens, const size_t token_cnt);
 
 #endif // !PARSER_H

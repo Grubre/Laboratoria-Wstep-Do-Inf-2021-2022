@@ -5,10 +5,10 @@
 #include <signal.h>
 #include <stdbool.h>
 #include <unistd.h>
+#include <sys/wait.h>
 #include "command.h"
 #include "pipechain.h"
 #include "lexer.h"
-#include <sys/wait.h>
 #include "parser.h"
 
 
@@ -39,7 +39,14 @@ int main()
     //     printf("(%s)\n",arr[i]);
     // }
 
-    parse(arr, arrsize);
+    WholeLine wholeLine = parse(arr, arrsize);
+
+    size_t pc_size = wholeLine.pipeChains[0].size;
+    for(size_t i = 0; i < pc_size; i++)
+    {
+        printf("(%s)\n", wholeLine.pipeChains[0].commands[i].cmd);
+        printf("================\n");
+    }
 
 
 

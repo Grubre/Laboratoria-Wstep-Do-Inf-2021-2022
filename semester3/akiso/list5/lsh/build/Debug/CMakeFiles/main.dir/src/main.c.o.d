@@ -1,5 +1,4 @@
-CMakeFiles/main.dir/src/main.c.o: \
- /home/jabuk/Studia-WPPT/semester3/akiso/list5/lsh/src/main.c \
+CMakeFiles/main.dir/src/main.c.o: /home/jabuk/268493/lsh/src/main.c \
  /usr/include/stdc-predef.h /usr/include/ctype.h /usr/include/features.h \
  /usr/include/features-time64.h /usr/include/bits/wordsize.h \
  /usr/include/bits/timesize.h /usr/include/sys/cdefs.h \
@@ -47,9 +46,8 @@ CMakeFiles/main.dir/src/main.c.o: \
  /usr/include/unistd.h /usr/include/bits/posix_opt.h \
  /usr/include/bits/environments.h /usr/include/bits/confname.h \
  /usr/include/bits/getopt_posix.h /usr/include/bits/getopt_core.h \
- /usr/include/bits/unistd_ext.h \
- /home/jabuk/Studia-WPPT/semester3/akiso/list5/lsh/src/command.h \
- /home/jabuk/Studia-WPPT/semester3/akiso/list5/lsh/src/pipechain.h \
- /home/jabuk/Studia-WPPT/semester3/akiso/list5/lsh/src/lexer.h \
- /usr/include/sys/wait.h /usr/include/bits/types/idtype_t.h \
- /home/jabuk/Studia-WPPT/semester3/akiso/list5/lsh/src/parser.h
+ /usr/include/bits/unistd_ext.h /usr/include/sys/wait.h \
+ /usr/include/bits/types/idtype_t.h /home/jabuk/268493/lsh/src/command.h \
+ /home/jabuk/268493/lsh/src/pipechain.h \
+ /home/jabuk/268493/lsh/src/lexer.h /home/jabuk/268493/lsh/src/parser.h \
+ /home/jabuk/268493/lsh/src/wholeline.h

@@ -7,13 +7,10 @@ struct Command
 {
     char* cmd;
     char** args;
-    int* fdin;
-    int* fdout;
-    bool close_fd[2];
 };
 typedef struct Command Command;
 
-Command create_comm(char** args, int* fdin, int* fdout, bool close_fdin, bool close_fdout);
-int execute_cmd(Command* comm);
+Command create_comm(char** args);
+int execute_cmd(Command* comm, int* fdin, int* fdout, bool close_fdin, bool close_fdout);
 
 #endif // !COMMAND_H

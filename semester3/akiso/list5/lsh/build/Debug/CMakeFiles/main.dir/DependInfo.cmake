@@ -8,11 +8,12 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/home/jabuk/Studia-WPPT/semester3/akiso/list5/lsh/src/command.c" "CMakeFiles/main.dir/src/command.c.o" "gcc" "CMakeFiles/main.dir/src/command.c.o.d"
-  "/home/jabuk/Studia-WPPT/semester3/akiso/list5/lsh/src/lexer.c" "CMakeFiles/main.dir/src/lexer.c.o" "gcc" "CMakeFiles/main.dir/src/lexer.c.o.d"
-  "/home/jabuk/Studia-WPPT/semester3/akiso/list5/lsh/src/main.c" "CMakeFiles/main.dir/src/main.c.o" "gcc" "CMakeFiles/main.dir/src/main.c.o.d"
-  "/home/jabuk/Studia-WPPT/semester3/akiso/list5/lsh/src/parser.c" "CMakeFiles/main.dir/src/parser.c.o" "gcc" "CMakeFiles/main.dir/src/parser.c.o.d"
-  "/home/jabuk/Studia-WPPT/semester3/akiso/list5/lsh/src/pipechain.c" "CMakeFiles/main.dir/src/pipechain.c.o" "gcc" "CMakeFiles/main.dir/src/pipechain.c.o.d"
+  "/home/jabuk/268493/lsh/src/command.c" "CMakeFiles/main.dir/src/command.c.o" "gcc" "CMakeFiles/main.dir/src/command.c.o.d"
+  "/home/jabuk/268493/lsh/src/lexer.c" "CMakeFiles/main.dir/src/lexer.c.o" "gcc" "CMakeFiles/main.dir/src/lexer.c.o.d"
+  "/home/jabuk/268493/lsh/src/main.c" "CMakeFiles/main.dir/src/main.c.o" "gcc" "CMakeFiles/main.dir/src/main.c.o.d"
+  "/home/jabuk/268493/lsh/src/parser.c" "CMakeFiles/main.dir/src/parser.c.o" "gcc" "CMakeFiles/main.dir/src/parser.c.o.d"
+  "/home/jabuk/268493/lsh/src/pipechain.c" "CMakeFiles/main.dir/src/pipechain.c.o" "gcc" "CMakeFiles/main.dir/src/pipechain.c.o.d"
+  "/home/jabuk/268493/lsh/src/wholeline.c" "CMakeFiles/main.dir/src/wholeline.c.o" "gcc" "CMakeFiles/main.dir/src/wholeline.c.o.d"
   )
 
 # Targets to which this target links.
