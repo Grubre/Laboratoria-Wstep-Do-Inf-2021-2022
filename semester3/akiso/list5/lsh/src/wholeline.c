@@ -1,4 +1,5 @@
 #include "wholeline.h"
+#include "errorhandler.h"
 #include <stdlib.h>
 
 WholeLine create_wholeline()
@@ -20,7 +21,7 @@ int execute_wholeline(WholeLine* wholeLine)
 {
     for(size_t i = 0; i < wholeLine->size; i++)
     {
-        PipeChain pipeChain = wholeLine->pipeChains[0];
+        PipeChain pipeChain = wholeLine->pipeChains[i];
 
         int last_proc_pid = execute_pipechain(&pipeChain);
 
@@ -30,31 +31,29 @@ int execute_wholeline(WholeLine* wholeLine)
         if(pipeChain.logic == AMPERSAND)
             continue;
 
-        int t;
-        waitpid(last_proc_pid, &t, 0);
+        int ret;
+        waitpid(last_proc_pid, &ret, 0);
         for(size_t i = 0; i < pipeChain.size - 1; i++)
         {
             wait(NULL);
         }
-        int ret = WIFEXITED(t);
-        printf("exited with %d\n",t);
-        switch (pipeChain.logic) {
-            case AND:
-                printf("AND\n");
-                if(ret != 0)
-                    break;
+
+        // if(!WIFEXITED(ret))
+        //     err("exit error!\n");
+
+        if (pipeChain.logic == AND)
+        {
+            if(ret != 0)
                 break;
-            case OR:
-                printf("OR\n");
-                if(ret == 0)
-                    break;
+        }
+        else if(pipeChain.logic == OR)
+        {
+            if(ret == 0)
                 break;
-            case SEMICOLON:
-                printf("COLON\n");
-                continue;
-                break;
-            default:
-                break;
+        }
+        else if(pipeChain.logic == SEMICOLON)
+        {
+            continue;
         }
     }
     return 0;

@@ -11,13 +11,17 @@
 #include "lexer.h"
 #include "parser.h"
 #include "wholeline.h"
+#include "signalhandler.h"
 
-
+extern sigjmp_buf main_jmp_buf;
 int main()
 {
-    
+    signal(SIGINT, signal_handler);
     while(true)
     {
+        if (sigsetjmp(main_jmp_buf,1) == LOOP_BEGIN_JMP_POINT)
+        {
+        }
         printf(">>> ");
         char* line = (char*)malloc(sizeof(char));
         size_t bufsize;
@@ -30,9 +34,6 @@ int main()
         char** arr = tokenize(line, &arrsize);
 
         WholeLine wholeLine = parse(arr, arrsize);
-
-        printf("comm: [%s]\n",wholeLine.pipeChains[0].commands->cmd);
-        printf("comm: [%s]\n",wholeLine.pipeChains[0].commands->args[1]);
 
         execute_wholeline(&wholeLine);
 

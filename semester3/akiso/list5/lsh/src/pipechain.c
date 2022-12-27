@@ -1,5 +1,6 @@
 #include "pipechain.h"
 #include "errorhandler.h"
+#include "signalhandler.h"
 #include <stdlib.h>
 #include <unistd.h>
 
@@ -15,6 +16,7 @@ PipeChain create_pipechain()
     PipeChain pipeChain;
     pipeChain.commands = (Command*)malloc(sizeof(Command));
     pipeChain.size = 0;
+    pipeChain.logic = END;
     return pipeChain;
 }
 
@@ -40,7 +42,7 @@ int execute_pipechain(PipeChain* pipeChain)
 {
     if(builtin_func(pipeChain))
         return -1;
-    int pid;
+    int pid = 0;
     int* fd = (int*)malloc((pipeChain->size - 1) * 2 * sizeof(int));
 
     for(size_t i = 0; i < pipeChain->size - 1; i++)
@@ -52,6 +54,9 @@ int execute_pipechain(PipeChain* pipeChain)
         err("could not fork!");
     if(pid == 0)
     {
+        fork_sig_handler();
+        if(pipeChain->logic == AMPERSAND)
+            bg_process_sig_handler();
         for(size_t j = 0; j < (pipeChain->size - 1) * 2; j++)
         {
             if(!(j == 1))
@@ -59,10 +64,13 @@ int execute_pipechain(PipeChain* pipeChain)
                 close(fd[j]);
             }
         }
+        // printf("Comm: %s %s\n",pipeChain->commands[0].cmd, pipeChain->commands->args[1]);
         fflush(stdout);
         execute_cmd(&pipeChain->commands[0],
                     NULL,
                     &fd[1]);
+        err("could not execute command!");
+        exit(EXIT_FAILURE);
     }
 
     // middle processes
@@ -76,6 +84,9 @@ int execute_pipechain(PipeChain* pipeChain)
             err("could not fork!");
         if(pid == 0)
         {
+            fork_sig_handler();
+            if(pipeChain->logic == AMPERSAND)
+                bg_process_sig_handler();
             for(size_t j = 0; j < (pipeChain->size - 1) * 2; j++)
             {
                 if(!(j == (i - 1) * 2 || j == i * 2 + 1))
@@ -87,6 +98,8 @@ int execute_pipechain(PipeChain* pipeChain)
             execute_cmd(&pipeChain->commands[i - 1],
                     fdin,
                     fdout);
+            err("could not execute command!");
+            exit(EXIT_FAILURE);
         }
     }
 
@@ -100,6 +113,9 @@ int execute_pipechain(PipeChain* pipeChain)
         err("could not fork!");
     if(pid == 0)
     {
+        fork_sig_handler();
+        if(pipeChain->logic == AMPERSAND)
+            bg_process_sig_handler();
         for(size_t j = 0; j < (pipeChain->size - 1) * 2; j++)
         {
             if(!(j == (pipeChain->size - 2) * 2))
@@ -107,10 +123,11 @@ int execute_pipechain(PipeChain* pipeChain)
                 close(fd[j]);
             }
         }
-        fflush(stdout);
         execute_cmd(&pipeChain->commands[pipeChain->size - 1],
         &fd[(pipeChain->size - 2) * 2],
         NULL);
+        err("could not execute command!");
+        exit(EXIT_FAILURE);
     }
 
     for(size_t j = 0; j < (pipeChain->size - 1) * 2; j++)
