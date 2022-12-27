@@ -1,1 +1,0 @@
-/usr/bin/cc                     -Wall                    -Wextra                    -Wpedantic -g CMakeFiles/main.dir/src/command.c.o CMakeFiles/main.dir/src/lexer.c.o CMakeFiles/main.dir/src/main.c.o CMakeFiles/main.dir/src/parser.c.o CMakeFiles/main.dir/src/pipechain.c.o CMakeFiles/main.dir/src/wholeline.c.o -o main 
