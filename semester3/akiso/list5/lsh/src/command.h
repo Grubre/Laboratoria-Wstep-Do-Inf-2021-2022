@@ -11,6 +11,6 @@ struct Command
 typedef struct Command Command;
 
 Command create_comm(char** args);
-int execute_cmd(Command* comm, int* fdin, int* fdout, bool close_fdin, bool close_fdout);
+int execute_cmd(Command* comm, int* fdin, int* fdout);
 
 #endif // !COMMAND_H

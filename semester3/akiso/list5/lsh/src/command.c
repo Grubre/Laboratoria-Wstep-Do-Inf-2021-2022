@@ -10,24 +10,18 @@ Command create_comm(char** args)
     return comm;
 }
 
-int execute_cmd(Command *cmd, int* fdin, int* fdout, bool close_fdin, bool close_fdout)
+int execute_cmd(Command *cmd, int* fdin, int* fdout)
 {
-    // if(cmd->fdin)
-    // {
-    //     dup2(*(cmd->fdin), 0);
-    // }
-    // if(cmd->fdout)
-    // {
-    //     dup2(*(cmd->fdout), 1);
-    // }
-    // for(int i = 0; i < 2; i++)
-    // {
-    //     if(cmd->close_fd[i])
-    //         close(i);
-    // }
+    if(fdin)
+    {
+        dup2(*(fdin), 0);
+    }
 
-    // printf("cmd: %s, args[0]: %s", cmd->cmd, cmd->args[0]);
-    //
+    if(fdout)
+    {
+        dup2(*(fdout), 1);
+    }
+
     execvp(cmd->cmd, cmd->args);
     return 0;
 }

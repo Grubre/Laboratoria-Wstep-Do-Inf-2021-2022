@@ -1,4 +1,5 @@
 #include "parser.h"
+#include "pipechain.h"
 #include "wholeline.h"
 
 struct TokenArr
@@ -13,6 +14,7 @@ TokenArr create_token_arr()
 {
     TokenArr tokenArr;
     tokenArr.comm_tokens = (char**)malloc(sizeof(char*));
+    tokenArr.size = 0;
     return tokenArr;
 }
 
@@ -27,19 +29,20 @@ void push_str(TokenArr* tokenArr, char* str)
 
 void reset_tokens(TokenArr* tokenArr)
 {
-    for(size_t i = 0; i < tokenArr->size; i++)
-        free(tokenArr->comm_tokens[i]);
+    // for(size_t i = 0; i < tokenArr->size; i++)
+    //     free(tokenArr->comm_tokens[i]);
     tokenArr->size = 0;
 }
 
 
-void add_new_pipechain(WholeLine* wholeLine, TokenArr* tokenArr, PipeChain *pipeChain)
+void add_new_pipechain(WholeLine* wholeLine, TokenArr* tokenArr, PipeChain pipeChain, LogicDelim logic)
 {
     // We need to push NULL because execvp has to
     // have its args array end with NULL
     push_str(tokenArr, NULL);
-    push_comm(pipeChain, create_comm(tokenArr->comm_tokens));
-    reset_tokens(tokenArr);
+    push_comm(&pipeChain, create_comm(tokenArr->comm_tokens));
+    pipeChain.logic = logic;
+    // reset_tokens(tokenArr);
 
     push_pipechain(wholeLine, pipeChain);
 }
@@ -55,25 +58,25 @@ WholeLine parse(char** tokens, const size_t token_cnt)
     {
         if(!strcmp(tokens[i], "&&"))
         {
-            add_new_pipechain(&wholeLine, &tokenArr, &pipeChain);
+            add_new_pipechain(&wholeLine, &tokenArr, pipeChain, AND);
             // reset the pipechain
             pipeChain = create_pipechain();
         }
         else if(!strcmp(tokens[i], "||"))
         {
-            add_new_pipechain(&wholeLine, &tokenArr, &pipeChain);
+            add_new_pipechain(&wholeLine, &tokenArr, pipeChain, OR);
             // reset the pipechain
             pipeChain = create_pipechain();
         }
         else if(!strcmp(tokens[i], ";"))
         {
-            add_new_pipechain(&wholeLine, &tokenArr, &pipeChain);
+            add_new_pipechain(&wholeLine, &tokenArr, pipeChain, SEMICOLON);
             // reset the pipechain
             pipeChain = create_pipechain();
         }
         if(!strcmp(tokens[i], "&"))
         {
-            add_new_pipechain(&wholeLine, &tokenArr, &pipeChain);
+            add_new_pipechain(&wholeLine, &tokenArr, pipeChain, AMPERSAND);
             // reset the pipechain
             pipeChain = create_pipechain();
         }
@@ -84,7 +87,7 @@ WholeLine parse(char** tokens, const size_t token_cnt)
             push_str(&tokenArr, NULL);
 
             push_comm(&pipeChain, create_comm(tokenArr.comm_tokens));
-            reset_tokens(&tokenArr);
+            tokenArr = create_token_arr();
         }
         else
         {
@@ -94,9 +97,7 @@ WholeLine parse(char** tokens, const size_t token_cnt)
     
     if(tokenArr.size > 0)
     {
-        push_str(&tokenArr, NULL);
-        push_comm(&pipeChain, create_comm(tokenArr.comm_tokens));
-        add_new_pipechain(&wholeLine, &tokenArr, &pipeChain);
+        add_new_pipechain(&wholeLine, &tokenArr, pipeChain, END);
     }
 
     return wholeLine;

@@ -10,6 +10,7 @@ struct WholeLine
 typedef struct WholeLine WholeLine;
 
 WholeLine create_wholeline();
+int execute_wholeline(WholeLine* wholeLine);
 
 void push_pipechain();
 

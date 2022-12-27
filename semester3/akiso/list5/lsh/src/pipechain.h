@@ -6,11 +6,22 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/wait.h>
+
+typedef enum
+{
+    AND,
+    OR,
+    AMPERSAND,
+    SEMICOLON,
+    END
+} LogicDelim;
 
 struct PipeChain
 {
     Command* commands;
     size_t size;
+    LogicDelim logic;
 };
 typedef struct PipeChain PipeChain;
 
@@ -18,7 +29,8 @@ void push_comm(PipeChain *pipeChain, Command comm);
 
 PipeChain create_pipechain();
 
-void execute_pipechain(PipeChain* pipeChain);
+int execute_pipechain(PipeChain* pipeChain);
+bool builtin_func(PipeChain* pipeChain);
 
 // This function takes a shell line and splits it into chains of pipes
 // pipechaincount is the size of returned array, ex.
