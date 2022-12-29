@@ -19,6 +19,7 @@ void push_pipechain(WholeLine* wholeLine, PipeChain pipeChain)
 
 int execute_wholeline(WholeLine* wholeLine)
 {
+    int ret;
     for(size_t i = 0; i < wholeLine->size; i++)
     {
         PipeChain pipeChain = wholeLine->pipeChains[i];
@@ -31,15 +32,11 @@ int execute_wholeline(WholeLine* wholeLine)
         if(pipeChain.logic == AMPERSAND)
             continue;
 
-        int ret;
         waitpid(last_proc_pid, &ret, 0);
         for(size_t i = 0; i < pipeChain.size - 1; i++)
         {
             wait(NULL);
         }
-
-        // if(!WIFEXITED(ret))
-        //     err("exit error!\n");
 
         if (pipeChain.logic == AND)
         {
@@ -56,5 +53,5 @@ int execute_wholeline(WholeLine* wholeLine)
             continue;
         }
     }
-    return 0;
+    return ret;
 }

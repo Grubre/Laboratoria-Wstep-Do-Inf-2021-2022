@@ -26,7 +26,9 @@ bool builtin_func(PipeChain *pipeChain)
     {
         // char cur[500];
         // getcwd(cur, 500);
-        if(chdir(pipeChain->commands->args[1]) == -1)
+        if(!pipeChain[0].commands->args[1])
+            chdir("/");
+        else if(chdir(pipeChain->commands->args[1]) == -1)
             err("could not change directory");
         return true;
     }
@@ -35,99 +37,70 @@ bool builtin_func(PipeChain *pipeChain)
         exit(EXIT_SUCCESS);
         return true;
     }
+    else if(pipeChain[0].commands->args[1])
+    {
+        if(!strcmp(pipeChain[0].commands->cmd,"echo") &&
+           !strcmp(pipeChain[0].commands->args[1],"$?"))
+        {
+            extern short last_proc_ret_val;
+            printf("%d\n",last_proc_ret_val);
+            return true;
+        }
+    }
     return false;
 }
 
+/*
+ * @returns PID of the started process
+ */
+int start_proc(size_t proc_num, PipeChain* pipeChain, int* fd, int* fdin, int* fdout)
+{
+    int pid = fork();
+    if(pid < 0)
+        err("could not fork!");
+    if(pid == 0)
+    {
+        fork_sig_handler();
+        if(pipeChain->logic == AMPERSAND)
+            bg_process_sig_handler();
+        for(size_t j = 0; j < (pipeChain->size - 1) * 2; j++)
+        {
+            if(!(j == (proc_num - 1) * 2 || j == proc_num * 2 + 1))
+                {
+                    close(fd[j]);
+                }
+        }
+        fflush(stdout);
+        execute_cmd(&pipeChain->commands[proc_num],
+                    fdin,
+                    fdout);
+        err("could not execute command!");
+        exit(EXIT_FAILURE);
+    }
+
+
+    return pid;
+}
+
+/*
+ * @returns PID of the last process in the pipechain
+ */
 int execute_pipechain(PipeChain* pipeChain)
 {
     if(builtin_func(pipeChain))
         return -1;
-    int pid = 0;
+    int pid = -1;
     int* fd = (int*)malloc((pipeChain->size - 1) * 2 * sizeof(int));
 
     for(size_t i = 0; i < pipeChain->size - 1; i++)
         pipe(fd + (i * 2));
 
-    // first process
-    pid = fork();
-    if(pid < 0)
-        err("could not fork!");
-    if(pid == 0)
+    for(size_t i = 0; i < pipeChain->size; i++)
     {
-        fork_sig_handler();
-        if(pipeChain->logic == AMPERSAND)
-            bg_process_sig_handler();
-        for(size_t j = 0; j < (pipeChain->size - 1) * 2; j++)
-        {
-            if(!(j == 1))
-            {
-                close(fd[j]);
-            }
-        }
-        // printf("Comm: %s %s\n",pipeChain->commands[0].cmd, pipeChain->commands->args[1]);
-        fflush(stdout);
-        execute_cmd(&pipeChain->commands[0],
-                    NULL,
-                    &fd[1]);
-        err("could not execute command!");
-        exit(EXIT_FAILURE);
-    }
+        int* fdin = ( i == 0 ) ? NULL : &fd[(i - 1) * 2];
+        int* fdout = (i == pipeChain->size - 1) ? NULL : &fd[i * 2 + 1];
 
-    // middle processes
-    for(size_t i = 1; i < pipeChain->size - 1; i++)
-    {
-        int* fdin = &fd[(i - 1) * 2];
-        int* fdout = &fd[i * 2 + 1];
-
-        pid = fork();
-        if(pid < 0)
-            err("could not fork!");
-        if(pid == 0)
-        {
-            fork_sig_handler();
-            if(pipeChain->logic == AMPERSAND)
-                bg_process_sig_handler();
-            for(size_t j = 0; j < (pipeChain->size - 1) * 2; j++)
-            {
-                if(!(j == (i - 1) * 2 || j == i * 2 + 1))
-                {
-                    close(fd[j]);
-                }
-            }
-            fflush(stdout);
-            execute_cmd(&pipeChain->commands[i - 1],
-                    fdin,
-                    fdout);
-            err("could not execute command!");
-            exit(EXIT_FAILURE);
-        }
-    }
-
-    // last process
-    if(pipeChain->size == 1)
-    {
-        return pid;
-    }
-    pid = fork();
-    if(pid < 0)
-        err("could not fork!");
-    if(pid == 0)
-    {
-        fork_sig_handler();
-        if(pipeChain->logic == AMPERSAND)
-            bg_process_sig_handler();
-        for(size_t j = 0; j < (pipeChain->size - 1) * 2; j++)
-        {
-            if(!(j == (pipeChain->size - 2) * 2))
-            {
-                close(fd[j]);
-            }
-        }
-        execute_cmd(&pipeChain->commands[pipeChain->size - 1],
-        &fd[(pipeChain->size - 2) * 2],
-        NULL);
-        err("could not execute command!");
-        exit(EXIT_FAILURE);
+        pid = start_proc(i, pipeChain, fd, fdin, fdout);
     }
 
     for(size_t j = 0; j < (pipeChain->size - 1) * 2; j++)
