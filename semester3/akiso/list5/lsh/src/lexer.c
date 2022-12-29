@@ -56,8 +56,8 @@ char** tokenize(char* line, size_t* arr_size)
             (*arr_size)++;
             arr = (char**)realloc(arr, (*arr_size) * sizeof(char*));
             arr[(*arr_size) - 1] = (char*)malloc(sizeof(char) * (i - token_begin + 1));
-            memcpy(arr[(*arr_size) - 1], line + token_begin, i - token_begin);
-            arr[(*arr_size) - 1][i - token_begin] = '\0';
+            memcpy(arr[(*arr_size) - 1], line + token_begin + 1, i - token_begin - 1);
+            arr[(*arr_size) - 1][i - token_begin -2 ] = '\0';
             // printf("Allocating string (%s) of size %lu at %d\n",arr[(*arr_size) - 1], i - token_begin, (*arr_size) - 1);
             token_begin = i + 1;
         }
