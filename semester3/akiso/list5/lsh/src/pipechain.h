@@ -22,6 +22,7 @@ struct PipeChain
     Command* commands;
     size_t size;
     LogicDelim logic;
+    int pgid;
 };
 typedef struct PipeChain PipeChain;
 

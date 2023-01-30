@@ -11,6 +11,7 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}\
                     -Wall\
                     -Wextra\
                     -Wpedantic\
+                    -fsanitize=address\
 ")
 
 file(GLOB_RECURSE SRC src/*.c)

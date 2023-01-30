@@ -19,23 +19,29 @@ short last_proc_ret_val;
 
 int main()
 {
+    printf("MY PGID: %d\n", getpgrp());
     signal(SIGINT, signal_handler);
-    // signal(SIGSTOP, signal_handler);
     signal(SIGTSTP, signal_handler);
+    signal(SIGTTOU, SIG_IGN);
+    signal(SIGTTIN, SIG_IGN);
+    signal(SIGCHLD, signal_handler);
     while(true)
     {
         if (sigsetjmp(main_jmp_buf,1) == LOOP_BEGIN_JMP_POINT)
         {
         }
+
         printf(">>> ");
-        char* line = (char*)malloc(sizeof(char));
-        size_t bufsize;
+
+        char* line = NULL;
+        size_t bufsize = 0;
+        fflush(stdout);
         if(getline(&line, &bufsize, stdin) == -1)
             exit(EXIT_SUCCESS);
 
         line = trimwhitespace(line);
 
-        size_t arrsize;
+        size_t arrsize = 0;
         char** arr = tokenize(line, &arrsize);
 
         WholeLine wholeLine = parse(arr, arrsize);
@@ -43,22 +49,21 @@ int main()
         last_proc_ret_val = execute_wholeline(&wholeLine);
 
         // Free the resources
-        // for(size_t i = 0; i < arrsize; i++)
-        //     free(arr[i]);
-        // free(arr);
-        //
-        // for(size_t i = 0; i < wholeLine.size; i++)
-        // {
-        //     for(size_t j = 0; j < wholeLine.pipeChains[i].size; j++)
-        //     {
-        //         free(wholeLine.pipeChains[i].commands[j].args);
-        //     }
-        // }
-        // free(wholeLine.pipeChains);
-        //
+        for(size_t i = 0; i < arrsize; i++)
+            free(arr[i]);
+        free(arr);
+
+        for(size_t i = 0; i < wholeLine.size; i++)
+        {
+            for(size_t j = 0; j < wholeLine.pipeChains[i].size; j++)
+            {
+                free(wholeLine.pipeChains[i].commands[j].args);
+            }
+        }
+        free(wholeLine.pipeChains);
+
         free(line);
     }
-
 
     return 0;
 }

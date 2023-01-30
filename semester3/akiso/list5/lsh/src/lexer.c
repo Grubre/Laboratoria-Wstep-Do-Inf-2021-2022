@@ -23,8 +23,7 @@ char *trimwhitespace(char *str)
 
 char** tokenize(char* line, size_t* arr_size)
 {
-    // char** arr = (char**)malloc(sizeof(char*) * 100);
-    char** arr = NULL;
+    char** arr = (char**)malloc(sizeof(char*) * 100);
     (*arr_size) = 0;
     size_t len = strlen(line);
     size_t token_begin = 0;
@@ -38,7 +37,7 @@ char** tokenize(char* line, size_t* arr_size)
         else if(line[i] == ' ')
         {
             (*arr_size)++;
-            arr = (char**)realloc(arr, (*arr_size) * sizeof(char*));
+            // arr = (char**)realloc(arr, (*arr_size) * sizeof(char*));
             arr[(*arr_size) - 1] = (char*)malloc(sizeof(char) * (i - token_begin + 1));
             memcpy(arr[(*arr_size) - 1], line + token_begin, i - token_begin);
             arr[(*arr_size) - 1][i - token_begin] = '\0';

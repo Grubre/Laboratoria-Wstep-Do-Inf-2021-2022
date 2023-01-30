@@ -1,0 +1,32 @@
+Instructions:
+0x00    IN
+0x01    OUT
+0x02    MOV xx
+0x03    SWP
+0x04    ADD
+0x05    SUB
+0x06    AND
+0x07    OR
+0x08    XOR
+0x09    NOT
+0x0A    JMP xx
+0x0B    JZ  xx
+
+
+
+0:      MOV
+1:      1
+2:      SWP
+3:      ADD
+4:      OUT
+5:      JMP
+6:      3
+7:      
+8:      
+9:      
+10:     
+11:     
+12:     
+13:     
+14:     
+15:     

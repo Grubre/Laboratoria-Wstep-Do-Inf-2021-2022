@@ -35,17 +35,25 @@ void reset_tokens(TokenArr* tokenArr)
 }
 
 
-void add_new_pipechain(WholeLine* wholeLine, TokenArr* tokenArr, PipeChain pipeChain, LogicDelim logic)
+void add_new_pipechain(WholeLine* wholeLine, TokenArr* tokenArr, PipeChain pipeChain, LogicDelim logic,
+        char* _stdin, char* _stdout, char* _stderr)
 {
     // We need to push NULL because execvp has to
     // have its args array end with NULL
     push_str(tokenArr, NULL);
-    push_comm(&pipeChain, create_comm(tokenArr->comm_tokens));
+    push_comm(&pipeChain, create_comm(tokenArr->comm_tokens, _stdin, _stdout, _stderr));
     pipeChain.logic = logic;
     // reset_tokens(tokenArr);
 
     // printf("comm: %s %s\n",pipeChain.commands[0].args[0], pipeChain.commands[0].args[1]);
     push_pipechain(wholeLine, pipeChain);
+}
+
+void reset_fds(char**  _stdin, char** _stdout, char** _stderr)
+{
+    *_stdin = NULL;
+    *_stdout = NULL;
+    *_stderr = NULL;
 }
 
 
@@ -55,44 +63,77 @@ WholeLine parse(char** tokens, const size_t token_cnt)
     TokenArr tokenArr = create_token_arr();
     PipeChain pipeChain = create_pipechain();
 
+    char* _stdin = NULL;
+    char* _stdout = NULL;
+    char* _stderr = NULL;
+
     for(size_t i = 0; i < token_cnt; i++)
     {
         if(!strcmp(tokens[i], "&&"))
         {
-            add_new_pipechain(&wholeLine, &tokenArr, pipeChain, AND);
+            add_new_pipechain(&wholeLine, &tokenArr, pipeChain, AND, _stdin, _stdout, _stderr);
             // reset the pipechain
             pipeChain = create_pipechain();
             tokenArr = create_token_arr();
+            reset_fds(&_stdin, &_stdout, &_stderr);
         }
         else if(!strcmp(tokens[i], "||"))
         {
-            add_new_pipechain(&wholeLine, &tokenArr, pipeChain, OR);
+            add_new_pipechain(&wholeLine, &tokenArr, pipeChain, OR, _stdin, _stdout, _stderr);
             // reset the pipechain
             pipeChain = create_pipechain();
             tokenArr = create_token_arr();
+            reset_fds(&_stdin, &_stdout, &_stderr);
         }
         else if(!strcmp(tokens[i], ";"))
         {
-            add_new_pipechain(&wholeLine, &tokenArr, pipeChain, SEMICOLON);
+            add_new_pipechain(&wholeLine, &tokenArr, pipeChain, SEMICOLON, _stdin, _stdout, _stderr);
             // reset the pipechain
             pipeChain = create_pipechain();
             tokenArr = create_token_arr();
+            reset_fds(&_stdin, &_stdout, &_stderr);
         }
         else if(!strcmp(tokens[i], "&"))
         {
-            add_new_pipechain(&wholeLine, &tokenArr, pipeChain, AMPERSAND);
+            add_new_pipechain(&wholeLine, &tokenArr, pipeChain, AMPERSAND, _stdin, _stdout, _stderr);
             // reset the pipechain
             pipeChain = create_pipechain();
             tokenArr = create_token_arr();
+            reset_fds(&_stdin, &_stdout, &_stderr);
         }
         else if(!strcmp(tokens[i], "|"))
         {
             // We need to push NULL because execvp has to
             // have its args array end with NULL
             push_str(&tokenArr, NULL);
+            push_comm(&pipeChain, create_comm(tokenArr.comm_tokens, _stdin, _stdout, _stderr));
 
-            push_comm(&pipeChain, create_comm(tokenArr.comm_tokens));
             tokenArr = create_token_arr();
+            reset_fds(&_stdin, &_stdout, &_stderr);
+        }
+        else if(!strcmp(tokens[i], ">"))
+        {
+            if(i >= token_cnt - 1)
+                continue;
+            _stdout = tokens[i+1];
+
+            i += 1;
+        }
+        else if(!strcmp(tokens[i], "2>"))
+        {
+            if(i >= token_cnt - 1)
+                continue;
+            _stderr = tokens[i+1];
+
+            i += 1;
+        }
+        else if(!strcmp(tokens[i], "<"))
+        {
+            if(i < token_cnt - 1)
+                continue;
+            _stdin = tokens[i+1];
+
+            i += 1;
         }
         else
         {
@@ -102,7 +143,12 @@ WholeLine parse(char** tokens, const size_t token_cnt)
     
     if(tokenArr.size > 0)
     {
-        add_new_pipechain(&wholeLine, &tokenArr, pipeChain, END);
+            add_new_pipechain(&wholeLine, &tokenArr, pipeChain, END, _stdin, _stdout, _stderr);
+    }
+    else if(pipeChain.size > 0)
+    {
+        pipeChain.logic = END;
+        push_pipechain(&wholeLine, pipeChain);
     }
 
     return wholeLine;

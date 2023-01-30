@@ -8,6 +8,7 @@
 
 #define LOOP_BEGIN_JMP_POINT 96
 
+void reset_loop();
 void signal_handler(int sig);
 void fork_sig_handler();
 void bg_process_sig_handler();
