@@ -58,19 +58,19 @@ char* get_frac_part(unsigned long long number, const int precision) {
 int main(int argc, char** argv) {
     if(argc < 3)
         return 1;
+
     char * input_num_str = strtok(argv[1], ".");
+
     unsigned long long whole = atoi(input_num_str);
     unsigned long long frac = atoi(strtok(NULL, "."));
     int precision = atoi(argv[2]);
-    //
+
     char* wholepart = get_whole_part(whole);
     char* numpart = get_frac_part(frac, precision);
-    //
+
     char* output = strcat(wholepart, ".");
     output = strcat(output, numpart);
-    //
+
     printf("%s\n", output);
-    //     
-    // float input = atof()
     return 0;
 }
