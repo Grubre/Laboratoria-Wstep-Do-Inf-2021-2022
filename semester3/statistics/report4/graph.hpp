@@ -1,7 +1,11 @@
+#include <functional>
 #include <iostream>
 #include <vector>
 #include <random>
 #include <memory>
+#include <fstream>
+#include <thread>
+#include <chrono>
 
 class Graph {
 public:
@@ -134,3 +138,97 @@ inline void simulate_graph_coverage(long long* ret, const Graph& graph, int star
 
     *ret = iterations_cnt;
 }
+
+
+inline int generate_clique(int node_id, int n) {
+    static std::random_device rd;
+    static std::mt19937 gen(rd());
+
+    std::uniform_int_distribution<> distrib(0, n - 1);
+
+    int next_node = distrib(gen);
+    while(next_node == node_id) {
+        next_node = distrib(gen);
+    }
+
+    return next_node;
+}
+
+
+inline int generate_path(int node_id, int n) {
+    static std::random_device rd;
+    static std::mt19937 gen(rd());
+
+    if(node_id == 0) {
+        return 1;
+    }
+
+    if(node_id == n - 1) {
+        return n - 2;
+    }
+
+    std::uniform_int_distribution<> distrib(0, 1);
+
+    return distrib(gen) == 0 ? node_id - 1 : node_id + 1;
+
+}
+
+
+inline int generate_lollipop(int node_id, int n) {
+    static std::random_device rd;
+    static std::mt19937 gen(rd());
+
+    const int n2_3 = 2 * n / 3;
+
+    int next_node;
+
+    if(node_id < n2_3 - 1) {
+        std::uniform_int_distribution<> distrib(0, n2_3 - 1);
+
+        next_node = distrib(gen);
+        while(next_node == node_id) {
+            next_node = distrib(gen);
+        }
+    }
+    else if(node_id == n2_3 - 1) {
+        std::uniform_int_distribution<> distrib(0, n2_3);
+
+        next_node = distrib(gen);
+        while(next_node == node_id) {
+            next_node = distrib(gen);
+        }
+    }
+    else {
+        if(node_id == n - 1) {
+            return n - 2;
+        }
+
+        std::uniform_int_distribution<> distrib(0, 1);
+
+        next_node = distrib(gen) == 0 ? node_id - 1 : node_id + 1;
+    }
+    return next_node;
+}
+
+
+inline void simulate_graph_coverage_functional(long long *ret, int n, const std::function<int(int, int)>& generate, int starting_pos) {
+    std::vector<bool> visited(n, false);
+
+    int visited_cnt = 0;
+    int current_node = starting_pos;
+
+    long long iterations_cnt = 0;
+
+    while(visited_cnt < n) {
+        if(!visited[current_node]) {
+            visited[current_node] = true;
+            visited_cnt++;
+        }
+
+        current_node = generate(current_node, n);
+        iterations_cnt++;
+    }
+
+    *ret = iterations_cnt;
+}
+
