@@ -6,6 +6,8 @@ DivWynik, HEX 0 // wynik dzielenia
 DivMod, HEX 0 // reszta z dzielenia
 Divide, HEX 0 // wskaznik na funkcje
 Clear
+
+
 Store DivWynik
 Store DivMod
 Store wynik_neg_Temp

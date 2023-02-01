@@ -16,7 +16,7 @@ void push_label(char* name, unsigned int mem_loc) {
     labels_size++;
     labels = (Label*)realloc(labels, labels_size * sizeof(Label));
     Label label;
-    label.name = name;
+    label.name = strdup(name);
     label.mem_loc = mem_loc;
     labels[labels_size - 1] = label;
 }
