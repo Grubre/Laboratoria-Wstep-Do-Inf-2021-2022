@@ -2,9 +2,7 @@
 
 
 .section .data
-    lookup: .ascii "0123456789"
     input:  .quad   0x0453
-
 
 .section .bss
     .lcomm  output, 6

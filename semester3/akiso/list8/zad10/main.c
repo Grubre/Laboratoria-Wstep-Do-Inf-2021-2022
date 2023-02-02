@@ -108,8 +108,9 @@ void print_matrix(matrix* m) {
 
 int main() {
     srand(time(NULL));
+    const int size = 1500;
 
-    matrix m1 = create_matrix(2000), m2 = create_matrix(2000), m3;
+    matrix m1 = create_matrix(size), m2 = create_matrix(size), m3;
     fill_rand(&m1);
     fill_rand(&m2);
 
@@ -123,9 +124,9 @@ int main() {
     elapsedTime += (t2.tv_usec - t1.tv_usec) / 1000.0;   // us to ms
     printf("normal: %f ms.\n", elapsedTime);
 
-    transpose_matrix(&m2);
 
     gettimeofday(&t1, NULL);
+    transpose_matrix(&m2);
     multiply_by_transposed(&m3, &m1, &m2);
     gettimeofday(&t2, NULL);
     elapsedTime = (t2.tv_sec - t1.tv_sec) * 1000.0;      // sec to ms

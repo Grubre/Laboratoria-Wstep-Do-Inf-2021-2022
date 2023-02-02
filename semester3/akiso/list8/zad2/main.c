@@ -290,8 +290,6 @@ int main(int argc, char** argv) {
         file_contents[k] = tokenize_line(k, spl);
     }
 
-
-
     fptr = fopen(argv[2], "w");
 
     for(int i = 0; i < lines_cnt; i++) {

@@ -3,8 +3,7 @@
 #include <string.h>
 #include "assembler.h"
 
-typedef struct Label
-{
+typedef struct Label {
     char* name;
     unsigned int mem_loc;
 } Label;
