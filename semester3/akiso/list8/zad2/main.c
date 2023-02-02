@@ -202,13 +202,72 @@ char* assemble(int line_nr, line_tokens tokens) {
 }
 
 
+int is_empty(const char *s) {
+    while (*s != '\0') {
+    if (!isspace((unsigned char)*s))
+      return 0;
+    s++;
+    }
+    return 1;
+}
+
+
+char *trimwhitespace(char *str)
+{
+  char *end;
+
+  // Trim leading space
+  while(isspace((unsigned char)*str)) str++;
+
+  if(*str == 0)  // All spaces?
+    return str;
+
+  // Trim trailing space
+  end = str + strlen(str) - 1;
+  while(end > str && isspace((unsigned char)*end)) end--;
+
+  // Write new null terminator character
+  end[1] = '\0';
+
+  return str;
+}
+
+
+char** read_file_strip_comm_newline(FILE* fptr, int* lines_cnt) {
+    char* line = NULL;
+    size_t line_size = 0;
+
+    int lines_size = 32;
+    char** lines = malloc(sizeof(char*) * lines_size);
+
+
+    (*lines_cnt) = 0;
+    while(getline(&line, &line_size, fptr) != -1) {
+        if(line[0] == '\n' || is_comment(line) || is_empty(line)) {
+            continue;
+        }
+        if(*lines_cnt == lines_size) {
+            lines_size *= 2;
+            lines = realloc(lines, lines_size * sizeof(char*));
+        }
+        char* clone = trimwhitespace(strdup(line));
+        lines[*lines_cnt] = clone;
+        (*lines_cnt)++;
+    }
+
+    fclose(fptr);
+
+    return lines;
+}
+
+
 int main(int argc, char** argv) {
 
     if(argc != 3) {
         errno = 22;
         err(1, NULL);
     }
-
+    
     FILE* fptr = fopen(argv[1], "r");
 
     if(fptr == NULL) {
@@ -216,28 +275,26 @@ int main(int argc, char** argv) {
         err(1, "\"%s\" ", argv[1]);
     }
 
-    char* line = NULL;
-    size_t line_size = 0;
+    int lines_cnt;
+    char** lines = read_file_strip_comm_newline(fptr, &lines_cnt);
 
     int line_tokens_cnt = 1;
-    line_tokens* file_contents = (line_tokens*)malloc(line_tokens_cnt * sizeof(Line));
+    line_tokens* file_contents = (line_tokens*)malloc(line_tokens_cnt * sizeof(line_tokens));
 
-    int k = 0;
-    while(getline(&line, &line_size, fptr) != -1) {
+    for(int k = 0; k < lines_cnt; k++) {
         if(k >= line_tokens_cnt) {
             line_tokens_cnt *= 2;
-            file_contents = (line_tokens*)realloc(file_contents, line_tokens_cnt * sizeof(line_tokens));
+            file_contents = realloc(file_contents, line_tokens_cnt * sizeof(line_tokens));
         }
-        split_line spl = split(line);
+        split_line spl = split(lines[k]);
         file_contents[k] = tokenize_line(k, spl);
-        k++;
     }
 
-    fclose(fptr);
+
 
     fptr = fopen(argv[2], "w");
 
-    for(int i = 0; i < k; i++) {
+    for(int i = 0; i < lines_cnt; i++) {
         char* str = assemble(i + 1, file_contents[i]);
         if(str != NULL) {
             fprintf(fptr, "%s\n", str);
