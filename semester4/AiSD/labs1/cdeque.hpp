@@ -61,6 +61,11 @@ public:
     auto begin() -> Iterator;
     auto end() -> Iterator;
 
+public:
+    auto merge(const cdeque<T> & other) -> void;
+    auto merge(cdeque<T>&& other) -> void;
+
+
 private:
     auto _insert_head_helper(denode<T>* node) -> void;
 
@@ -85,7 +90,7 @@ cdeque<T>::cdeque(const cdeque& other) : cdeque<T>() {
 
     while(curr != other.m_head) {
         insert_back(curr->value);
-        curr = curr->link;
+        curr = curr->next;
     }
 }
 
@@ -251,7 +256,7 @@ auto cdeque<T>::begin() -> Iterator {
 
 template<typename T>
 auto cdeque<T>::end() -> Iterator {
-    return Iterator(m_head->prev);
+    return Iterator(m_head);
 };
 
 
@@ -263,7 +268,7 @@ auto cdeque<T>::begin() const -> Iterator {
 
 template<typename T>
 auto cdeque<T>::end() const -> Iterator {
-    return Iterator(m_head->prev);
+    return Iterator(m_head);
 };
 
 
@@ -305,3 +310,35 @@ template<typename Cdeque>
 auto CdequeIterator<Cdeque>::operator!=(const CdequeIterator& other) const -> bool {
     return !(m_ptr == other.m_ptr);
 }
+
+
+template<typename T>
+auto cdeque<T>::merge(const cdeque<T> & other) -> void
+{
+    auto it = other.begin();
+    do
+    {
+        insert_back(*it);
+        ++it;
+    } while(it != other.end());
+}
+
+
+template<typename T>
+auto cdeque<T>::merge(cdeque<T>&& other) -> void
+{
+    if(!m_head || !other.m_head)
+    {
+        return;
+    }
+
+    m_size = m_size + std::exchange(other.m_size, 0);
+
+    auto* back = m_head->prev;
+    auto* other_back = other.m_head->prev;
+    other.m_head->prev = back;
+    back->next = std::exchange(other.m_head, nullptr);
+    m_head->prev = other_back;
+    other_back->next = m_head;
+}
+

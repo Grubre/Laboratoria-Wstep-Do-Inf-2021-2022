@@ -174,7 +174,7 @@ auto list<T>::front() -> T& {
     if(!m_head) {
         throw std::range_error("Cant read from empty list");
     }
-    return *m_head;
+    return m_head->value;
 }
 
 
@@ -183,7 +183,7 @@ auto list<T>::back() -> T& {
     if(!m_tail) {
         throw std::range_error("Cant read from empty list");
     }
-    return *m_tail;
+    return m_tail->value;
 }
 
 
@@ -251,7 +251,7 @@ auto ListIterator<List>::operator++() -> ListIterator<List>& {
 
 template<typename List>
 auto ListIterator<List>::operator++(int) -> ListIterator<List>& {
-    auto copy = *this;
+    ListIterator<List> copy = *this;
     ++(*this);
     return copy;
 }
