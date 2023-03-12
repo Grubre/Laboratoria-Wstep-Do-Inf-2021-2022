@@ -1,5 +1,6 @@
 #pragma once
 #include <utility>
+#include <stdexcept>
 #include "node.hpp"
 
 template<typename T>
@@ -15,7 +16,7 @@ public:
 
 public:
     auto push(T val = T()) -> void;
-    auto pop() -> T;
+    auto pop() -> void;
     auto front() -> T&;
     auto back() -> T&;
     auto size() const -> unsigned int;
@@ -92,6 +93,7 @@ queue<T>::queue(std::initializer_list<T> args) : queue<T>() {
 
 template<typename T>
 auto queue<T>::push(T val) -> void {
+    m_size++;
     auto* new_node = new node<T>(val);
     if(!m_rear) {
         m_front = m_rear = new_node;
@@ -104,28 +106,33 @@ auto queue<T>::push(T val) -> void {
 
 
 template<typename T>
-auto queue<T>::pop() -> T {
+auto queue<T>::pop() -> void {
+    m_size--;
     auto* t = m_front;
     m_front = m_front->link;
 
-    auto ret = t->value;
     if(m_front == nullptr) {
         m_rear = nullptr;
     }
 
     delete t;
-    return ret;
 }
 
 
 template<typename T>
 auto queue<T>::front() -> T& {
+    if(!m_front) {
+        throw std::range_error("Cant read from empty queue");
+    }
     return m_front->value;
 }
 
 
 template<typename T>
 auto queue<T>::back() -> T& {
+    if(!m_rear) {
+        throw std::range_error("Cant read from empty queue");
+    }
     return m_rear->value;
 }
 

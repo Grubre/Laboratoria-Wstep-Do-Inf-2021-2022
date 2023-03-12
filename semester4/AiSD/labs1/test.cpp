@@ -1,18 +1,20 @@
 #include <iostream>
 #include <queue>
 #include <stack>
+#include <list>
 #include "queue.hpp"
 #include "stack.hpp"
+#include "list.hpp"
+#include "cdeque.hpp"
 
 int main() {
-    stack<int> a;
-    a.push(4);
-    a.push(5);
-    a.push(6);
-    stack<int> b = std::move(a);
-    std::cout << b.pop() << std::endl;
-    std::cout << b.pop() << std::endl;
-    std::cout << b.pop() << std::endl;
+    cdeque<int> a;
+    a.insert_back(1);
+    a.insert_back(2);
+    a.insert_back(3);
 
+    for(auto i : a) {
+        std::cout << i << std::endl;
+    }
     return 0;
 }

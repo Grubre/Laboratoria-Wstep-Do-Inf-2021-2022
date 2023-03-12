@@ -1,5 +1,7 @@
 #pragma once
+#include <stdexcept>
 #include <utility>
+#include <optional>
 #include "node.hpp"
 
 template<typename T>
@@ -15,7 +17,7 @@ public:
 
 public:
     auto push(T val = T()) -> void;
-    auto pop() -> T;
+    auto pop() -> void;
     auto top() -> T&;
     auto size() const -> unsigned int;
     auto swap(stack<T>& a, stack<T>& b) -> void {
@@ -87,6 +89,7 @@ stack<T>::stack(std::initializer_list<T> args) : stack<T>() {
 
 template<typename T>
 auto stack<T>::push(T val) -> void {
+    m_size++;
     auto* new_node = new node<T>(val);
     new_node->link = m_top;
     m_top = new_node;
@@ -94,18 +97,20 @@ auto stack<T>::push(T val) -> void {
 
 
 template<typename T>
-auto stack<T>::pop() -> T {
+auto stack<T>::pop() -> void {
+    m_size--;
     auto* t = m_top;
-    T ret = t->value;
     m_top = m_top->link;
     delete t;
-    return ret;
 }
 
 
 template<typename T>
 auto stack<T>::top() -> T& {
-    return *m_top;
+    if(!m_top) {
+        throw std::range_error("Cant read from empty stack");
+    }
+    return m_top->value;
 }
 
 
