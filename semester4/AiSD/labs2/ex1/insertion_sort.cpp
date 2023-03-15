@@ -1,6 +1,9 @@
 #include <iostream>
 #include <vector>
 
+volatile int num_of_comparisons = 0;
+volatile int num_of_swaps = 0;
+
 auto print_vector(const std::vector<int>& numbers) -> void {
     std::cout << "(";
     for(int i = 0; i < numbers.size(); i++) {
@@ -24,7 +27,10 @@ auto insertion_sort(const std::vector<int>& numbers) -> std::vector<int> {
         key = ret[i];
         int j = i - 1;
 
+        num_of_comparisons++;
         while(j >= 0 && ret[j] > key) {
+            num_of_comparisons++;
+            num_of_swaps++;
             ret[j + 1] = ret[j];
             j--;
         }
@@ -50,5 +56,8 @@ auto main(int argc, char** argv) -> int {
     std::cout << "posortowana tablica: ";
     print_vector(sorted);
     std::cout << std::endl;
+
+    std::cout << "ilosc porownan: " << num_of_comparisons << std::endl;
+    std::cout << "ilosc przestawien: " << num_of_swaps << std::endl;
     return 0;
 }
