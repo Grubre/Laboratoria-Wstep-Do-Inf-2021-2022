@@ -63,6 +63,7 @@ auto quick_sort(const std::vector<int>& numbers) -> std::vector<int> {
     return ret;
 }
 
+
 auto main(int argc, char** argv) -> int {
     std::vector<int> numbers;
     numbers.reserve(argc);

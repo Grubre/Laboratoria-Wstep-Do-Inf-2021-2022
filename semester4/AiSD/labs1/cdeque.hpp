@@ -65,7 +65,6 @@ public:
     auto merge(const cdeque<T> & other) -> void;
     auto merge(cdeque<T>&& other) -> void;
 
-
 private:
     auto _insert_head_helper(denode<T>* node) -> void;
 

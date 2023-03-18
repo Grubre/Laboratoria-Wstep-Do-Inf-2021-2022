@@ -233,7 +233,6 @@ auto list<T>::end() const -> Iterator {
 }
 
 
-
 template<typename List>
 ListIterator<List>::ListIterator() : m_ptr(nullptr) {}
 
