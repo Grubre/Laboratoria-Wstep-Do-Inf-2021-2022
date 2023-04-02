@@ -1,0 +1,6 @@
+clang++ merge_sort.cpp -o merge_sort -std=c++20
+# clang++ insertion_sort.cpp -o insertion_sort -std=c++20
+clang++ quick_sort.cpp -o quick_sort -std=c++20
+./quick_sort > quick.txt
+./merge_sort > merge.txt
+# ./insertion_sort > insertion.txt
