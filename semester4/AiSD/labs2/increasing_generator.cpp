@@ -13,7 +13,7 @@ int main(int argc, char** argv) {
 
     std::random_device rd;
     std::mt19937 gen(rd());
-    std::uniform_int_distribution<> distrib(0, 2 * argc - 1);
+    std::uniform_int_distribution<> distrib(0, 2 * n - 1);
     std::vector<int> rand;
     while(n-->0) {
         rand.push_back(distrib(gen));
