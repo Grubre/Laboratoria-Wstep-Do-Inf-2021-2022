@@ -1,8 +1,7 @@
 #include <iostream>
 #include <vector>
 
-volatile int num_of_comparisons = 0;
-volatile int num_of_swaps = 0;
+int n = 0;
 
 auto print_vector(const std::vector<int>& numbers) -> void {
     std::cout << "(";
@@ -15,104 +14,97 @@ auto print_vector(const std::vector<int>& numbers) -> void {
     std::cout << ")";
 }
 
+void merge(std::vector<int>& arr, int left, int mid, int right, int& comparisons, int& swaps) {
+    int n1 = mid - left + 1;
+    int n2 = right - mid;
 
-auto merge(std::vector<int>& numbers, const unsigned int left,
-        const unsigned int mid, const unsigned int right) -> void {
-    auto const sub_array_one_size = mid - left + 1;
-    auto const sub_array_two_size = right - mid;
+    std::vector<int> L(n1), R(n2);
 
-    std::vector<int> left_array(sub_array_one_size);
-    std::vector<int> right_array(sub_array_two_size);
+    for (int i = 0; i < n1; ++i) {
+        L[i] = arr[left + i];
+    }
+    for (int j = 0; j < n2; ++j) {
+        R[j] = arr[mid + 1 + j];
+    }
 
-    for (auto i = 0; i < sub_array_one_size; i++)
-        left_array[i] = numbers[left + i];
-    for (auto j = 0; j < sub_array_two_size; j++)
-        right_array[j] = numbers[mid + 1 + j];
+    int i = 0;
+    int j = 0;
+    int k = left;
 
-    auto sub_array_one_index = 0;
-    auto sub_array_two_index = 0;
-    auto index_of_merged_array = left;
-
-    num_of_comparisons += 2;
-    while(sub_array_one_index < sub_array_one_size
-            && sub_array_two_index < sub_array_two_size) {
-        num_of_comparisons++;
-        if(left_array[sub_array_one_index] <= right_array[sub_array_two_index]) {
-            num_of_swaps++;
-            numbers[index_of_merged_array] = left_array[sub_array_one_index];
-            sub_array_one_index++;
+    while (i < n1 && j < n2) {
+        comparisons++;
+        if (L[i] <= R[j]) {
+            arr[k] = L[i];
+            i++;
         } else {
-            num_of_swaps++;
-            numbers[index_of_merged_array] = right_array[sub_array_two_index];
-            sub_array_two_index++;
+            arr[k] = R[j];
+            j++;
+            swaps += n1 - i;
         }
-        index_of_merged_array++;
+        k++;
     }
 
-    num_of_comparisons++;
-    while(sub_array_one_index < sub_array_one_size) {
-        num_of_comparisons++;
-        num_of_swaps++;
-        numbers[index_of_merged_array] = left_array[sub_array_one_index];
-        sub_array_one_index++;
-        index_of_merged_array++;
+    while (i < n1) {
+        arr[k] = L[i];
+        i++;
+        k++;
     }
 
-    num_of_comparisons++;
-    while(sub_array_two_index < sub_array_two_size) {
-        num_of_comparisons++;
-        num_of_swaps++;
-        numbers[index_of_merged_array] = right_array[sub_array_two_index];
-        sub_array_two_index++;
-        index_of_merged_array++;
+    while (j < n2) {
+        arr[k] = R[j];
+        j++;
+        k++;
+    }
+
+    if(n < 40) {
+        print_vector(arr);
+        std::cout << std::endl;
     }
 }
 
+void merge_sort_helper(std::vector<int>& arr, int left, int right, int& comparisons, int& swaps) {
+    if (left < right) {
+        int mid = left + (right - left) / 2;
 
-auto merge_sort_helper(std::vector<int>& numbers, unsigned int begin, unsigned int end) -> void {
-    if(begin >= end) {
-        return;
+        merge_sort_helper(arr, left, mid, comparisons, swaps);
+        merge_sort_helper(arr, mid + 1, right, comparisons, swaps);
+
+        merge(arr, left, mid, right, comparisons, swaps);
     }
-
-    auto mid = begin + (end - begin) / 2;
-    merge_sort_helper(numbers, begin, mid);
-    merge_sort_helper(numbers, mid + 1, end);
-    merge(numbers, begin, mid, end);
-    print_vector(numbers);
-    std::cout << std::endl;
 }
 
-
-auto merge_sort(const std::vector<int>& numbers) -> std::vector<int> {
-    if(numbers.empty()) {
-        return {};
-    }
-
-    std::vector<int> ret = numbers;
-
-    merge_sort_helper(ret, 0, ret.size() - 1);
-
-    return ret;
+auto merge_sort(std::vector<int>& numbers) -> std::pair<int,int> {
+    auto comparisons = 0, swaps = 0;
+    merge_sort_helper(numbers, 0, numbers.size() - 1, comparisons, swaps);
+    return {comparisons, swaps};
 }
 
 auto main(int argc, char** argv) -> int {
     std::vector<int> numbers;
-    numbers.reserve(argc);
-    for(int i = 1; i < argc; i++) {
-        numbers.push_back(std::stoi(argv[i]));
+
+    int a;
+    while(std::cin >> a) {
+        n++;
+        numbers.push_back(a);
     }
 
-    std::cout << "dane wejsciowe: ";
-    print_vector(numbers);
-    std::cout << std::endl;
+    if(n < 40)
+    {
+        std::cout << "dane wejsciowe: ";
+        print_vector(numbers);
+        std::cout << std::endl;
+    }
 
-    std::vector<int> sorted = merge_sort(numbers);
+    auto[comparisons, swaps] = merge_sort(numbers);
 
-    std::cout << "posortowana tablica: ";
-    print_vector(sorted);
-    std::cout << std::endl;
+    if(n < 40)
+    {
+        std::cout << "posortowana tablica: ";
+        print_vector(numbers);
+        std::cout << std::endl;
+    }
 
-    std::cout << "ilosc porownan: " << num_of_comparisons << std::endl;
-    std::cout << "ilosc przestawien: " << num_of_swaps << std::endl;
+    std::cout << "ilosc porownan: " << comparisons << std::endl;
+    std::cout << "ilosc przestawien: " << swaps << std::endl;
     return 0;
 }

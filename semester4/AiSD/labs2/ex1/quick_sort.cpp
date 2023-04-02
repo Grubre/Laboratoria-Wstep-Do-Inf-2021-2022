@@ -2,6 +2,7 @@
 #include <vector>
 #include <stack>
 
+int n = 0;
 
 auto print_vector(const std::vector<int>& numbers) -> void {
     std::cout << "(";
@@ -15,70 +16,71 @@ auto print_vector(const std::vector<int>& numbers) -> void {
 }
 
 
-auto partition(std::vector<int>& numbers, int l, int h) -> int {
-    auto x = numbers[h];
-    auto i = l - 1;
+auto partition(std::vector<int>& numbers, int l, int r, int& comparisons, int& swaps) -> int{
+    int pivot = numbers[r];
+    int i = l - 1;
 
-    for(int j = l; j <= h - 1; j++) {
-        if(numbers[j] <= x) {
+    for (int j = l; j <= r - 1; ++j) {
+        comparisons++;
+        if (numbers[j] < pivot) {
+            swaps++;
             i++;
             std::swap(numbers[i], numbers[j]);
         }
     }
+    swaps++;
+    std::swap(numbers[i + 1], numbers[r]);
 
-    std::swap(numbers[i + 1], numbers[h]);
+    if(n < 40) {
+        print_vector(numbers);
+        std::cout << std::endl;
+    }
+
     return i + 1;
 }
 
+void quick_sort_helper(std::vector<int>& numbers, int l, int r, int& comparisons, int& swaps) {
+    if (l < r) {
+        int pi = partition(numbers, l, r, comparisons, swaps);
 
-auto quick_sort(const std::vector<int>& numbers) -> std::vector<int> {
-    std::vector<int> ret = numbers;
-
-    std::stack<int> stack;
-
-    stack.push(0);
-    stack.push(ret.size() - 1);
-
-    while(!stack.empty()) {
-        print_vector(ret);
-        std::cout << std::endl;
-        auto h = stack.top();
-        stack.pop();
-        auto l = stack.top();
-        stack.pop();
-
-        auto p = partition(ret, l, h);
-
-        if(p - 1 > l) {
-            stack.push(l);
-            stack.push(p - 1);
-        }
-
-        if(p + 1 < h) {
-            stack.push(p + 1);
-            stack.push(h);
-        }
+        quick_sort_helper(numbers, l, pi - 1, comparisons, swaps);
+        quick_sort_helper(numbers, pi + 1, r, comparisons, swaps);
     }
+}
 
-    return ret;
+auto quick_sort(std::vector<int>& numbers) -> std::pair<int, int> {
+    int comparisons = 0, swaps = 0;
+    quick_sort_helper(numbers, 0, numbers.size() - 1, comparisons, swaps);
+    return std::make_pair(comparisons, swaps);
 }
 
 
 auto main(int argc, char** argv) -> int {
     std::vector<int> numbers;
-    numbers.reserve(argc);
-    for(int i = 1; i < argc; i++) {
-        numbers.push_back(std::stoi(argv[i]));
+
+    int a;
+    while(std::cin >> a) {
+        n++;
+        numbers.push_back(a);
     }
 
-    std::cout << "dane wejsciowe: ";
-    print_vector(numbers);
-    std::cout << std::endl;
+    if(n < 40)
+    {
+        std::cout << "dane wejsciowe: ";
+        print_vector(numbers);
+        std::cout << std::endl;
+    }
 
-    std::vector<int> sorted = quick_sort(numbers);
+    auto[comparisons, swaps] = quick_sort(numbers);
 
-    std::cout << "posortowana tablica: ";
-    print_vector(sorted);
-    std::cout << std::endl;
+    if(n < 40)
+    {
+        std::cout << "posortowana tablica: ";
+        print_vector(numbers);
+        std::cout << std::endl;
+    }
+
+    std::cout << "ilosc porownan: " << comparisons << std::endl;
+    std::cout << "ilosc przestawien: " << swaps << std::endl;
     return 0;
 }
