@@ -38,9 +38,9 @@ struct graph {
 
         bool is_directed = (du == 'D');
 
-        // std::cout << "du: " << du << std::endl;
-        // std::cout << "n: " << n << std::endl;
-        // std::cout << "m: " << m << std::endl;
+        std::cout << "du: " << du << std::endl;
+        std::cout << "n: " << n << std::endl;
+        std::cout << "m: " << m << std::endl;
 
 
         // std::cout << std::boolalpha << is_directed << std::endl;
@@ -52,6 +52,7 @@ struct graph {
             if(!(s >> a >> b)) {
                 return {};
             }
+            std::cout << a << ", " << b << std::endl;
             g.add(a - 1,b - 1);
             if(!g.directed) {
                 g.add(b - 1,a - 1);
