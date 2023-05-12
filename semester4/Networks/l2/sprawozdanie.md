@@ -35,7 +35,7 @@ $$T_{max} = 0.003s$$
 $$Capacity = 1Gb/s$$
 $$Packet\_size = 1500B$$
 $$Avg\_packet\_size = 8 * 1500 B = 12000b$$
-Stosując metodę Monte Carlo dla $n = 100000$ iteracji, przy tych parametrach otrzymujemy niezawodność na poziomie ~$91.36$%.
+Stosując metodę Monte Carlo dla $n = 100000$ iteracji, przy tych parametrach otrzymujemy niezawodność na poziomie ~$93.128$%.
 
 ### Zwiększanie natężenia
 Tym razem będziemy stosować metodę Monte Carlo dla $n = 50000$. Nasze $INTESNITY$ będzie na początku
