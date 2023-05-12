@@ -1,0 +1,239 @@
+\documentclass{report}
+\usepackage{polski}
+\usepackage[utf8]{inputenc}
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{ragged2e}
+\usepackage{amsmath}
+\usepackage{blindtext}
+\usepackage{hyperref}
+\begin{document}
+\author{Jakub Ogrodowczyk}
+
+\section*{Zadanie 1}
+Niech:\\
+$f$ - tablica, gdzie
+$f_i$ = maksymalna ilość paliwa jaką może dostarczyć firma $j$\\
+$g$ - tablica, gdzie
+$g_i$ = wymagana ilość paliwa na lotnisku $i$\\
+$c$ - macierz, gdzie
+$c_{ij}$ = koszta dostarczenia galonu paliwa na lotnisko $i$ przez firmę $j$
+\subsection*{zmienne decyzyjne}
+\(x\) - macierz, gdzie
+\(x_{ij}\) = ilość galonów paliwa, które na lotnisko \(i\) dostarczy firma \(j\)
+\subsection*{ograniczenia}
+$\forall i \forall j : x_{ij} \ge 0$\\
+$\forall j : \sum_{i} x_{ij} \le f_j$\\
+$\forall i : \sum_{j} x_{ij} = g_i$
+\subsection*{funkcja celu}
+$\min \sum_{i} \sum_{j} x_{ij} c_{ij}$
+\subsection*{wyniki}
+Dla danych:\\
+$f = (27500, 550000, 660000)$\\
+$g = (11000, 220000, 330000, 440000)$\\
+$c = \begin{pmatrix}
+    10 & 7 & 8 \\
+    10 & 11 & 14 \\
+    9 & 12 & 4 \\
+    11 & 13 & 9
+    \end{pmatrix}$\\\\
+mamy:\\
+$x = \begin{pmatrix}
+0 & 110000 & 0 \\
+165000 & 55000 & 0 \\
+0 & 0 & 330000 \\
+110000 & 0 & 330000
+\end{pmatrix}$\\
+cost $= 8525000$
+
+\section*{Zadanie 2}
+Niech:
+G = (N,A), gdzie\\
+N - zbiór wierzchołków (miast),\\
+A - zbiór krawędzi (połączeń),\\
+c - funkcja kosztu,\\
+t - funkcja czasu,\\
+\(T_{max}\) - górne ograniczenie czasu \\
+$i^\circ$ - start\\
+$j^\circ$ - cel\\
+Graf i funkcje c oraz t modeluje za pomocą macierzy\\
+\subsection*{zmienne decyzyjne}
+\(x\) - macierz, gdzie
+$x_{ij} = \begin{cases} 1, & \text{jeśli poszliśmy drogą od i do j} \\ 0, & \text{w p. p.} \end{cases}$\\
+\subsection*{ograniczenia}
+$\forall i : \sum_{j\in S(i)}x_{ij} - \sum_{j\in P(i)}x_{ji} = \begin{cases} 1 : & i = i^\circ \\ -1 : & i = j^\circ \\ 0 : & \text{w. p. p.} \end{cases}$\\
+$\sum_{i}\sum_{j}x_{ij}t_{ij}\leq T_{max}$
+\subsection*{funkcja celu}
+$\min\sum_{i}\sum_{j}x_{ij}c_{ij}$
+\subsection*{wyniki}
+Dla danych:\\
+$|N| = 10$\\
+Graf:\\
+\includegraphics*[scale=0.58]{../graph.png}\\
+$i^\circ = 1$\\
+$j^\circ = 8$\\
+$T_{max} = 20$\\
+mamy:\\
+ścieżka: $1 \rightarrow 10 \rightarrow 6 \rightarrow 7 \rightarrow 8$\\
+czas: 16\\
+koszt: 99\\
+Po usunięciu ograniczeń na całkowitoliczbowość mamy:\\
+$x = \begin{pmatrix}
+ 0 & 0 &  0 &  0 &  0 &  0 &       0 &       0 &       0.363636 & 0.636364\\
+ 0 & 0 &  0 &  0 &  0 &  0 &       0 &       0 &       0 &       0\\
+ 0 & 0 &  0 &  0 &  0 &  0 &       0 &       0 &       0 &       0\\
+ 0 & 0 &  0 &  0 &  0 &  0 &       0 &       0 &       0 &       0\\
+ 0 & 0 &  0 &  0 &  0 &  0 &       0 &       0 &       0 &       0\\
+ 0 &  0 &  0 &  0 &  0 &  0 &       0.636364  0 &       0 &       0\\
+ 0 &  0 &  0 &  0 &  0 &  0 &       0 &       0.636364  0 &       0\\
+ 0 &  0 &  0 &  0 &  0 &  0 &       0 &       0 &       0 &       0\\
+ 0 &  0 &  0 &  0 &  0 &  0 &       0 &       0.363636  0 &       0\\
+ 0 &  0 &  0 &  0 &  0 &  0.636364  0 &       0 &       0 &       0
+\end{pmatrix}$\\
+Gdy do tego usuniemy ograniczenia na czas, nasze rozwiązanie
+ponownie jest akceptowalne (ponadto optymalniejsze od pierwotnego):\\
+ścieżka: $1 \rightarrow 9 \rightarrow 8$\\
+koszt: 71.0
+czas: 27
+
+
+\section*{Zadanie 3}
+Niech:\\
+$r_{\text{min}}$ - macierz, gdzie
+$r_{\text{min}_{ij}}$ = minimalna ilość radiowozów przydzielonych do dzielnicy i dla zmiany j\\
+$r_{\text{max}}$ - macierz, gdzie
+$r_{\text{max}_{ij}}$ = maksymalna ilość radiowozów przydzielonych do dzielnicy i dla zmiany j\\
+$z_{\text{min}}$ - tablica, gdzie
+$z_{\text{min}_{i}}$ = minimalna ilość radiowozów podczas zmiany $i$\\
+$p_{\text{min}}$ - tablica, gdzie
+$p_{\text{min}_{i}}$ = minimalna ilość radiowozów w dzielnicy $i$\\
+\subsection*{zmienne decyzyjne}
+\(x\) - macierz, gdzie
+\(x_{ij}\) = ilość radiowozów w dzielnicy $i$ podczas zmiany $j$
+\subsection*{ograniczenia}
+$\forall i \forall j : r_{min_{ij}} \le x_{ij} \le r_{max_{ij}}$\\
+$\forall j : \sum_{i} x_{ij} \ge z_{min_j}$\\
+$\forall i : \sum_{j} x_{ij} \ge p_{min_i}$\\
+\subsection*{funkcja celu}
+$\min \sum_{i} \sum_{j} x_{ij}$
+\subsection*{wyniki}
+Dla danych:\\
+$r_{\text{min}} = \begin{pmatrix}
+    2 & 4 & 3 \\
+    3 & 6 & 5 \\
+    5 & 7 & 6 
+    \end{pmatrix}$\\
+$r_{\text{max}} = \begin{pmatrix}
+    3 & 7 & 5 \\
+    5 & 7 & 10 \\
+    8 & 12 & 10
+    \end{pmatrix}$\\
+$z_{\text{min}} = (10, 20, 18)$\\
+$p_{\text{min}} = (10, 14, 13)$\\
+mamy:\\
+$x = \begin{pmatrix}
+2 & 7 & 5 \\
+3 & 6 & 7 \\
+5 & 7 & 6 
+\end{pmatrix}$\\
+ilość radiowozów $ = 48$
+
+\section*{Zadanie 4}
+Niech:\\
+$n\times m$ - wymiary macierzy $T$ (ilość wierszy, ilość kolumn)\\
+$T$ - macierz, gdzie
+$T_{ij} = \begin{cases} 1, & \text{jeśli jest w tym polu kontener} \\ 0, & \text{w p. p.} \end{cases}$\\
+$k$ - odległość na jaką widzą kamery
+\subsection*{zmienne decyzyjne}
+$x$ - macierz, gdzie
+$x_{ij} = \begin{cases} 1, & \text{jeśli umieszczamy w tym polu kamerę} \\ 0, & \text{w p. p.} \end{cases}$\\
+\subsection*{ograniczenia}
+$\forall i \forall j : (T_{ij} = 1) \implies (\sum_{l = i-k}^{i+k}x_{lj} + \sum_{l = j-k}^{j + k}x_{il})\ge1$\\
+$\forall i \forall j : T_{ij} + x_{ij} \le 1$
+\subsection*{funkcja celu}
+$\min \sum_{i}\sum_{j}x_{ij}$
+\subsection*{wyniki}
+\textbf{Dla danych:}\\
+$n = 10$\\
+$m = 10$\\
+ilość kontenerów = $21$\\
+$T = \begin{pmatrix}
+    0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+    0 & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 \\
+    0 & 0 & 0 & 0 & 1 & 1 & 1 & 0 & 0 & 0 \\
+    1 & 1 & 0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 \\
+    0 & 0 & 0 & 0 & 1 & 1 & 0 & 0 & 0 & 0 \\
+    0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+    0 & 0 & 0 & 0 & 0 & 1 & 1 & 1 & 0 & 0 \\
+    0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 1 & 1 \\
+    1 & 1 & 1 & 1 & 1 & 0 & 0 & 0 & 0 & 0 \\
+    0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0
+    \end{pmatrix}$\\    
+\textbf{k = 2:}\\
+ilość kamer = $10$\\
+$x = \begin{pmatrix}
+    0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+    0 & 0 & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 0 \\
+    0 & 0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 \\
+    0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+    0 & 0 & 0 & 0 & 0 & 0 & 1 & 0 & 0 & 0 \\
+    0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+    0 & 1 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 1 \\
+    0 & 0 & 0 & 0 & 0 & 0 & 1 & 0 & 0 & 0 \\
+    0 & 0 & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 0 \\
+    1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0
+    \end{pmatrix}$\\
+\textbf{k = 5:}\\
+ilość kamer = $5$\\
+$x = \begin{pmatrix}
+    0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+    0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+    0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+    0 & 0 & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 0 \\
+    0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+    0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+    0 & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 \\
+    0 & 0 & 0 & 0 & 0 & 0 & 1 & 0 & 0 & 0 \\
+    0 & 0 & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 0 \\
+    0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0
+    \end{pmatrix}$\\    
+\section*{Zadanie 5}
+Niech:\\
+$s$ - tablica, gdzie
+$s_i$ = cena sprzedażu wyrobu $i$\\
+$c_t$ - tablica, gdzie
+$c_{t_i}$ = koszt pracy maszyny $i$\\
+$c_m$ - tablica, gdzie
+$c_{m_i}$ = koszt materiału wyrobu $i$\\
+$p$ - tablica, gdzie
+$p_i$ = maksymalny tygodniowy popyt na wyrób $i$\\
+$t_{\text{max}}$ - ilość godzin przez które maszyny są dostępne w tygodniu\\
+$t$ - macierz, gdzie
+$t_{ij}$ = czas potrzebny na zrobienie wyrobu $i$ przez maszynę $j$
+\subsection*{zmienne decyzyjne}
+$x$ - tablica, gdzie
+$x_i$ = wyprodukowana ilość wyrobu $i$
+\subsection*{ograniczenia}
+$\forall i : 0 \le x_i \le p_i$\\
+$\forall j : \sum_{i} x_i \frac{t_{ij}}{60} \le t_{\text{max}}$\\
+\subsection*{funkcja celu}
+$\max \sum_{i} x_i (s_i - c_{m_i}) - \sum_{j} \frac{c_{t_j}}{60} \sum_{i} x_i t_{ij}$
+\subsection*{wyniki}
+Dla danych:\\
+$s = (9,7,6,5)$\\
+$c_t = [2,2,3]$\\
+$c_m = [4,1,1,1]$\\
+$p = [400, 100, 150, 500]$\\
+$t_{\max} = 60$\\
+$t = \begin{pmatrix}
+    5 & 10 & 6 \\
+    3 & 6 & 4 \\
+    4 & 5 & 3 \\
+    4 & 2 & 1
+    \end{pmatrix}$\\
+mamy:\\
+zarobek = $3632.5$\\
+$x = (125, 100, 150, 500)$
+\end{document}
