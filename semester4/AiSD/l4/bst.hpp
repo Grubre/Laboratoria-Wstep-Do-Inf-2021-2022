@@ -15,17 +15,19 @@ public:
 
 
 class BST {
-private:
-    std::unique_ptr<Node> root;
-
+public:
     struct operation_stats {
         size_t comparisons = 0;
         size_t pointer_reads = 0;
         size_t pointer_substitutions = 0;
     };
 
+private:
+    std::unique_ptr<Node> root;
+
     auto insert(std::unique_ptr<Node>& node, int val, operation_stats& stats) -> void {
         stats.pointer_reads++;
+        stats.comparisons++;
         if(!node) {
             stats.pointer_substitutions++;
             node = std::make_unique<Node>(val);
@@ -40,24 +42,27 @@ private:
 
     auto deleteValue(std::unique_ptr<Node>& node, int val, operation_stats& stats) -> void {
         stats.pointer_reads++;
+        stats.comparisons++;
         if (!node)
             return;
 
         stats.comparisons++;
+        stats.pointer_reads++;
         if (val < node->value) {
             deleteValue(node->left, val, stats);
         } else if (val > node->value) {
             stats.comparisons ++;
-            stats.pointer_reads ++;
+            stats.pointer_reads++;
             deleteValue(node->right, val, stats);
         } else {
-            stats.comparisons ++;
             stats.pointer_reads ++;
             if (!node->left) {
                 stats.pointer_substitutions++;
                 node = std::move(node->right);
             } else if (!node->right) {
+                stats.pointer_reads++;
                 stats.pointer_substitutions++;
+                stats.comparisons ++;
                 node = std::move(node->left);
             } else {
                 stats.pointer_reads++;
