@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <iostream>
 #include <queue>
-
+#include "common.hpp"
 
 class Node {
 public:
@@ -15,21 +15,12 @@ public:
 
 
 class BST {
-public:
-    struct operation_stats {
-        size_t comparisons = 0;
-        size_t pointer_reads = 0;
-        size_t pointer_substitutions = 0;
-    };
-
 private:
     std::unique_ptr<Node> root;
 
     auto insert(std::unique_ptr<Node>& node, int val, operation_stats& stats) -> void {
-        stats.pointer_reads++;
         stats.comparisons++;
         if(!node) {
-            stats.pointer_substitutions++;
             node = std::make_unique<Node>(val);
             return;
         }
@@ -47,7 +38,6 @@ private:
             return;
 
         stats.comparisons++;
-        stats.pointer_reads++;
         if (val < node->value) {
             deleteValue(node->left, val, stats);
         } else if (val > node->value) {
@@ -60,23 +50,26 @@ private:
                 stats.pointer_substitutions++;
                 node = std::move(node->right);
             } else if (!node->right) {
-                stats.pointer_reads++;
                 stats.pointer_substitutions++;
                 stats.comparisons ++;
                 node = std::move(node->left);
             } else {
                 stats.pointer_reads++;
-                auto& successor = minValueNode(node->right);
-                stats.comparisons++;
+                auto& successor = minValueNode(node->right, stats);
+                stats.pointer_substitutions++;
                 node->value = successor->value;
                 deleteValue(node->right, successor->value, stats);
             }
         }
     }
 
-    auto minValueNode(std::unique_ptr<Node>& node) -> std::unique_ptr<Node>& {
-        return node->left ? minValueNode(node->left) : node;
-    }    auto calculateHeight(const std::unique_ptr<Node>& node) const -> int {
+    auto minValueNode(std::unique_ptr<Node>& node, operation_stats& stats) -> std::unique_ptr<Node>& {
+        stats.pointer_reads++;
+        stats.comparisons++;
+        return node->left ? minValueNode(node->left, stats) : node;
+    }
+
+    auto calculateHeight(const std::unique_ptr<Node>& node) const -> int {
         if(!node) {
             return -1;
         }
@@ -108,6 +101,7 @@ public:
         deleteValue(root, val, stats);
         return stats;
     }
+
     auto height() const -> int {
         return calculateHeight(root);
     }

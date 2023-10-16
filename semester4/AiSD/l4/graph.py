@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+import subprocess
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -14,13 +16,13 @@ random_data = random_data.groupby('n').mean().reset_index()
 fig, axs = plt.subplots(3, 2, figsize=(15, 20))
 
 # List of features to compare
-features = ['max_comparisons', 'max_pointer_reads', 'max_pointer_substitutions', 
-            'avg_comparisons', 'avg_pointer_reads', 'avg_pointer_substitutions']
+features = ['max_comparisons', 'max_pointer_reads_and_substitutions', 'max_height',
+            'avg_comparisons', 'avg_pointer_reads_and_substitutions', 'avg_height']
 
 # Iterate over features and create subplots
 for i, feature in enumerate(features):
     ax = axs[i//2, i%2]
-    sns.lineplot(data=increasing_data, x='n', y=feature, ax=ax, label='Increasing Data')
+    # sns.lineplot(data=increasing_data, x='n', y=feature, ax=ax, label='Increasing Data')
     sns.lineplot(data=random_data, x='n', y=feature, ax=ax, label='Random Data')
     ax.set_ylabel(feature)
     ax.legend()
@@ -28,5 +30,6 @@ for i, feature in enumerate(features):
 plt.tight_layout()
 
 # Save the figure
-plt.savefig('comparison_plot.png')
-
+plot_name = 'plots/comparison_plot.png'
+plt.savefig(plot_name)
+subprocess.run(['xdg-open', plot_name])
