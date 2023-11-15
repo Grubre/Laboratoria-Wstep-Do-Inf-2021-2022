@@ -1,5 +1,6 @@
 #include <cstddef>
 #include <cstdint>
+#include <cstdio>
 #include <iomanip>
 #include <iostream>
 #include <optional>
@@ -11,6 +12,9 @@
 #include <vector>
 #include <array>
 #include "common.hpp"
+
+using ch = char;
+using u8str = std::string;
 
 size_t count_codepoints(const u8str &str)
 {
@@ -48,13 +52,13 @@ struct Automaton {
     void print() const {
         std::cout << "accepting state: " << m << std::endl;
         for(auto const&[q, t] : delta) {
-            // std::cout << "(" << q.first << ", '" << q.second << "') -> " << t << std::endl;
+            std::cout << "(" << q.first << ", '" << q.second << "') -> " << t << std::endl;
         }
     }
 };
 
-auto finite_automaton_matcher(const u8str& T, Automaton delta) -> std::optional<std::size_t> {
-    const auto n = count_codepoints(T);
+auto finite_automaton_matcher(const std::string& T, Automaton delta) -> std::optional<std::size_t> {
+    const auto n = T.size();
     const auto m = delta.m;
     auto q = std::size_t{0};
     for(auto i = 0u; i < n; i++) {
@@ -67,8 +71,8 @@ auto finite_automaton_matcher(const u8str& T, Automaton delta) -> std::optional<
     return std::nullopt;
 }
 
-auto compute_transition_function(const u8str& P, const std::vector<ch>& alphabet) -> Automaton {
-    const auto m = count_codepoints(P);
+auto compute_transition_function(const std::string& P, const std::vector<ch>& alphabet) -> Automaton {
+    const auto m = P.size();
     auto automaton = Automaton{m};
     for(std::size_t q = 0; q <= m; q++) {
         for(auto a : alphabet) {
@@ -99,7 +103,7 @@ auto get_alphabet(const u8str& T) -> std::vector<ch> {
 
     std::cout << "alphabet: {";
     for(auto i = 0u; i < alphabet.size(); i++) {
-        // std::cout << alphabet[i];
+        std::cout << alphabet[i];
         if(i < alphabet.size() - 1)
             std::cout << ", ";
     }
@@ -109,9 +113,12 @@ auto get_alphabet(const u8str& T) -> std::vector<ch> {
 }
 
 auto main(int argc, char **argv) -> int {
-    auto [P, T] = get_args_u32(argc, argv);
+    // auto [P, T] = get_args(argc, argv);
     // std::cout << "T: " << std::quoted(T) << std::endl;
     // std::cout << "P: " << std::quoted(P) << std::endl;
+
+    auto P = std::string{"ab"};
+    auto T = std::string{"aaaab"};
     auto alphabet = get_alphabet(T);
     auto delta = compute_transition_function(P, alphabet);
     std::cout << "computed transition function:" << std::endl;
@@ -123,5 +130,6 @@ auto main(int argc, char **argv) -> int {
         std::cout << "match at index: " << *match << std::endl;
         print_match(std::string{T.begin(), T.end()}, *match, count_codepoints(P));
     }
+
     return 0;
 }

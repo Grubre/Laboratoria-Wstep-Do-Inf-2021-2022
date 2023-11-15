@@ -3,9 +3,6 @@
 #include <fstream>
 #include <iostream>
 
-using ch = char32_t;
-using u8str = std::u32string;
-
 inline void print_match(const std::string T, std::size_t index, std::size_t len) {
     std::cout << T << std::endl;
     for(auto i = 0llu; i < index; i++) {
