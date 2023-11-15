@@ -3,14 +3,25 @@
 #include <memory>
 #include <stack>
 #include <queue>
+#include <concepts>
 
-template<typename Container>
+template <typename T>
+concept Container = requires (T container) {
+    { container.push(std::declval<typename T::value_type>()) } -> std::same_as<void>;
+    { container.pop() };
+    { container.empty() } -> std::same_as<bool>;
+};
+
+using dfs_container = std::stack<int>;
+using bfs_container = std::queue<int>;
+
+template<Container T>
 auto traverse(const graph& g) -> std::vector<int> {
     auto visited = std::vector<bool>(g.n, false);
     auto ret = std::vector<int>{};
     ret.reserve(g.n);
 
-    Container to_visit;
+    T to_visit;
 
     for(auto i = 0; i < g.n; i++) {
         if(visited[i]) {
@@ -45,9 +56,6 @@ auto traverse(const graph& g) -> std::vector<int> {
 
     return ret;
 }
-
-using dfs_container = std::stack<int>;
-using bfs_container = std::queue<int>;
 
 auto main() -> int {
     auto f = std::ifstream{"test.txt"};
