@@ -58,7 +58,7 @@ function msiecznych(f::Function, x0::Float64, x1::Float64, delta::Float64, epsil
     while it < maxit
         x2 = x1 - f(x1) * (x1 - x0) / (f(x1) - f(x0))
 
-        if abs(x2 - x1) < delta || abs(f(x2)) < epsilon
+        if abs(x2 - x1) < delta || abs(f(x1)) < epsilon
             return x2, f(x2), it, 0
         end
 

@@ -1,3 +1,5 @@
+#Author: Jakub Ogrodowczyk
+
 using Test
 include("../src/solvers.jl")
 using .Solvers
