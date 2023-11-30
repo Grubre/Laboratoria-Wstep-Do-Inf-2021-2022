@@ -27,13 +27,13 @@ struct Vec2 {
     int64_t y{};
 };
 
-auto is_number(const std::string& s) -> bool
+inline auto is_number(const std::string& s) -> bool
 {
     return !s.empty() && std::find_if(s.begin(), 
         s.end(), [](unsigned char c) { return !std::isdigit(c); }) == s.end();
 }
 
-auto dist(Vec2 a, Vec2 b) -> uint64_t {
+inline auto dist(Vec2 a, Vec2 b) -> uint64_t {
     int64_t dx = b.x - a.x;
     int64_t dy = b.y - a.y;
 
@@ -44,7 +44,7 @@ auto dist(Vec2 a, Vec2 b) -> uint64_t {
     return rounded_distance;
 }
 
-auto build_mst(const std::vector<Vec2> points) -> MST {
+inline auto build_mst(const std::vector<Vec2>& points) -> MST {
     const auto n = points.size();
 
     auto edges = std::vector<Edge>{};
@@ -80,7 +80,7 @@ auto build_mst(const std::vector<Vec2> points) -> MST {
     return mst;
 }
 
-auto read_file(const std::string& file_path) -> std::vector<Vec2> {
+inline auto read_file(const std::string& file_path) -> std::vector<Vec2> {
     auto file = std::ifstream{file_path};
 
     auto line = std::string{};
@@ -106,7 +106,7 @@ auto read_file(const std::string& file_path) -> std::vector<Vec2> {
     return points;
 }
 
-auto calculate_mst_weight(const std::vector<Vec2> points, const MST& mst) -> int64_t {
+inline auto calculate_mst_weight(const std::vector<Vec2>& points, const MST& mst) -> int64_t {
     auto S = 0;
     for(auto i = 0u; i < mst.neighbours.size(); i++) {
         for(auto v : mst.neighbours[i]) {
@@ -116,7 +116,7 @@ auto calculate_mst_weight(const std::vector<Vec2> points, const MST& mst) -> int
     return S;
 }
 
-auto get_tsp_cycle(const MST& mst, std::size_t starting_vertex) -> std::vector<std::size_t> {
+inline auto get_tsp_cycle(const MST& mst, std::size_t starting_vertex) -> std::vector<std::size_t> {
     const auto n = mst.neighbours.size();
     auto visited = std::vector<bool>(n, false);
     auto to_visit = std::stack<std::size_t>{};
@@ -144,7 +144,7 @@ auto get_tsp_cycle(const MST& mst, std::size_t starting_vertex) -> std::vector<s
     return cycle;
 }
 
-auto calculate_cycle_weight(const std::vector<Vec2>& points, const std::vector<std::size_t>& cycle) -> int64_t {
+inline auto calculate_cycle_weight(const std::vector<Vec2>& points, const std::vector<std::size_t>& cycle) -> int64_t {
     auto cycle_sum = 0u;
     for(auto i = 0u; i < cycle.size() - 1; i++) {
         cycle_sum += dist(points[cycle[i]], points[cycle[i + 1]]);
@@ -152,17 +152,17 @@ auto calculate_cycle_weight(const std::vector<Vec2>& points, const std::vector<s
     return cycle_sum;
 }
 
-void print_cycle(const std::vector<Vec2>& points, const std::vector<std::size_t>& cycle) {
+inline void print_cycle(const std::vector<Vec2>& points, const std::vector<std::size_t>& cycle) {
     for(auto i = 0u; i < cycle.size(); i++) {
         std::cout << points[cycle[i]].x << " " << points[cycle[i]].y << std::endl;
     }
 }
 
-void invert(std::vector<std::size_t>& cycle, std::size_t i, std::size_t j) {
+inline void invert(std::vector<std::size_t>& cycle, std::size_t i, std::size_t j) {
     std::reverse(cycle.begin() + i, cycle.begin() + j + 1);
 }
 
-auto local_search(const std::vector<Vec2>& points, std::vector<std::size_t>&& cycle)
+inline auto local_search(const std::vector<Vec2>& points, std::vector<std::size_t>&& cycle)
     -> std::tuple<std::vector<std::size_t>, int, double> {
     auto best_cycle = std::move(cycle);
     auto best_cycle_weight = calculate_cycle_weight(points, best_cycle);
@@ -173,7 +173,7 @@ auto local_search(const std::vector<Vec2>& points, std::vector<std::size_t>&& cy
     while (improved) {
         improved = false;
         for (std::size_t i = 1; i < n - 2; ++i) {
-            for (std::size_t j = i + 2; j < n - 1; ++j) {
+            for (std::size_t j = i + 2; j < n; ++j) {
                 invert(best_cycle, i, j);
                 auto new_weight = calculate_cycle_weight(points, best_cycle);
                 invert(best_cycle, i, j);
@@ -193,7 +193,7 @@ auto local_search(const std::vector<Vec2>& points, std::vector<std::size_t>&& cy
 }
 
 
-auto faster_local_search(const std::vector<Vec2>& points, std::vector<std::size_t>&& cycle)
+inline auto faster_local_search(const std::vector<Vec2>& points, std::vector<std::size_t>&& cycle)
     -> std::tuple<std::vector<std::size_t>, int, double> {
     auto best_cycle = std::move(cycle);
     auto best_cycle_weight = calculate_cycle_weight(points, best_cycle);
@@ -210,7 +210,6 @@ auto faster_local_search(const std::vector<Vec2>& points, std::vector<std::size_
 
         for (int iter = 0; iter < n; ++iter) {
             std::size_t i = dist(gen);
-            // Ensure j > i, thus j is in the range [i+1, n)
             std::uniform_int_distribution<> dist_j(i + 1, n - 1);
             std::size_t j = dist_j(gen);
 

@@ -1,0 +1,5 @@
+-Wall
+-Wextra
+-Wpedantic
+-Wconversion
+-std=c++20

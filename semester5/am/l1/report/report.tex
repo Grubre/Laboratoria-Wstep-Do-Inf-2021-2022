@@ -1,0 +1,113 @@
+\documentclass{article}
+\usepackage{polski}
+\usepackage[utf8]{inputenc}
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{ragged2e}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{blindtext}
+\usepackage{hyperref}
+\usepackage{algorithmicx}
+\usepackage{listings}
+\usepackage{booktabs}
+\usepackage{siunitx}
+\usepackage{multicol}
+\usepackage{fancyvrb}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+
+\begin{document}
+
+\AddToHook{cmd/section/before}{\clearpage}
+
+\section*{Zadanie 1}
+
+\begin{table}[ht]
+    \centering
+    \begin{tabular}{|l|c|c|c|}
+    \hline
+    \textbf{Plik} & \textbf{waga MST} & \textbf{Średnia waga cyklu} & \textbf{Średnia liczba ruchów} \\
+    \hline
+    pbk411 & 2360.0 & 1469.68 & 137.127 \\
+    pka379 & 2302.0 & 1429.53 & 117.321 \\
+    pbl395 & 2248.0 & 1375.37 & 110.04 \\
+    pma343 & 2358.0 & 1467.42 & 106.91 \\
+    icw1483 & 8030.0 & 4985.08 & 516.259 \\
+    xqg237 & 1794.0 & 1097.19 & 78.4031 \\
+    xqf131 & 948.0 & 620.155 & 41.6757 \\
+    pbm436 & 2538.0 & 1572.61 & 144.823 \\
+    pbn423 & 2402.0 & 1497.64 & 142.413 \\
+    dcb2086 & 11900.0 & 7454.99 & 629.194 \\
+    xit1083 & 6506.0 & 3972.23 & 330.518 \\
+    bcl380 & 2888.0 & 1820.8 & 92.2868 \\
+    pds2566 & 13912.0 & 8565.29 & 751.801 \\
+    djc1785 & 11082.0 & 6937.87 & 555.584 \\
+    xql662 & 4480.0 & 2756.5 & 226.434 \\
+    \hline
+    \end{tabular}
+    \caption{Wyniki dla $\sqrt{n}$ losowych wierzchołków}
+    \end{table}
+    
+
+\section*{Zadanie 2}
+
+\begin{table}[ht]
+    \centering
+    \begin{tabular}{|l|c|c|c|}
+    \hline
+    \textbf{Plik} & \textbf{waga MST} & \textbf{Średnia waga cyklu} & \textbf{Średnia liczba ruchów} \\
+    \hline
+    pbk411 & 2360.0 & 1615.0 & 1532.0 \\
+    pka379 & 2302.0 & 1540.0 & 1278.0 \\
+    pbl395 & 2248.0 & 1541.0 & 1446.0 \\
+    pma343 & 2358.0 & 1584.0 & 1160.0 \\
+    icw1483 & 8030.0 & 5393.0 & 7077.0 \\
+    xqg237 & 1794.0 & 1215.0 & 777.0 \\
+    xqf131 & 948.0 & 655.0 & 367.0 \\
+    pbm436 & 2538.0 & 1737.0 & 1645.0 \\
+    pbn423 & 2402.0 & 1645.0 & 1587.0 \\
+    dcb2086 & 11900.0 & 8070.0 & 10684.0 \\
+    xit1083 & 6506.0 & 4342.0 & 4889.0 \\
+    bcl380 & 2888.0 & 1964.0 & 1404.0 \\
+    pds2566 & 13912.0 & 9406.0 & 13515.0 \\
+    djc1785 & 11082.0 & 7442.0 & 8939.0 \\
+    xql662 & 4480.0 & 3047.0 & 2721.0 \\
+    \hline
+    \end{tabular}
+    \caption{Wyniki dla $n$ losowych permutacji}
+\end{table}
+    
+\section*{Zadanie 3}
+
+\begin{table}[ht]
+    \centering
+    \begin{tabular}{|l|c|c|c|}
+    \hline
+    \textbf{Plik} & \textbf{waga MST} & \textbf{Średnia waga cyklu} & \textbf{Średnia liczba ruchów} \\
+    \hline
+    pbk411 & 2360.0 & 2806.0 & 1370.0 \\
+    pka379 & 2302.0 & 2639.0 & 1401.0 \\
+    pbl395 & 2248.0 & 2658.0 & 1298.0 \\
+    pma343 & 2358.0 & 2706.0 & 1250.0 \\
+    icw1483 & 8030.0 & 10078.0 & 6539.0 \\
+    xqg237 & 1794.0 & 1926.0 & 712.0 \\
+    xqf131 & 948.0 & 971.0 & 325.0 \\
+    pbm436 & 2538.0 & 3030.0 & 1456.0 \\
+    pbn423 & 2402.0 & 2879.0 & 1407.0 \\
+    dcb2086 & 11900.0 & 15535.0 & 9788.0 \\
+    xit1083 & 6506.0 & 8012.0 & 4546.0 \\
+    bcl380 & 2888.0 & 3441.0 & 1245.0 \\
+    pds2566 & 13912.0 & 18308.0 & 12450.0 \\
+    djc1785 & 11082.0 & 13601.0 & 8138.0 \\
+    xql662 & 4480.0 & 5428.0 & 2496.0 \\
+    \hline
+    \end{tabular}
+    \caption{Wyniki dla przyspieszonego algorytmu}
+\end{table}
+    
+
+\end{document}
