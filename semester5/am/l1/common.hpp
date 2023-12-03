@@ -13,7 +13,13 @@
 #include <limits>
 #include <stack>
 #include <random>
+#include <functional>
 
+struct SearchReturn {
+    std::vector<std::size_t> best_cycle;
+    unsigned int number_of_moves;
+    int64_t best_cycle_weight;
+};
 
 using Edge = std::pair<std::size_t, std::size_t>;
 
@@ -163,42 +169,67 @@ inline void invert(std::vector<std::size_t>& cycle, std::size_t i, std::size_t j
 }
 
 inline auto local_search(const std::vector<Vec2>& points, std::vector<std::size_t>&& cycle)
-    -> std::tuple<std::vector<std::size_t>, int, double> {
+    -> SearchReturn {
     auto best_cycle = std::move(cycle);
     auto best_cycle_weight = calculate_cycle_weight(points, best_cycle);
     auto n = best_cycle.size();
-    int number_of_moves = 0;
+    auto number_of_moves = 0u;
     bool improved = true;
 
     while (improved) {
         improved = false;
-        for (std::size_t i = 1; i < n - 2; ++i) {
-            for (std::size_t j = i + 2; j < n; ++j) {
-                invert(best_cycle, i, j);
-                auto new_weight = calculate_cycle_weight(points, best_cycle);
-                invert(best_cycle, i, j);
+        auto new_best_i = -1;
+        auto new_best_j = -1;
+        auto best_diff = 0;
+        for (std::size_t i = 0; i <= n - 2; ++i) {
+            for (std::size_t j = i + 1; j < n; ++j) {
+                if (i == 0 && j == n - 1) {
+                    continue;
+                }
+                
+                auto diff = 0;
 
-                if (new_weight < best_cycle_weight) {
-                    invert(best_cycle, i, j);
+                if ( i == 0 ) {
+                    diff -= dist(points[best_cycle[n - 1]], points[best_cycle[i]]);
+                    diff += dist(points[best_cycle[n - 1]], points[best_cycle[j]]);
+                } else {
+                    diff -= dist(points[best_cycle[i - 1]], points[best_cycle[i]]);
+                    diff += dist(points[best_cycle[i - 1]], points[best_cycle[j]]);
+                }
 
-                    best_cycle_weight = new_weight;
+                if ( j == n - 1 ) {
+                    diff -= dist(points[best_cycle[0]], points[best_cycle[j]]);
+                    diff += dist(points[best_cycle[0]], points[best_cycle[i]]);
+                } else {
+                    diff -= dist(points[best_cycle[j + 1]], points[best_cycle[j]]);
+                    diff += dist(points[best_cycle[j + 1]], points[best_cycle[i]]);
+                }
+
+                if (diff < best_diff) {
+                    best_diff = diff;
+                    best_cycle_weight = best_cycle_weight + diff;
+                    new_best_i = i;
+                    new_best_j = j;
                     improved = true;
-                    number_of_moves++;
                 }
             }
         }
+        if (improved) {
+            number_of_moves++;
+            invert(best_cycle, new_best_i, new_best_j);
+        }
     }
-
-    return std::make_tuple(best_cycle, number_of_moves, best_cycle_weight);
+    
+    return SearchReturn{best_cycle, number_of_moves, best_cycle_weight};
 }
 
 
 inline auto faster_local_search(const std::vector<Vec2>& points, std::vector<std::size_t>&& cycle)
-    -> std::tuple<std::vector<std::size_t>, int, double> {
+    -> SearchReturn {
     auto best_cycle = std::move(cycle);
     auto best_cycle_weight = calculate_cycle_weight(points, best_cycle);
     auto n = best_cycle.size();
-    int number_of_moves = 0;
+    auto number_of_moves = 0u;
     bool improved = true;
 
     std::random_device rd;
@@ -226,5 +257,71 @@ inline auto faster_local_search(const std::vector<Vec2>& points, std::vector<std
         }
     }
 
-    return std::make_tuple(best_cycle, number_of_moves, best_cycle_weight);
+    return SearchReturn{best_cycle, number_of_moves, best_cycle_weight};
+}
+
+
+struct tabu_params {
+    std::size_t current_tabu_size;
+    std::size_t current_iters;
+};
+
+
+inline auto tabu_search(const std::vector<Vec2>& points, std::vector<std::size_t>&& cycle,
+                        std::function<bool(tabu_params)> stop_function)
+    -> SearchReturn {
+    auto best_cycle = std::move(cycle);
+    auto best_cycle_weight = calculate_cycle_weight(points, best_cycle);
+    auto n = best_cycle.size();
+    auto number_of_moves = 0u;
+    bool improved = true;
+
+    auto tabu_list = std::vector<std::pair<std::size_t, std::size_t>>{};\
+
+    while (stop_function(tabu_params{tabu_list.size(), number_of_moves})) {
+        improved = false;
+        auto new_best_i = -1;
+        auto new_best_j = -1;
+        auto best_diff = 0;
+        for (std::size_t i = 0; i <= n - 2; ++i) {
+            for (std::size_t j = i + 1; j < n; ++j) {
+                if (i == 0 && j == n - 1) {
+                    continue;
+                }
+                
+                auto diff = 0;
+
+                if ( i == 0 ) {
+                    diff -= dist(points[best_cycle[n - 1]], points[best_cycle[i]]);
+                    diff += dist(points[best_cycle[n - 1]], points[best_cycle[j]]);
+                } else {
+                    diff -= dist(points[best_cycle[i - 1]], points[best_cycle[i]]);
+                    diff += dist(points[best_cycle[i - 1]], points[best_cycle[j]]);
+                }
+
+                if ( j == n - 1 ) {
+                    diff -= dist(points[best_cycle[0]], points[best_cycle[j]]);
+                    diff += dist(points[best_cycle[0]], points[best_cycle[i]]);
+                } else {
+                    diff -= dist(points[best_cycle[j + 1]], points[best_cycle[j]]);
+                    diff += dist(points[best_cycle[j + 1]], points[best_cycle[i]]);
+                }
+
+                if (diff < best_diff) {
+                    best_diff = diff;
+                    best_cycle_weight = best_cycle_weight + diff;
+                    new_best_i = i;
+                    new_best_j = j;
+                    improved = true;
+                }
+            }
+        }
+        if (improved) {
+            number_of_moves++;
+            tabu_list.push_back({new_best_i, new_best_j});
+            invert(best_cycle, new_best_i, new_best_j);
+        }
+    }
+    
+    return SearchReturn{best_cycle, number_of_moves, best_cycle_weight};
 }

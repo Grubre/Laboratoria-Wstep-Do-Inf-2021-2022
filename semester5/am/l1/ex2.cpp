@@ -30,6 +30,8 @@ void thread_work(const std::vector<Vec2>& points, const MST& mst,
         cycle_weight_accumulator += improved_cycle_weight;
         number_of_steps_accumulator += number_of_moves;
     }
+
+    // std::cout << "Thread " << std::this_thread::get_id() << " finished" << std::endl;
 }
 
 auto main(int argc, char** argv) -> int {
