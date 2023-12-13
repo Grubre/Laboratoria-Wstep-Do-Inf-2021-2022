@@ -224,6 +224,7 @@ inline auto local_search(const std::vector<Vec2>& points, std::vector<std::size_
 }
 
 
+// NOTE: Broken, should be done the same as local_search
 inline auto faster_local_search(const std::vector<Vec2>& points, std::vector<std::size_t>&& cycle)
     -> SearchReturn {
     auto best_cycle = std::move(cycle);
@@ -268,6 +269,7 @@ struct tabu_params {
 
 
 inline auto tabu_search(const std::vector<Vec2>& points, std::vector<std::size_t>&& cycle,
+                        const unsigned tabu_list_size,
                         std::function<bool(tabu_params)> stop_function)
     -> SearchReturn {
     auto best_cycle = std::move(cycle);
@@ -276,7 +278,7 @@ inline auto tabu_search(const std::vector<Vec2>& points, std::vector<std::size_t
     auto number_of_moves = 0u;
     bool improved = true;
 
-    auto tabu_list = std::vector<std::pair<std::size_t, std::size_t>>{};\
+    auto tabu_list = std::deque<std::pair<std::size_t, std::size_t>>{};
 
     while (stop_function(tabu_params{tabu_list.size(), number_of_moves})) {
         improved = false;
@@ -321,6 +323,12 @@ inline auto tabu_search(const std::vector<Vec2>& points, std::vector<std::size_t
             tabu_list.push_back({new_best_i, new_best_j});
             invert(best_cycle, new_best_i, new_best_j);
         }
+
+        if (tabu_list.size() > tabu_list_size) {
+            tabu_list.pop_front();
+        }
+
+
     }
     
     return SearchReturn{best_cycle, number_of_moves, best_cycle_weight};
