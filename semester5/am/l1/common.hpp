@@ -264,7 +264,8 @@ inline auto faster_local_search(const std::vector<Vec2>& points, std::vector<std
 
 struct tabu_params {
     std::size_t current_tabu_size;
-    std::size_t current_iters;
+    std::size_t number_of_moves;
+    std::size_t iters_since_last_improvement;
 };
 
 
@@ -284,6 +285,7 @@ inline auto tabu_search(const std::vector<Vec2>& points, std::vector<std::size_t
         improved = false;
         auto new_best_i = -1;
         auto new_best_j = -1;
+        
         auto best_diff = 0;
         for (std::size_t i = 0; i <= n - 2; ++i) {
             for (std::size_t j = i + 1; j < n; ++j) {
@@ -318,6 +320,7 @@ inline auto tabu_search(const std::vector<Vec2>& points, std::vector<std::size_t
                 }
             }
         }
+
         if (improved) {
             number_of_moves++;
             tabu_list.push_back({new_best_i, new_best_j});
