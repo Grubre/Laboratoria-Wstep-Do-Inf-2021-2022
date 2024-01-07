@@ -1,0 +1,75 @@
+\documentclass{article}
+\usepackage{polski}
+\usepackage[utf8]{inputenc}
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{ragged2e}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{blindtext}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{booktabs}
+\usepackage{siunitx}
+\usepackage{multicol}
+\usepackage{fancyvrb}
+\usepackage[linesnumbered,ruled,vlined]{algorithm2e}
+
+\begin{document}
+\title{Lista 5}
+\author{Jakub Ogrodowczyk}
+\date{\today}
+
+\maketitle
+
+\section{Opis problemu}
+Zadanie polega na rozwiązaniu układu równań liniowych:
+\[
+    \mathbf{Ax = b}    
+\]
+dla danej macierzy \textbf{rzadkiej} \( \mathbf{A} \in \mathbb{R}^{n \times n}\) postaci: 
+
+\[
+A = 
+\begin{pmatrix}
+A_1 & C_1 & 0 & 0 & 0 & \cdots & 0 \\
+B_2 & A_2 & C_2 & 0 & 0 & \cdots & 0 \\
+0 & B_3 & A_3 & C_3 & 0 & \hdots & 0  \\
+\vdots & \ddots & \ddots & \ddots & \ddots & \ddots & \vdots \\
+0 & \cdots & 0 & B_{\nu-2} & A_{\nu-2} & C_{\nu-2} & 0 \\
+0 & \cdots & 0 & 0 & B_{\nu-1} & A_{\nu-1} & C_{\nu-1} \\
+0 & \cdots & 0 & 0 & 0 & B_\nu & A_\nu
+\end{pmatrix},
+\]
+
+gdzie $\mathbf{A_k}$, $\mathbf{B_k}$, $\mathbf{C_k}$ $\mathbf{0} \in \mathbb{R}^{l \times l}$ dla $k=1\hdots v-1$ oraz $v=\frac{n}{l}$.
+$\mathbf{A_k}$ jest macierzą gęstą, $\mathbf{0}$ jest macierzą zerową.
+Macierz $\mathbf{B_k}$ jest postaci:
+\[
+B_k = 
+\begin{pmatrix}
+0 & \hdots & 0  & b_1^k \\
+0 & \hdots & 0  & b_2^k \\
+\vdots &  & \vdots  & \vdots \\
+0 & \cdots & 0  & b_l^k \\
+\end{pmatrix}
+\]
+A macierz $\mathbf{C_k}$:
+\[
+C_k = 
+\begin{pmatrix}
+c_1^k & 0 & 0 & \cdots & 0 \\
+0 & c_2^k & 0 & \cdots & 0 \\
+\vdots & \vdots & \ddots & \ddots & \vdots \\
+0 & \cdots & 0 & c_{\ell-1}^k & 0 \\
+0 & \cdots & 0 & 0 & c_{\ell}^k
+\end{pmatrix}
+\]
+
+
+
+
+\end{document}
