@@ -12,9 +12,9 @@
 #include <thrust/device_vector.h>
 #include <thrust/execution_policy.h>
 
-constexpr auto population_size = 1000;
+constexpr auto population_size = 5000;
 
-constexpr auto island_count = 1;
+constexpr auto island_count = 50;
 constexpr auto island_size = population_size / island_count;
 
 constexpr auto selected_threshold = 0.8;
@@ -147,7 +147,35 @@ __global__ void crossover(int64_t* paths, int64_t* sorted_paths_indexes, unsigne
     const auto parent_a = sorted_paths_indexes[2 * path_id];
     const auto parent_b = sorted_paths_indexes[2 * path_id + 1];
 
+    // fill here
+}
 
+__global__ void mutate(int64_t* paths, unsigned int node_count) {
+    const auto path_id = blockIdx.x * blockDim.x + threadIdx.x;
+
+    if(path_id >= population_size) {
+        return;
+    }
+
+    const auto island_id = path_id / island_size;
+    const auto mutation_chance = 1.0 - (double)island_id / (double)island_count;
+
+    curandState state;
+    curand_init(path_id + clock(), 0, 0, &state);
+
+    // random double between 0 and 1
+    const auto random_double = curand_uniform_double(&state) - 0.5;
+
+    if(random_double > mutation_chance) {
+        return;
+    }
+    
+    const auto random_node_a = curand(&state) % node_count;
+    const auto random_node_b = curand(&state) % node_count;
+
+    const auto temp = paths[path_id * node_count + random_node_a];
+    paths[path_id * node_count + random_node_a] = paths[path_id * node_count + random_node_b];
+    paths[path_id * node_count + random_node_b] = temp;
 }
 
 auto main(int argc, char** argv) -> int {
@@ -197,8 +225,8 @@ auto main(int argc, char** argv) -> int {
             sort_by_fitness<<<blocksPerGrid, threadsPerBlock>>>(sorted_paths_indexes_device, path_lengths_device, node_count);
             // NOTE: Before doing crossover and mutation, for population_size=5000 i was getting the shortest path ~300_000 which seems large
             select<<<blocksPerGrid, threadsPerBlock>>>(paths_device, sorted_paths_indexes_device, node_count);
-            // crossover, one thread for each offsprings_device element
             // crossover<<<blockPerGrid, threadsPerBlock>>>(offsprings_device, paths_device, sorted_paths_indexes_device, node_count);
+            mutate<<<blocksPerGrid, threadsPerBlock>>>(paths_device, node_count);
             calculate_path_lengths<<<blocksPerGrid, threadsPerBlock>>>(path_lengths_device, paths_device, dist_between_nodes_device, population_size, node_count);
         }
         cudaDeviceSynchronize();
@@ -208,6 +236,8 @@ auto main(int argc, char** argv) -> int {
 
     // sort_by_fitness<<<blocksPerGrid, threadsPerBlock>>>(sorted_paths_indexes_device, path_lengths_device, node_count);
     // select<<<blocksPerGrid, threadsPerBlock>>>(paths_device, sorted_paths_indexes_device, node_count);
+
+    // mutate<<<blocksPerGrid, threadsPerBlock>>>(paths_device, node_count);
 
     // Get the solution in unified memory
     int64_t* best_length_host;
@@ -235,7 +265,8 @@ auto main(int argc, char** argv) -> int {
     //         std::cout << "\n======================" << std::endl;
     //     }
     //     for(int j = 0u; j < node_count; j++) {
-    //         std::cout << paths_host[sorted_paths_indexes_host[i] * node_count + j] << " ";
+    //         // std::cout << paths_host[sorted_paths_indexes_host[i] * node_count + j] << " ";
+    //         std::cout << paths_host[i * node_count + j] << " ";
     //         // printf("paths_host[%zu]=%d\n", i * node_count + j, (int)paths_host[i * node_count + j]);
     //     }
     //     std::cout << "\tlength = " << path_lengths_host[i] << std::endl;
