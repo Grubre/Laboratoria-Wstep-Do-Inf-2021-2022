@@ -5,6 +5,7 @@
 auto main(int argc, char** argv) -> int {
     if(argc != 4) {
         std::cerr << "Usage: " << argv[0] << " <p> <input> <output>" << std::endl;
+        return 1;
     }
 
     const auto p = std::stod(argv[1]);
@@ -26,7 +27,7 @@ auto main(int argc, char** argv) -> int {
             break;
         }
 
-        const auto trial = d(gen) <= p;
+        const auto trial = d(gen);
         const auto out_bit = trial ? !(bool)*bit : (bool)*bit;
         output.put_bit(out_bit);
     }
