@@ -1,279 +1,288 @@
-#include <cuda_runtime.h>
-#include <cuda.h>
-#include <curand_kernel.h>
-#include "common.hpp"
-#include <iostream>
+#include "utilities.hpp"
 #include <array>
+#include <filesystem>
+#include <iostream>
 #include <span>
-#include <unordered_map>
 #include <stdio.h>
-#include <thrust/sort.h>
-#include <thrust/functional.h>
-#include <thrust/device_vector.h>
-#include <thrust/execution_policy.h>
+#include <unordered_map>
 
-constexpr auto population_size = 5000;
-
-constexpr auto island_count = 50;
-constexpr auto island_size = population_size / island_count;
-
-constexpr auto selected_threshold = 0.8;
-
-constexpr auto threadsPerBlock = 256;
-constexpr auto blocksPerGrid = (population_size + threadsPerBlock - 1) / threadsPerBlock;
-
-void calculate_dist_between_nodes(int64_t *dist_between_nodes, const std::span<const Vec2> node_coords) {
-    for(auto i = 0u; i < node_coords.size(); i++) {
-        for(auto j = 0u; j < node_coords.size(); j++) {
-            if (i == j)
-                continue;
-            dist_between_nodes[i + j * node_coords.size()] = dist(node_coords[i], node_coords[j]);
+// taken from https://www.hindawi.com/journals/mpe/2020/1398595/
+__device__ void ro(int64_t *a, int64_t *temp, int64_t len, int64_t num, unsigned int node_count) {
+    int pos;
+    for (int i = 0; i < len; i++) {
+        if (a[i] == num) {
+            pos = i;
         }
     }
+    int j = 0;
+    for (int i = pos; i < len; i++) {
+        temp[j] = a[i];
+        j++;
+    }
+    for (int k = 0; k < pos; k++) {
+        temp[j] = a[k];
+        j++;
+    }
+    for (int i = 0; i < len; i++) {
+        a[i] = temp[i];
+    }
 }
 
-__global__ void calculate_path_lengths(int64_t* path_lengths, int64_t *paths, int64_t *dist_between_nodes, unsigned int population_size, unsigned int node_count) {
-    const auto starting_id = blockIdx.x * blockDim.x + threadIdx.x;
+// based on https://www.hindawi.com/journals/mpe/2020/1398595/
+__global__ void crossover(int64_t *paths, int64_t *temp_buf, int64_t *dist_between_nodes, unsigned int node_count) {
+    const auto pair_id = blockIdx.x * blockDim.x + threadIdx.x;
 
-    if (starting_id >= population_size) {
+    if (pair_id >= population_size / 2) {
         return;
     }
 
-    int64_t path_length = 0;
-    for (int i = 0; i < node_count - 1; i++) {
-        const auto from = paths[node_count * starting_id + i];
-        const auto to = paths[node_count * starting_id + i + 1];
-
-        path_length += dist_between_nodes[from * node_count + to];
-
-    }
-
-    const auto last_node = paths[node_count * starting_id + node_count - 1];
-    const auto first_node = paths[node_count * starting_id + 0];
-    path_length += dist_between_nodes[last_node * node_count + first_node];
-
-    // printf("starting_id = %d, path_length=%d\n", (int)starting_id, (int)path_length);
-    path_lengths[starting_id] = path_length;
-}
-
-__global__ void shuffle(int64_t* path, unsigned int node_count) {
-    const auto starting_id = blockIdx.x * blockDim.x + threadIdx.x;
-
-    if (starting_id >= population_size) {
+    const auto offset_inside_island = (2 * pair_id) % island_size;
+    if (offset_inside_island >= p) {
         return;
-    }
-
-    for (int i = 0; i < node_count; i++) {
-        path[starting_id * node_count + i] = i;
     }
 
     curandState state;
-    curand_init(starting_id + clock(), 0, 0, &state); // Unique seed for each thread
-    for (int i = node_count - 1; i > 0; i--) {
-        int j = curand(&state) % (i + 1);
+    curand_init((unsigned long long)clock() + pair_id, 0, 0, &state);
 
-        int64_t temp = path[starting_id * node_count + i];
-        path[starting_id * node_count + i] = path[starting_id * node_count + j];
-        path[starting_id * node_count + j] = temp;
-    }
-}
+    const auto parent_a_offset = 2 * pair_id;
+    const auto parent_b_offset = 2 * pair_id + 1;
+    const auto parent_a = paths + parent_a_offset * node_count;
+    const auto parent_b = paths + parent_b_offset * node_count;
 
-__global__ void get_best(int64_t* best_permutation_host, int64_t* best_length_host, int64_t* path_lengths, int64_t* paths, unsigned int population_size, unsigned int node_count) {
-    uint64_t best_permutation_index = 0u;
-    for(auto i = 0u; i < population_size; i++) {
-        if (path_lengths[i] < path_lengths[best_permutation_index]) {
-            best_permutation_index = i;
+    // const auto trial = curand_uniform(&state);
+    // if (trial > crossover_chance) {
+    //     return;
+    // }
+
+    // printf("pair %d: a: %d, b: %d\n", pair_id, parent_a[0], parent_b[0]);
+    const auto result = temp_buf + pair_id * node_count;
+    const auto temp = temp_buf + (population_size / 2 + pair_id) * node_count;
+
+    const auto start = curand(&state) % node_count;
+
+    result[0] = start;
+
+    ro(parent_a, temp, node_count, start, node_count);
+    ro(parent_b, temp, node_count, start, node_count);
+
+    for (auto i = 0u; i < node_count - 1; i++) {
+        const auto from_a = parent_a[i];
+        const auto from_b = parent_b[i];
+        const auto to_a = parent_a[i + 1];
+        const auto to_b = parent_b[i + 1];
+
+        const auto dist_from_a = dist_between_nodes[from_a * node_count + to_a];
+        const auto dist_from_b = dist_between_nodes[from_b * node_count + to_b];
+
+        if (dist_from_a < dist_from_b) {
+            result[i + 1] = to_a;
+            ro(paths + parent_b_offset * node_count + i + 1, temp, node_count - i - 1, to_a, node_count);
+        } else {
+            result[i + 1] = to_b;
+            ro(paths + parent_a_offset * node_count + i + 1, temp, node_count - i - 1, to_b, node_count);
         }
     }
 
-    for(auto i = 0u; i < node_count; i++) {
-        best_permutation_host[i] = paths[best_permutation_index * node_count + i];
+    for (auto i = 0u; i < node_count; i++) {
+        paths[parent_a_offset * node_count + i] = result[i];
     }
 
-    *best_length_host = path_lengths[best_permutation_index];
+    const auto midpoint = node_count / 2;
+    auto j = 0u;
+
+    for (auto i = midpoint; i < node_count; i++) {
+        paths[parent_b_offset * node_count + j] = result[i];
+        j++;
+    }
+
+    for (auto i = 0u; i < midpoint; i++) {
+        paths[parent_b_offset * node_count + j] = result[i];
+        j++;
+    }
 }
 
-__global__ void sort_by_fitness(int64_t* sorted_paths_indexes, int64_t* path_lengths, unsigned int node_count) {
-    const auto island_id = blockIdx.x * blockDim.x + threadIdx.x;
+void print_population(int64_t *paths_device, int64_t *paths_host, int64_t *path_lengths_host,
+                      int64_t *path_lengths_device, unsigned int node_count) {
+    cudaMemcpy(paths_host, paths_device, node_count * population_size * sizeof(int64_t), cudaMemcpyDeviceToHost);
 
-    if (island_id >= island_count) {
-        return;
+    cudaMemcpy(path_lengths_host, path_lengths_device, population_size * sizeof(int64_t), cudaMemcpyDeviceToHost);
+
+    cudaDeviceSynchronize();
+
+    for (auto i = 0u; i < population_size; i++) {
+        if (i % island_size == 0) {
+            std::cout << "\n======================" << std::endl;
+        }
+        for (int j = 0u; j < node_count; j++) {
+            // std::cout
+            //     << paths_host[i * node_count + j]
+            //     << " ";
+            std::cout << paths_host[i * node_count + j] << " ";
+            // printf("paths_host[%zu]=%d\n", i * node_count + j,
+        }
+        std::cout << "\tlength = " << path_lengths_host[i] << std::endl;
+        // std::cout << "======================" << std::endl;
     }
-
-    const int start_idx = island_id * island_size;
-    const int end_idx = start_idx + island_size;
-
-    // Initializing the indexes
-    for(int i = start_idx; i < end_idx; i++) {
-        sorted_paths_indexes[i] = i;
-    }
-
-    thrust::sort_by_key(thrust::device, path_lengths + start_idx, path_lengths + end_idx, sorted_paths_indexes + start_idx, thrust::less<int64_t>());
 }
 
-__global__ void select(int64_t* paths, int64_t* sorted_paths_indexes, unsigned int node_count) {
+__global__ void exchange(int64_t *paths, unsigned int node_count) {
     const auto path_id = blockIdx.x * blockDim.x + threadIdx.x;
 
-    if(path_id >= population_size) {
+    if (path_id >= population_size) {
         return;
     }
 
     const auto island_id = path_id / island_size;
-    const auto island_start_idx = island_id * island_size;
     const auto offset_inside_island = path_id % island_size;
 
-    const auto p = (int)(island_size * selected_threshold);
-
-    if(offset_inside_island < p) {
+    if (offset_inside_island >= exchange_cutoff_index) {
         return;
     }
 
-    const auto selected_path_id = sorted_paths_indexes[path_id - p];
-    const auto current_id = sorted_paths_indexes[path_id];
+    const auto destination_island_id = (island_id + 1) % island_count;
+    const auto destination_path_id = destination_island_id * island_size + island_size - offset_inside_island - 1;
 
-    // copy paths[selected_path_id] to paths[path_id]
-    for(auto i = 0u; i < node_count; i++) {
-        paths[current_id * node_count + i] = paths[selected_path_id * node_count + i];
+    for (auto i = 0u; i < node_count; i++) {
+        paths[destination_path_id * node_count + i] = paths[path_id * node_count + i];
     }
 }
 
-__global__ void crossover(int64_t* paths, int64_t* sorted_paths_indexes, unsigned int node_count) {
-    const auto path_id = blockIdx.x * blockDim.x + threadIdx.x;
-
-    if(path_id >= population_size / 2) {
-        return;
-    }
-
-    const auto parent_a = sorted_paths_indexes[2 * path_id];
-    const auto parent_b = sorted_paths_indexes[2 * path_id + 1];
-
-    // fill here
-}
-
-__global__ void mutate(int64_t* paths, unsigned int node_count) {
-    const auto path_id = blockIdx.x * blockDim.x + threadIdx.x;
-
-    if(path_id >= population_size) {
-        return;
-    }
-
-    const auto island_id = path_id / island_size;
-    const auto mutation_chance = 1.0 - (double)island_id / (double)island_count;
-
-    curandState state;
-    curand_init(path_id + clock(), 0, 0, &state);
-
-    // random double between 0 and 1
-    const auto random_double = curand_uniform_double(&state) - 0.5;
-
-    if(random_double > mutation_chance) {
-        return;
-    }
-    
-    const auto random_node_a = curand(&state) % node_count;
-    const auto random_node_b = curand(&state) % node_count;
-
-    const auto temp = paths[path_id * node_count + random_node_a];
-    paths[path_id * node_count + random_node_a] = paths[path_id * node_count + random_node_b];
-    paths[path_id * node_count + random_node_b] = temp;
-}
-
-auto main(int argc, char** argv) -> int {
-    if(argc != 2) {
+auto main(int argc, char **argv) -> int {
+    if (argc != 2) {
         std::cerr << "Usage: " << argv[0] << " <input_file> " << std::endl;
         return 1;
     }
     const auto nodes = read_file(argv[1]);
 
-    // const auto nodes = std::vector<Vec2>{Vec2{0,0}, Vec2{0,1}, Vec2{0,2}, Vec2{0,3}, Vec2{0,4}};
+    // const auto nodes = std::vector<Vec2>{Vec2{0, 0},  Vec2{0, 1},  Vec2{0, 2},  Vec2{0, 3},  Vec2{0, 4},
+    //                                      Vec2{0, 5},  Vec2{0, 6},  Vec2{0, 7},  Vec2{0, 8},  Vec2{0, 9},
+    //                                      Vec2{0, 10}, Vec2{0, 11}, Vec2{0, 12}, Vec2{0, 13}, Vec2{0, 14}};
 
     const auto node_count = nodes.size();
 
     // Calculate distances between each node
-    auto dist_between_nodes_host = (int64_t*)malloc(node_count * node_count * sizeof(int64_t));
+    auto dist_between_nodes_host = (int64_t *)malloc(node_count * node_count * sizeof(int64_t));
     calculate_dist_between_nodes(dist_between_nodes_host, std::span(nodes));
 
-    // Allocate the array holding distances between nodes on the gpu and initialize
+    // Allocate the array holding distances between nodes on the gpu and
+    // initialize
     int64_t *dist_between_nodes_device;
-    cudaMalloc((void**)&dist_between_nodes_device, node_count * node_count * sizeof(int64_t));
-    cudaMemcpy(dist_between_nodes_device, dist_between_nodes_host, node_count * node_count * sizeof(int64_t), cudaMemcpyHostToDevice);
+    cudaMalloc((void **)&dist_between_nodes_device, node_count * node_count * sizeof(int64_t));
+    cudaMemcpy(dist_between_nodes_device, dist_between_nodes_host, node_count * node_count * sizeof(int64_t),
+               cudaMemcpyHostToDevice);
 
-    // Allocate the array holding different paths(specimens) on the gpu and initialize (randomly shuffle each path)
+    // Allocate the array holding different paths(specimens) on the gpu and
+    // initialize (randomly shuffle each path)
     int64_t *paths_device;
-    cudaMalloc((void**)&paths_device, population_size * node_count * sizeof(int64_t));
+    cudaMalloc((void **)&paths_device, population_size * node_count * sizeof(int64_t));
     shuffle<<<blocksPerGrid, threadsPerBlock>>>(paths_device, node_count);
 
     // Allocate the array holding path lengths on the gpu and initialize
     int64_t *path_lengths_device;
-    cudaMalloc((void**)&path_lengths_device, population_size * sizeof(int64_t));
-    calculate_path_lengths<<<blocksPerGrid, threadsPerBlock>>>(path_lengths_device, paths_device, dist_between_nodes_device, population_size, node_count);
+    cudaMalloc((void **)&path_lengths_device, population_size * sizeof(int64_t));
+    calculate_path_lengths<<<blocksPerGrid, threadsPerBlock>>>(path_lengths_device, paths_device,
+                                                               dist_between_nodes_device, population_size, node_count);
 
     // Allocate the array that holds the sorted paths indexes and initialize
-    int64_t* sorted_paths_indexes_device;
-    cudaMalloc((void**)&sorted_paths_indexes_device, population_size * sizeof(int64_t));
+    int64_t *sorted_paths_indexes_device;
+    cudaMalloc((void **)&sorted_paths_indexes_device, population_size * sizeof(int64_t));
 
-    // Allocate the array that holds the offsprings and initialize
-    int64_t* offsprings_device;
-    cudaMalloc((void**)&offsprings_device, population_size * node_count * sizeof(int64_t));
+    // Allocate memory for the results on the host and in unified memory
+    int64_t *best_length_host;
+    int64_t *best_permutation_host;
+    auto paths_host = (int64_t *)malloc(population_size * node_count * sizeof(int64_t));
+    auto path_lengths_host = (int64_t *)malloc(population_size * sizeof(int64_t));
+    cudaMallocManaged(&best_permutation_host, node_count * sizeof(int64_t));
+    cudaMallocManaged(&best_length_host, sizeof(int64_t));
+
+    *best_length_host = std::numeric_limits<int64_t>::max();
 
     // Run the genetic algorithm
-    constexpr auto generations = 1000;
+    // constexpr auto generations = 1000;
+    // constexpr auto internal_generations = 10;
+
+    // NOTE: Before doing crossover and mutation, for
+    // population_size=5000 i was getting the shortest path
+    // ~300_000
+    // which seems large
+
+    int64_t *temp_device;
+    cudaMalloc((void **)&temp_device, population_size * node_count * sizeof(int64_t));
+
+    sort_by_fitness<<<blocksPerGrid, threadsPerBlock>>>(sorted_paths_indexes_device, path_lengths_device, node_count);
+
+    constexpr auto generations = 500;
     constexpr auto internal_generations = 10;
-    for(auto i = 0u; i < generations; i++) {
-        for(auto j = 0u; j < internal_generations; j++) {
+    for (auto i = 0u; i < generations; i++) {
+        for (auto j = 0u; j < internal_generations; j++) {
             // selection
-            sort_by_fitness<<<blocksPerGrid, threadsPerBlock>>>(sorted_paths_indexes_device, path_lengths_device, node_count);
-            // NOTE: Before doing crossover and mutation, for population_size=5000 i was getting the shortest path ~300_000 which seems large
-            select<<<blocksPerGrid, threadsPerBlock>>>(paths_device, sorted_paths_indexes_device, node_count);
-            // crossover<<<blockPerGrid, threadsPerBlock>>>(offsprings_device, paths_device, sorted_paths_indexes_device, node_count);
-            mutate<<<blocksPerGrid, threadsPerBlock>>>(paths_device, node_count);
-            calculate_path_lengths<<<blocksPerGrid, threadsPerBlock>>>(path_lengths_device, paths_device, dist_between_nodes_device, population_size, node_count);
+            select<<<blocksPerGrid, threadsPerBlock>>>(paths_device, temp_device, sorted_paths_indexes_device,
+                                                       node_count);
+            cudaMemcpy(paths_device, temp_device, population_size * node_count * sizeof(int64_t),
+                       cudaMemcpyDeviceToDevice);
+            crossover<<<blocksPerGrid, threadsPerBlock>>>(paths_device, temp_device, dist_between_nodes_device,
+                                                          node_count);
+            const auto number_of_mutations = i * node_count / (4 * generations);
+            mutate<<<blocksPerGrid, threadsPerBlock>>>(paths_device, node_count, number_of_mutations);
+            calculate_path_lengths<<<blocksPerGrid, threadsPerBlock>>>(
+                path_lengths_device, paths_device, dist_between_nodes_device, population_size, node_count);
+            sort_by_fitness<<<blocksPerGrid, threadsPerBlock>>>(sorted_paths_indexes_device, path_lengths_device,
+                                                                node_count);
         }
+        exchange<<<blocksPerGrid, threadsPerBlock>>>(paths_device, node_count);
+        calculate_path_lengths<<<blocksPerGrid, threadsPerBlock>>>(
+            path_lengths_device, paths_device, dist_between_nodes_device, population_size, node_count);
+        sort_by_fitness<<<blocksPerGrid, threadsPerBlock>>>(sorted_paths_indexes_device, path_lengths_device,
+                                                            node_count);
+        calculate_path_lengths<<<blocksPerGrid, threadsPerBlock>>>(
+            path_lengths_device, paths_device, dist_between_nodes_device, population_size, node_count);
+        get_best<<<1, 1>>>(best_permutation_host, best_length_host, path_lengths_device, sorted_paths_indexes_device,
+                           paths_device, population_size, node_count);
         cudaDeviceSynchronize();
         std::cout << "\r" << i + 1 << "/" << generations << std::flush;
     }
     std::cout << std::endl;
 
-    // sort_by_fitness<<<blocksPerGrid, threadsPerBlock>>>(sorted_paths_indexes_device, path_lengths_device, node_count);
-    // select<<<blocksPerGrid, threadsPerBlock>>>(paths_device, sorted_paths_indexes_device, node_count);
-
+    // sort_by_fitness<<<blocksPerGrid, threadsPerBlock>>>(
+    //     sorted_paths_indexes_device, path_lengths_device, node_count);
+    // select<<<blocksPerGrid, threadsPerBlock>>>(
+    //     paths_device, temp_device, sorted_paths_indexes_device, node_count);
+    // cudaMemcpy(paths_device, temp_device,
+    //            population_size * node_count * sizeof(int64_t),
+    //            cudaMemcpyDeviceToDevice);
+    // // printf("After selection:\n");
+    // // print_population(paths_device, paths_host, path_lengths_host,
+    // //                  path_lengths_device, node_count);
+    //
+    // crossover<<<blocksPerGrid, threadsPerBlock>>>(
+    //     paths_device, temp_device, dist_between_nodes_device, node_count);
     // mutate<<<blocksPerGrid, threadsPerBlock>>>(paths_device, node_count);
-
-    // Get the solution in unified memory
-    int64_t* best_length_host;
-    int64_t* best_permutation_host;
-    cudaMallocManaged(&best_permutation_host, node_count * sizeof(int64_t));
-    cudaMallocManaged(&best_length_host, sizeof(int64_t));
-    get_best<<<1, 1>>>(best_permutation_host, best_length_host, path_lengths_device, paths_device, population_size, node_count);
-    cudaDeviceSynchronize();
-
-    auto paths_host = (int64_t*)malloc(population_size * node_count * sizeof(int64_t));
-    cudaMemcpy(paths_host,paths_device, node_count*population_size*sizeof(int64_t),cudaMemcpyDeviceToHost);
-
-    auto path_lengths_host = (int64_t*)malloc(population_size * sizeof(int64_t));
-    cudaMemcpy(path_lengths_host,path_lengths_device, population_size*sizeof(int64_t),cudaMemcpyDeviceToHost);
-
-    auto sorted_paths_indexes_host = (int64_t*)malloc(population_size * sizeof(int64_t));
-    cudaMemcpy(sorted_paths_indexes_host,sorted_paths_indexes_device, population_size*sizeof(int64_t),cudaMemcpyDeviceToHost);
-
-    // for(auto i = 0u; i < population_size; i++) {
-    //     std::cout << sorted_paths_indexes_host[i] << " ";
-    //     printf("\n");
+    // calculate_path_lengths<<<blocksPerGrid, threadsPerBlock>>>(
+    //     path_lengths_device, paths_device, dist_between_nodes_device,
+    //     population_size, node_count);
+    //
+    // printf("%ld\n", *best_length_host);
+    // for (auto i = 0u; i < node_count; i++) {
+    //     printf("%ld ", best_permutation_host[i]);
     // }
-    // for(auto i = 0u; i < population_size; i++) {
-    //     if(i%island_size==0) {
-    //         std::cout << "\n======================" << std::endl;
-    //     }
-    //     for(int j = 0u; j < node_count; j++) {
-    //         // std::cout << paths_host[sorted_paths_indexes_host[i] * node_count + j] << " ";
-    //         std::cout << paths_host[i * node_count + j] << " ";
-    //         // printf("paths_host[%zu]=%d\n", i * node_count + j, (int)paths_host[i * node_count + j]);
-    //     }
-    //     std::cout << "\tlength = " << path_lengths_host[i] << std::endl;
-    //     // std::cout << "======================" << std::endl;
+    //
+    // auto length = 0llu;
+    // for (auto i = 0u; i < node_count; i++) {
+    //     length += dist_between_nodes_host[best_permutation_host[i] * node_count + best_permutation_host[i + 1]];
     // }
+    // length += dist_between_nodes_host[best_permutation_host[node_count - 1] * node_count + best_permutation_host[0]];
+    // printf("\ncalculated length %llu\n", length);
 
-    printf("%ld\n", * best_length_host);
+
+    const auto input_file = std::filesystem::path(argv[1]).filename().string();
+    std::cout << "file: " << input_file << " -> best: " << *best_length_host << std::endl;
+    auto output = std::ofstream("../output_" + input_file);
+
+    output << *best_length_host << std::endl;
+
+    for (auto i = 0u; i < node_count; i++) {
+        output << nodes[best_permutation_host[i]].x << " " << nodes[best_permutation_host[i]].y << std::endl;
+    }
 
     return 0;
 }
