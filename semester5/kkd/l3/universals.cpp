@@ -159,8 +159,70 @@ std::optional<uint64_t> EliasOmegaDecoder::read_next() {
     return n;
 }
 
-void EliasFibonacciEncoder::put(uint64_t value) {
+std::vector<uint64_t> generateFibonacciNumbers(uint64_t limit) {
+    std::vector<uint64_t> fibonacci = {1, 2}; // Starting from 1, 2 as per Elias-Fibonacci coding
+    while (fibonacci.back() < limit) {
+        fibonacci.push_back(fibonacci.end()[-1] + fibonacci.end()[-2]);
+    }
+    return fibonacci;
 }
 
-std::optional<uint64_t> EliasFibonacciDecoder::read_next() {
+void EliasFibonacciEncoder::put(uint64_t value) {
+    if (value == 0) {
+        output.put_bit(0);
+        return;
+    }
+
+    auto fibonacciNumbers = generateFibonacciNumbers(value);
+    std::vector<bool> bits(fibonacciNumbers.size(), false);
+
+    for (auto it = fibonacciNumbers.rbegin(); it != fibonacciNumbers.rend(); ++it) {
+        if (*it <= value) {
+            bits[it - fibonacciNumbers.rbegin()] = true;
+            value -= *it;
+        }
+    }
+
+    for (auto it = bits.rbegin(); it != bits.rend(); ++it) {
+        output.put_bit(*it);
+    }
+
+    output.put_bit(1);
 }
+
+const auto fibonacciNumbers = generateFibonacciNumbers(UINT32_MAX);
+
+std::optional<uint64_t> EliasFibonacciDecoder::read_next() {
+    uint64_t value = 0;
+    bool previousBit = false;
+
+    for (uint64_t index = 0; ; ++index) {
+        auto bit_opt = input.next_bit();
+        if (!bit_opt) {
+            return std::nullopt;
+        }
+
+        bool bit = *bit_opt;
+
+        if (bit && previousBit) {
+            break;
+        }
+
+        if (bit) {
+            if (index < fibonacciNumbers.size()) {
+                value += fibonacciNumbers[index];
+            } else {
+                return std::nullopt;
+            }
+        }
+
+        previousBit = bit;
+
+        if (!bit) {
+            previousBit = false;
+        }
+    }
+
+    return value;
+}
+

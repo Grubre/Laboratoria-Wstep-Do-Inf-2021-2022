@@ -10,4 +10,4 @@ echo "Decoding..."
 
 ./ratio.sh $1 encoded
 
-diff -s $1 decoded
+diff -Z -s $1 decoded
