@@ -54,16 +54,18 @@ auto correct(uint8_t code) -> std::optional<uint8_t> {
         default:
             return std::nullopt;
     }
+    return std::nullopt;
 }
 
 auto decode(std::bitset<8> code) -> std::pair<std::bitset<4>, bool> {
     auto ch = check(code);
-    // std::cout << code << " -> " << ch << std::endl;
+    // std::cout << code << " -> " << (int)ch << std::endl;
     auto double_error = false;
     if(ch != 0) {
         auto corrected = correct(ch);
         if(corrected) {
             auto x = get(code, *corrected);
+            // std::cout << "\tcorrected: " << (int)*corrected << ", x: " << x << std::endl;
             set(code, *corrected, !x);
         } else {
             double_error = true;
@@ -84,18 +86,26 @@ auto main(int argc, char** argv) -> int {
         return 1;
     }
 
-    auto input = std::ifstream(argv[1]);
+    auto input = std::ifstream(argv[1], std::ios::binary);
     auto output = std::ofstream(argv[2]);
 
     uint8_t byte;
     uint8_t out_byte = 0;
 
+    input.seekg (0, input.end);
+    int length = input.tellg();
+    input.seekg (0, input.beg);
+
     uint64_t errors = 0;
     bool flag = true;
     auto total = 0u;
-    while(input >> byte) {
+    auto i = 0u;
+    while(i < length) {
         total++;
+        input.read(reinterpret_cast<char*>(&byte), sizeof(byte));
         auto code = std::bitset<8>{byte};
+
+        // std::cout << code << std::endl;
 
         auto [decoded, double_error] = decode(code);
         if(double_error) {
@@ -111,6 +121,7 @@ auto main(int argc, char** argv) -> int {
             out_byte = 0;
         }
         flag = !flag;
+        i++;
     }
     std::cout << (double)errors / (double)total << std::endl;
     return 0;
