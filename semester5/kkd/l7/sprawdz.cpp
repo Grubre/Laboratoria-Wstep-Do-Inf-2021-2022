@@ -14,8 +14,10 @@ auto main(int argc, char** argv) -> int {
 
     auto differing_blocks_count = 0u;
 
+    auto total = 0u;
     auto finished = false;
     while(!finished) {
+        total++;
         bool is_identical = true;
         for(int i = 0u; i < 4; i++) {
             const auto bit1 = input1.next_bit();
@@ -32,7 +34,7 @@ auto main(int argc, char** argv) -> int {
                 break;
             }
 
-            std::cout << *bit1 << " " << *bit2 << std::endl;
+            //std::cout << *bit1 << " " << *bit2 << std::endl;
 
             if(*bit1 != *bit2) {
                 is_identical = false;
@@ -41,6 +43,6 @@ auto main(int argc, char** argv) -> int {
         differing_blocks_count += is_identical ? 0 : 1;
     }
 
-    std::cout << "Differing blocks count: " << differing_blocks_count << std::endl;
+    std::cout << (double)differing_blocks_count / (double)total << std::endl;
 }
 
