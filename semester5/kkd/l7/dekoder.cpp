@@ -17,7 +17,6 @@ bool get(const std::bitset<T>& bitset, int pos) {
 
 auto check(std::bitset<8> code) -> uint8_t {
     auto ch = std::bitset<8>{};
-    // std::cout << "check: " << std::bitset<8>(code) << std::endl;
 
     set(ch, 0, get(code, 2) ^ get(code, 4) ^ get(code, 5) ^ get(code, 6));
     set(ch, 1, get(code, 1) ^ get(code, 3) ^ get(code, 4) ^ get(code, 5));
@@ -59,13 +58,11 @@ auto correct(uint8_t code) -> std::optional<uint8_t> {
 
 auto decode(std::bitset<8> code) -> std::pair<std::bitset<4>, bool> {
     auto ch = check(code);
-    // std::cout << code << " -> " << (int)ch << std::endl;
     auto double_error = false;
     if(ch != 0) {
         auto corrected = correct(ch);
         if(corrected) {
             auto x = get(code, *corrected);
-            // std::cout << "\tcorrected: " << (int)*corrected << ", x: " << x << std::endl;
             set(code, *corrected, !x);
         } else {
             double_error = true;
@@ -105,19 +102,15 @@ auto main(int argc, char** argv) -> int {
         input.read(reinterpret_cast<char*>(&byte), sizeof(byte));
         auto code = std::bitset<8>{byte};
 
-        // std::cout << code << std::endl;
-
         auto [decoded, double_error] = decode(code);
         if(double_error) {
             errors++;
         }
         if(flag) {
             out_byte = decoded.to_ulong();
-            // std::cout << std::bitset<8>{out_byte} << std::endl;
         } else {
             out_byte = (out_byte << 4) | decoded.to_ulong();
             output << out_byte;
-            // std::cout << std::bitset<8>{out_byte} << std::endl;
             out_byte = 0;
         }
         flag = !flag;

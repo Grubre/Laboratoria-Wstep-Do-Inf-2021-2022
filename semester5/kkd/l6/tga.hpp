@@ -208,6 +208,60 @@ inline auto read_header(std::ifstream &file) -> Header {
     return header;
 }
 
+inline auto write_header(Image& image, std::ofstream& outputFile) -> bool {
+    if (!outputFile.is_open()) {
+        return false;
+    }
+
+    outputFile.write(reinterpret_cast<char*>(&image.header.id_length),
+                     sizeof(image.header.id_length));
+    outputFile.write(reinterpret_cast<char*>(&image.header.color_map_type),
+                     sizeof(image.header.color_map_type));
+    outputFile.write(reinterpret_cast<char*>(&image.header.image_type),
+                        sizeof(image.header.image_type));
+    outputFile.write(reinterpret_cast<char*>(&image.header.color_map_origin),
+                        sizeof(image.header.color_map_origin));
+    outputFile.write(reinterpret_cast<char*>(&image.header.color_map_length),
+                        sizeof(image.header.color_map_length));
+    outputFile.write(reinterpret_cast<char*>(&image.header.color_map_depth),
+                        sizeof(image.header.color_map_depth));
+    outputFile.write(reinterpret_cast<char*>(&image.header.x_origin),
+                        sizeof(image.header.x_origin));
+    outputFile.write(reinterpret_cast<char*>(&image.header.y_origin),
+                        sizeof(image.header.y_origin));
+    outputFile.write(reinterpret_cast<char*>(&image.header.width),
+                        sizeof(image.header.width));
+    outputFile.write(reinterpret_cast<char*>(&image.header.height),
+                        sizeof(image.header.height));
+    outputFile.write(reinterpret_cast<char*>(&image.header.pixel_depth),
+                        sizeof(image.header.pixel_depth));
+    outputFile.write(reinterpret_cast<char*>(&image.header.image_descriptor),
+                        sizeof(image.header.image_descriptor));
+
+    for (uint8_t idByteIndex = 0; idByteIndex < image.header.id_length; idByteIndex++) {
+        outputFile.write(reinterpret_cast<char*>(&image.id[idByteIndex]),
+                         sizeof(image.id[idByteIndex]));
+    }
+
+    return true;
+}
+
+inline auto write_footer(Image& image, std::ofstream& outputFile) -> bool{
+    if (!outputFile.is_open()) {
+        return false;
+    }
+
+    constexpr uint8_t footerSize{26};
+    for (uint8_t footerByteIndex = 0; footerByteIndex < footerSize;
+       footerByteIndex++) {
+    outputFile.write(reinterpret_cast<char*>(&image.footer[footerByteIndex]),
+                     sizeof(image.footer[footerByteIndex]));
+    }
+
+    return true;
+}
+
+
 inline Result<Image, Err> read_image(const std::string &filename) {
     auto file = std::ifstream(filename);
     if (!file) {
