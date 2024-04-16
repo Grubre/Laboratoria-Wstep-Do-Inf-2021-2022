@@ -14,27 +14,46 @@ template GF(alias p, T = uint) if (is_prime(p)) {
     struct GF {
         T value = 0;
 
-        this(T val) { value = val % p; }
+        this(T val) {
+            if (val < 0) {
+                // print
+                value = p - (- val) % p;
+            } else {
+                value = val % p;
+            }
+        }
 
         T characteristic() { return p; }
 
         GF inv() {
-            T a = value, b = p, x = 0, y = 1, t;
-            while (a != 0) {
-                t = a;
-                a = b % a;
-                b = t;
-                t = x;
-                x = y - b / t * x;
-                y = t;
+            if (value == 0) throw new Exception("Inverse of zero");
+
+            T t = 0, r = p, tt = 1, rt = value;
+
+            while (rt != 0) {
+                T q = r / rt;
+
+                T temp = t - q * tt;
+                t = tt;
+                tt = temp;
+
+                temp = r - q * rt;
+                r = rt;
+                rt = temp;
             }
-            return GF(y);
+
+            if (t < 0) t += p;
+
+            return GF(t);
         }
 
         GF opBinary(string op)(GF rhs) {
             static if (op == "/") {
                 if (rhs.value == 0) throw new Exception("Division by zero");
                 return this * rhs.inv();
+            }
+            static if (op == "-") {
+                return GF(p + value - rhs.value);
             }
             mixin("return GF(cast(T)(value " ~ op ~ " rhs.value));");
         }

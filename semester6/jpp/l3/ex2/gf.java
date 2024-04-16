@@ -23,26 +23,28 @@ public class gf {
     }
 
     public gf inv() {
-        int t = 0;
-        int newt = 1;
-        int r = p;
-        int newr = a;
-        int q, tmp;
-        while (newr != 0) {
-            q = r / newr;
-            tmp = newt;
-            newt = t - q * newt;
-            t = tmp;
-            tmp = newr;
-            newr = r - q * newr;
-            r = tmp;
+        if (a == 0) {
+            throw new IllegalArgumentException("Inverse of zero does not exist");
         }
-        if (r > 1) {
-            throw new IllegalArgumentException("a is not invertible");
+
+        int t = 0, r = p, tt = 1, rt = a;
+
+        while (rt != 0) {
+            int q = r / rt;
+
+            int temp = t - q * tt;
+            t = tt;
+            tt = temp;
+
+            temp = r - q * rt;
+            r = rt;
+            rt = temp;
         }
+
         if (t < 0) {
             t += p;
         }
+
         return new gf(p, t);
     }
 
@@ -59,7 +61,19 @@ public class gf {
     }
 
     public gf div(gf b) {
+        if (b.get() == 0) {
+            throw new IllegalArgumentException("Inverse of zero does not exist");
+        }
+        
         return new gf(p, (a * b.inv().get()) % p);
+    }
+
+    public Boolean equals(gf b) {
+        return a == b.get();
+    }
+
+    public String toString() {
+        return Integer.toString(a);
     }
 
     private Boolean is_prime(int p) {
