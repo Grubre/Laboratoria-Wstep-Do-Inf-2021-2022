@@ -18,6 +18,10 @@ public class gf {
         this.a = a % p;
     }
 
+    public int characteristic() {
+        return p;
+    }
+
     public gf neg() {
         return new gf(p, p - a);
     }
@@ -49,18 +53,34 @@ public class gf {
     }
 
     public gf add(gf b) {
+        if (p != b.characteristic()) {
+            throw new IllegalArgumentException("Fields are not compatible");
+        }
+
         return new gf(p, (a + b.get()) % p);
     }
 
     public gf sub(gf b) {
+        if (p != b.characteristic()) {
+            throw new IllegalArgumentException("Fields are not compatible");
+        }
+
         return new gf(p, (a - b.get() + p) % p);
     }
 
     public gf mul(gf b) {
+        if (p != b.characteristic()) {
+            throw new IllegalArgumentException("Fields are not compatible");
+        }
+
         return new gf(p, (a * b.get()) % p);
     }
 
     public gf div(gf b) {
+        if (p != b.characteristic()) {
+            throw new IllegalArgumentException("Fields are not compatible");
+        }
+
         if (b.get() == 0) {
             throw new IllegalArgumentException("Inverse of zero does not exist");
         }
@@ -69,6 +89,10 @@ public class gf {
     }
 
     public Boolean equals(gf b) {
+        if (p != b.characteristic()) {
+            throw new IllegalArgumentException("Fields are not compatible");
+        }
+
         return a == b.get();
     }
 

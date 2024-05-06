@@ -34,7 +34,7 @@ auto main() -> int {
 
     std::cout << gf{7}.inverse() << std::endl;
 
-    test_GF();
+    // test_GF();
     std::cout << a + 5 << std::endl;
     std::cout << a.inverse() << std::endl;
     return 0;

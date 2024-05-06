@@ -16,7 +16,6 @@ template GF(alias p, T = uint) if (is_prime(p)) {
 
         this(T val) {
             if (val < 0) {
-                // print
                 value = p - (- val) % p;
             } else {
                 value = val % p;
