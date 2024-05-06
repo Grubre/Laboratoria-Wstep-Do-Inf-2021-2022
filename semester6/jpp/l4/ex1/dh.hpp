@@ -60,8 +60,8 @@ template <typename T> class User {
 
     auto getPublicKey() const -> T { return setup.power(setup.getGenerator(), secret); }
     void setKey(T a) { key = setup.power(a, secret); }
-    auto encrypt(T m) -> T { return T{m} * key; }
-    auto decrypt(T c) -> T { return T{c} / key; }
+    auto encrypt(T m) -> T { return m * key; }
+    auto decrypt(T c) -> T { return c / key; }
 
   private:
     DHSetup<T> &setup;

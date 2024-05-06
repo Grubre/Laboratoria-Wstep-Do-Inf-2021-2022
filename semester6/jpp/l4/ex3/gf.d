@@ -22,7 +22,7 @@ template GF(alias p, T = uint) if (is_prime(p)) {
             }
         }
 
-        T characteristic() { return p; }
+        public static T characteristic() { return p; }
 
         GF inv() {
             if (value == 0) throw new Exception("Inverse of zero");
