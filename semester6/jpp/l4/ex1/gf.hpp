@@ -92,7 +92,7 @@ struct GF {
     friend std::ostream &operator<<(std::ostream &os, const GF &gf) { return os << gf.value; }
 };
 
-template <auto P, typename T = std::uint64_t> constexpr auto get_prime_divisors_cnt() -> std::size_t {
+template <auto P, typename T = std::uint64_t> consteval auto get_prime_divisors_cnt() -> std::size_t {
     auto p = P;
     auto i = 2;
     auto j = 0u;
@@ -115,7 +115,7 @@ template <auto P, typename T = std::uint64_t> constexpr auto get_prime_divisors_
 }
 
 template <auto P, typename T = std::uint64_t, std::size_t N = get_prime_divisors_cnt<P>()>
-constexpr auto get_prime_divisors() -> std::array<T, N> {
+consteval auto get_prime_divisors() -> std::array<T, N> {
     std::array<T, N> divisors{};
     auto p = P;
     auto i = 2;
