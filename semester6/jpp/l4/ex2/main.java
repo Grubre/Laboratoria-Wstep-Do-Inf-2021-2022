@@ -8,6 +8,8 @@ public class main {
         gf prod = a.mul(b);
         gf quot = a.div(b);
 
+        DHSetup dh = new DHSetup(1234577);
+
         System.out.println("a = " + a);
         System.out.println("b = " + b);
         System.out.println("(1 / b) * b = " + b.inv().mul(b));
