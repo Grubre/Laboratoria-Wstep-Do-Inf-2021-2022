@@ -59,12 +59,26 @@ template <typename T> class User {
     }
 
     auto getPublicKey() const -> T { return setup.power(setup.getGenerator(), secret); }
-    void setKey(T a) { key = setup.power(a, secret); }
-    auto encrypt(T m) -> T { return m * key; }
-    auto decrypt(T c) -> T { return c / key; }
+    void setKey(T a) {
+        initialized_key = true;
+        key = setup.power(a, secret);
+    }
+    auto encrypt(T m) -> T {
+        if(!initialized_key) {
+            throw std::runtime_error("Key not initialized");
+        }
+        return m * key;
+    }
+    auto decrypt(T c) -> T {
+        if(!initialized_key) {
+            throw std::runtime_error("Key not initialized");
+        }
+        return c / key;
+    }
 
   private:
     DHSetup<T> &setup;
     secret_type secret;
     T key;
+    bool initialized_key = false;
 };

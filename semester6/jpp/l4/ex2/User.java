@@ -1,5 +1,4 @@
 import java.util.Random;
-import java.util.ArrayList;
 
 public class User {
     public User(DHSetup dhsetup) {
@@ -15,17 +14,25 @@ public class User {
 
     public void setKey(gf a) {
         this.key = dhsetup.power(a, secret);
+        key_set = true;
     }
 
     public gf encrypt(gf m) {
+        if(!key_set) {
+            throw new IllegalStateException("Key not set");
+        }
         return m.mul(key);
     }
 
     public gf decrypt(gf c) {
+        if(!key_set) {
+            throw new IllegalStateException("Key not set");
+        }
         return c.div(key);
     }
 
     private DHSetup dhsetup;
     int secret;
     gf key;
+    boolean key_set = false;
 }

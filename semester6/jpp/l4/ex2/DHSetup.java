@@ -59,6 +59,7 @@ public class DHSetup {
                     n /= i;
                 }
             }
+            i+=1;
         }
 
         if (n != 1) {
