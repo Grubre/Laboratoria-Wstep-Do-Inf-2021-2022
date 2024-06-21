@@ -1,0 +1,12 @@
+(defun de (a b)
+    (if (= b 0)
+        (list 1 0 a)
+        (let ((l (de b (mod a b)) )) 
+            (let ((x (first l)) (y (second l)) (d (third l)))
+                (list y (- x (* y (floor a b))) d)
+            )
+        )
+    )
+)
+
+(format t "~A~%" (de 56 15))

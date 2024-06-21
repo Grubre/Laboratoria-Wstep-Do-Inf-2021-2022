@@ -1,7 +1,7 @@
-mergeSort :: Ord a => [a] -> [a]
-mergeSort [] = []
-mergeSort [x] = [x]
-mergeSort nums = merge_lists (mergeSort left) (mergeSort right)
+merge_sort :: Ord a => [a] -> [a]
+merge_sort [] = []
+merge_sort [x] = [x]
+merge_sort nums = merge_lists (merge_sort left) (merge_sort right)
   where
     merge_lists [] l = l
     merge_lists l [] = l
@@ -11,4 +11,4 @@ mergeSort nums = merge_lists (mergeSort left) (mergeSort right)
     (left, right) = splitAt (length nums `div` 2) nums
 
 main :: IO ()
-main = print $ mergeSort [3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5]
+main = print $ merge_sort [3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5]
